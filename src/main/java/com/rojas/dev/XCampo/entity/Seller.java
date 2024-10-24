@@ -27,8 +27,8 @@ public class Seller {
     private String img;
 
     @OneToOne
-    @JoinColumn(name = "user_id_user", updatable = false, nullable = false)
-    private User user;
+    @JoinColumn(name = "roles_id", updatable = false, nullable = false)
+    private Roles roles;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private Set<Order> orders = new HashSet<>();

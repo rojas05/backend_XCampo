@@ -18,8 +18,8 @@ public class Client {
     private String location_description;
 
     @OneToOne
-    @JoinColumn(name = "user_id_user", updatable = false, nullable = false)
-    private User user;
+    @JoinColumn(name = "roles_id", updatable = false, nullable = false)
+    private Roles roles;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private Set<Order> orders = new HashSet<>();
