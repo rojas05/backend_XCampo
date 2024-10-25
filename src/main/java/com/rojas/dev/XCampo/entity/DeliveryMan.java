@@ -18,7 +18,7 @@ public class DeliveryMan {
     private List<DeliveryProduct> deliveryProductsList;
 
     @OneToOne
-    @JoinColumn(name = "user_id_user", updatable = false, nullable = false)
-    private User user;
+    @JoinColumn(name = "roles_id", updatable = false, nullable = false)
+    private Roles roles;
 
 }

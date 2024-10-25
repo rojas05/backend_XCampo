@@ -3,30 +3,29 @@ package com.rojas.dev.XCampo.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "user")
 public class User {
     @Id
-    private Long id_user;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long user_id;
 
     private String name;
-
     private String city;
-
     private Long cell;
-
     private String email;
-
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Client client;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Seller seller;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private DeliveryMan deliveryMan;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Roles> roles = new HashSet<>();
 
 }
