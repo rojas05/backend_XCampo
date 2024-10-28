@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service.Interface;
+package com.rojas.dev.XCampo.repository;
 
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.UserRole;
@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface RolesRepository extends JpaRepository<Roles, Long> {
 
-    public Optional<Roles> findByRoleType(UserRole nameRole);
+
 
 }

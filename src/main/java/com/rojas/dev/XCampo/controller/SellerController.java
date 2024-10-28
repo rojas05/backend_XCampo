@@ -37,7 +37,7 @@ public class SellerController {
         return sellerService.getSellerById(id_user);
     }
 
-    @GetMapping("id_seller}")
+    @GetMapping("{id_seller}")
     public ResponseEntity<?> getSellerById(@PathVariable Long id_seller){
         return sellerService.getSellerById(id_seller);
     }

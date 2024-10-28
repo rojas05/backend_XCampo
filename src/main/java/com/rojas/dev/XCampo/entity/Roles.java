@@ -15,18 +15,32 @@ public class Roles {
     private Long roles_id;
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true, nullable = false)
     private UserRole nameRole;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    /*
+    @OneToOne
+    @JoinColumn(name = "roles_id", updatable = false, nullable = false)
+    private Roles roles;
 
-    @OneToOne(mappedBy = "roles", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
     private Client client;
 
-    @OneToOne(mappedBy = "roles", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
+    private DeliveryMan deliveryMan;
+     */
+
+    @OneToOne
+    @JoinColumn(name = "user_id", updatable = false, nullable = false)
+    private User user;
+
+    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
     private Seller seller;
 
-    @OneToOne(mappedBy = "roles", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
+    private Client client;
+
+    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
     private DeliveryMan deliveryMan;
 }

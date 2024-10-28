@@ -2,7 +2,7 @@ package com.rojas.dev.XCampo.service.impl;
 
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.UserRole;
-import com.rojas.dev.XCampo.service.Interface.RolesRepository;
+import com.rojas.dev.XCampo.repository.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +29,7 @@ public class RolesService {
     }
 
     public Roles findRolesType(UserRole nameRol) {
-        return rolesRepository.findByRoleType(nameRol)
-                .orElseThrow(() -> new RuntimeException("Type Rol not found"));
+        return null;
     }
 
     public Roles findRoleById(Long id) {
