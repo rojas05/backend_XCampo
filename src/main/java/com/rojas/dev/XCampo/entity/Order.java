@@ -12,6 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "order_products")
 public class Order {
+
     @Id
     private Long id_order;
 

@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service;
+package com.rojas.dev.XCampo.service.Service;
 
 import com.rojas.dev.XCampo.entity.Seller;
 import org.springframework.http.ResponseEntity;

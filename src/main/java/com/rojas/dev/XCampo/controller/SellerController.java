@@ -1,8 +1,7 @@
 package com.rojas.dev.XCampo.controller;
 
 import com.rojas.dev.XCampo.entity.Seller;
-import com.rojas.dev.XCampo.service.SellerService;
-import org.checkerframework.checker.units.qual.A;
+import com.rojas.dev.XCampo.service.Service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

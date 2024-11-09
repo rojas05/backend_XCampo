@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service;
+package com.rojas.dev.XCampo.service.Service;
 
 import org.springframework.web.multipart.MultipartFile;
 

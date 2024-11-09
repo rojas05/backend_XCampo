@@ -16,4 +16,6 @@ public class Shopping_cart {
     @OneToOne
     @JoinColumn(name = "shopping_cart", updatable = false, nullable = false)
     private Shopping_cart shoppingCart;
+
+    // conectar producto
 }

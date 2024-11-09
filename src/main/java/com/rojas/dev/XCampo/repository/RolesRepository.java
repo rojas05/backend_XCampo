@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface RolesRepository extends JpaRepository<Roles, Long> {
 
-
+    //
 
 }

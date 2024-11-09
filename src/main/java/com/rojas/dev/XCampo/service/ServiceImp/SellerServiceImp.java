@@ -1,7 +1,9 @@
-package com.rojas.dev.XCampo.service;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.repository.SellerRepository;
+import com.rojas.dev.XCampo.service.Service.FirebaseStorageService;
+import com.rojas.dev.XCampo.service.Service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -34,7 +36,6 @@ public class SellerServiceImp implements SellerService {
             }
 
             // Lógica para guardar los demás datos como coordinates, location, etc.
-
             try {
                 sellerRepository.save(seller);
                 URI location = ServletUriComponentsBuilder
@@ -128,4 +129,5 @@ public class SellerServiceImp implements SellerService {
                     .body("Error occurred while get the id seller by id user: " + e.getMessage());
         }
     }
+
 }

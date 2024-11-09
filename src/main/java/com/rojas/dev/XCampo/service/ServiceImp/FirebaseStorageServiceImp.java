@@ -1,8 +1,9 @@
-package com.rojas.dev.XCampo.service;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
+import com.rojas.dev.XCampo.service.Service.FirebaseStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
