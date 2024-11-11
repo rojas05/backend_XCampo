@@ -6,24 +6,22 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table (name = "EnvioProducto")
+@Table (name = "delivery")
 public class DeliveryProduct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long ID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id_delivery;
 
     @Temporal(TemporalType.DATE)
     private LocalDate date;
 
     private String state;
 
-    @ManyToOne
-    @JoinColumn(name = "orderId")
+    @ManyToOne(fetch = FetchType.EAGER)
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "deliveryManId")
+    @ManyToOne(fetch = FetchType.EAGER)
     private DeliveryMan deliveryMan;
 
 }

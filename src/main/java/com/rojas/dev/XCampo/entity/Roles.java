@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,30 +18,18 @@ public class Roles {
     @Enumerated(EnumType.STRING)
     private UserRole nameRole;
 
-    /*
-    @OneToOne
-    @JoinColumn(name = "roles_id", updatable = false, nullable = false)
-    private Roles roles;
-
-
-    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
-    private Client client;
-
-
-    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
-    private DeliveryMan deliveryMan;
-     */
-
-    @OneToOne
-    @JoinColumn(name = "user_id", updatable = false, nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToOne(mappedBy = "rol")
     private Seller seller;
 
-    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToOne(mappedBy = "rol")
     private Client client;
 
-    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToOne(mappedBy = "rol")
     private DeliveryMan deliveryMan;
 }

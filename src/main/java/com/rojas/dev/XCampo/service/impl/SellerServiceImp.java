@@ -1,48 +1,54 @@
-package com.rojas.dev.XCampo.service;
+package com.rojas.dev.XCampo.service.impl;
 
+import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.Seller;
+import com.rojas.dev.XCampo.entity.User;
+import com.rojas.dev.XCampo.repository.RolesRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
+import com.rojas.dev.XCampo.repository.UserRepository;
+import com.rojas.dev.XCampo.service.Interface.FirebaseStorageService;
+import com.rojas.dev.XCampo.service.Interface.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SellerServiceImp implements SellerService {
+
+    @Autowired
+    RolesRepository rolesRepository;
+
     @Autowired
     SellerRepository sellerRepository;
 
     @Autowired
-    FirebaseStorageService firebaseStorageService;
+    UserRepository userRepository;
+
 
     @Override
-    public ResponseEntity<?> insertSeller(Seller seller, List<MultipartFile> images) {
-
+    public ResponseEntity<?> insertSeller(Seller seller, Long idRol) {
         try {
-            // Lógica para procesar y guardar los archivos
-            for (MultipartFile image : images) {
-                // Aquí podrías subir cada imagen a Firebase Storage y obtener la URL
-                String imageUrl = firebaseStorageService.uploadFile(image);
-                System.out.println("Image URL: " + imageUrl);
-            }
-
-            // Lógica para guardar los demás datos como coordinates, location, etc.
-
+            Optional<Roles> result = rolesRepository.findById(idRol);
             try {
-                sellerRepository.save(seller);
-                URI location = ServletUriComponentsBuilder
-                        .fromCurrentRequest()
-                        .path("/{id_seller}")
-                        .buildAndExpand(seller.getId_seller())
-                        .toUri();
-                return ResponseEntity.created(location).body("Seller created successfully.");
+               if (result.isPresent()){
+                   seller.setRol(result.get());
+                   sellerRepository.save(seller);
+                   URI location = ServletUriComponentsBuilder
+                           .fromCurrentRequest()
+                           .path("/{id_seller}")
+                           .buildAndExpand(seller.getId_seller())
+                           .toUri();
+                   return ResponseEntity.created(location).body(seller);
+               }else {
+                   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                           .body("Error occurred while get the rol: ");
+               }
             } catch (DataIntegrityViolationException e) {
                 // Error si hay violaciones de integridad en los datos (ej. campos únicos)
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -54,9 +60,11 @@ public class SellerServiceImp implements SellerService {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while saving the seller: " + e.getMessage());
+                    .body("Error occurred while get the rol: " + e.getMessage());
         }
     }
+
+
 
     @Override
     public ResponseEntity<?> delete(Long id_seller) {
@@ -117,9 +125,14 @@ public class SellerServiceImp implements SellerService {
     @Override
     public ResponseEntity<?> getIdSellerByUser(Long user_id) {
         try {
-            Optional<Long> result = sellerRepository.getIdSellerByIdUser(user_id);
-            if (result.isPresent()){
-                return ResponseEntity.ok().body(result);
+            Optional<User> user = userRepository.findById(user_id);
+            if (user.isPresent()){
+                Optional<Long> result = sellerRepository.getIdSellerByIdUser(user.get());
+                if (result.isPresent()){
+                    return ResponseEntity.ok().body(result);
+                }else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+                }
             }else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
             }
@@ -128,4 +141,28 @@ public class SellerServiceImp implements SellerService {
                     .body("Error occurred while get the id seller by id user: " + e.getMessage());
         }
     }
+
+    @Override
+    public ResponseEntity<?> updateSellerImg(String img, Long idSeller) {
+        Optional<Seller> sellerVerify = sellerRepository.findById(idSeller);
+        if (sellerVerify.isPresent()){
+            try {
+                sellerRepository.updateSellerImg(idSeller,img);
+                URI location = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id_seller}")
+                        .buildAndExpand(idSeller)
+                        .toUri();
+                return ResponseEntity.created(location).body("Seller update successfully.");
+            }catch (Exception e){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Error occurred while update the seller: " + e.getMessage());
+            }
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + idSeller + " not found.");
+        }
+
+    }
+
+
 }

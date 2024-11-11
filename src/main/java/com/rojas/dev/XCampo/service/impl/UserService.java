@@ -1,7 +1,7 @@
 package com.rojas.dev.XCampo.service.impl;
 
 import com.rojas.dev.XCampo.entity.User;
-import com.rojas.dev.XCampo.service.Interface.UserRepository;
+import com.rojas.dev.XCampo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +45,8 @@ public class UserService {
         return userRepository.findById(Id)
                 .orElseThrow(() -> new RuntimeException("User not Found"));
     }
+
+
 
 
 }

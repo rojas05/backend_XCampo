@@ -13,6 +13,7 @@ import java.util.Set;
 @Table(name = "order_products")
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_order;
 
     private String state;
@@ -40,5 +41,7 @@ public class Order {
     private Shopping_cart shopping_cart;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<DeliveryProduct> orders = new HashSet<>();
+    private Set<DeliveryProduct> order = new HashSet<>();
+
+
 }

@@ -14,13 +14,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping()
     public ResponseEntity<?> registerUser(@RequestBody User newUser) {
         try {
             User createUser = userService.addUser(newUser);
             return ResponseEntity.status(HttpStatus.CREATED).body(createUser);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

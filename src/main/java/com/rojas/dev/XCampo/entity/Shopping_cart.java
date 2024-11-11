@@ -9,6 +9,7 @@ import lombok.Data;
 @Table
 public class Shopping_cart {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_shopping_cart;
 
     private Long amount;
