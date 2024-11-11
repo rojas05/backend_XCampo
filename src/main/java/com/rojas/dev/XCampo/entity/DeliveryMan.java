@@ -9,16 +9,18 @@ import java.util.List;
 @Entity
 @Table(name = "deliveryMan")
 public class DeliveryMan {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_deliveryMan;
 
     private String rute;
 
-    @OneToMany(mappedBy = "deliveryMan")
-    private List<DeliveryProduct> deliveryProductsList;
+    @OneToOne(mappedBy = "deliveryMan", cascade = CascadeType.ALL)
+    private DeliveryProduct deliveryProducts;
 
     @OneToOne
-    @JoinColumn(name = "rol_id", updatable = false, nullable = false)
+    @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
 }

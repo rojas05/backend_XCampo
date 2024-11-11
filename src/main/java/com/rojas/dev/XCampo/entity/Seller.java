@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.awt.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -13,6 +14,7 @@ import java.util.Set;
 public class Seller {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_seller;
 
     private String name_store;
@@ -26,15 +28,10 @@ public class Seller {
 
     private String img;
 
-    /*
-    @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)
-    private Seller seller;
-     */
-
     @OneToOne
-    @JoinColumn(name = "rol_id", updatable = false, nullable = false)
+    @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private Set<Order> orders = new HashSet<>();
+    private List<Product> productList;
 }

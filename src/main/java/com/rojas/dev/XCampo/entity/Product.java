@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -26,9 +29,20 @@ public class Product {
 
     private MeasurementUnit measurementUnit;
 
-    private String UrlImage;
+    private List<String> UrlImage;
 
-    // conectar a carrito
+    @OneToMany(mappedBy = "products", cascade = CascadeType.ALL)
+    private List<Shopping_cart> shoppingCartList;
 
-    
+    @OneToMany(mappedBy = "products", cascade = CascadeType.ALL)
+    private List<Qualification> qualificationList;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_seller_id")
+    private Seller seller;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_category_id")
+    private Category category;
+
 }

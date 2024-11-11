@@ -16,14 +16,21 @@ public class DeliveryProduct {
     @Temporal(TemporalType.DATE)
     private LocalDate date;
 
-    private String state;
+    private Boolean available;
+
+    @Enumerated(EnumType.STRING)
+    private DeliveryProductState deliveryProductState;
+
+    private String startingPoint;
+    
+    private String destiny;
 
     @ManyToOne
-    @JoinColumn(name = "orderId")
-    private Order order;
+    @JoinColumn(name = "fk_order_id")
+    private Order orderProducts;
 
-    @ManyToOne
-    @JoinColumn(name = "deliveryManId")
+    @OneToOne
+    @JoinColumn(name = "fk_deliveryMan_id")
     private DeliveryMan deliveryMan;
 
 }

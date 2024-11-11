@@ -4,13 +4,16 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "client")
 public class Client {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_client;
 
     private String name;
@@ -18,9 +21,10 @@ public class Client {
     private String location_description;
 
     @OneToOne
-    @JoinColumn(name = "rol_id", updatable = false, nullable = false)
+    @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private Set<Order> orders = new HashSet<>();
+    @OneToMany(mappedBy = "clients", cascade = CascadeType.ALL)
+    private List<Shopping_cart> shoppingCarts;
+
 }

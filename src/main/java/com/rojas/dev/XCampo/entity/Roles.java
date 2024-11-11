@@ -31,8 +31,8 @@ public class Roles {
     private DeliveryMan deliveryMan;
      */
 
-    @OneToOne
-    @JoinColumn(name = "user_id", updatable = false, nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "fk_user_id", updatable = false, nullable = false)
     private User user;
 
     @OneToOne(mappedBy = "rol", cascade = CascadeType.ALL)

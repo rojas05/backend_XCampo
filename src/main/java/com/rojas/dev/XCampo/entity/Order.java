@@ -6,23 +6,17 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "order_products")
+@Table(name = "orderProducts")
 public class Order {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id_order;
-
-    private String state;
-
-    private String message;
-
-    private Long price_delivery;
-
-    private Boolean delivery;
 
     @Temporal(TemporalType.DATE)
     private LocalDate date;
@@ -30,16 +24,23 @@ public class Order {
     @Temporal(TemporalType.TIME)
     private LocalTime hour;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Client client;
+    @Enumerated(EnumType.STRING)
+    private OrderState state;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Seller seller;
+    private String message;
+
+    private Long price_delivery;
+
+    private Boolean delivery;
+
+    @OneToMany(mappedBy = "orderProducts")
+    private List<DeliveryProduct> deliveryProductList;
 
     @OneToOne
-    @JoinColumn(name = "shopping_cart_id_shopping_cart", updatable = false, nullable = false)
-    private Shopping_cart shopping_cart;
+    @JoinColumn(name = "fk_shoppingCart_id", updatable = false, nullable = false)
+    private Shopping_cart shoppingCart;
 
+    /* Que hace?
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<DeliveryProduct> orders = new HashSet<>();
+    private Set<DeliveryProduct> orders = new HashSet<>();*/
 }

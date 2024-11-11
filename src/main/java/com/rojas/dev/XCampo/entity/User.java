@@ -20,7 +20,7 @@ public class User {
     private String email;
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Roles rol;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Roles> rol;
 
 }
