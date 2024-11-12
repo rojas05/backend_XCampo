@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service.Service;
+package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.entity.Product;
 
