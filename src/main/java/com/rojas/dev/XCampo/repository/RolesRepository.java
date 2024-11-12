@@ -2,7 +2,6 @@ package com.rojas.dev.XCampo.repository;
 
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.User;
-import com.rojas.dev.XCampo.entity.UserRole;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

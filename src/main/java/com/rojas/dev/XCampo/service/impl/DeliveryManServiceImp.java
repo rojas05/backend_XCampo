@@ -1,12 +1,10 @@
 package com.rojas.dev.XCampo.service.impl;
 
-import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.DeliveryMan;
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.User;
 import com.rojas.dev.XCampo.repository.DeliveryManRepository;
 import com.rojas.dev.XCampo.repository.RolesRepository;
-import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.repository.UserRepository;
 import com.rojas.dev.XCampo.service.Interface.DeliveryManService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +55,7 @@ public class DeliveryManServiceImp implements DeliveryManService {
             } catch (Exception e) {
                 // Cualquier otro error general
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Error occurred while saving the seller: " + e.getMessage());
+                        .body("Error occurred while saving the delivery man: " + e.getMessage());
             }
     }
 
@@ -77,7 +75,7 @@ public class DeliveryManServiceImp implements DeliveryManService {
             }
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the id seller by id user: " + e.getMessage());
+                    .body("Error occurred while get the id delivery man by id user: " + e.getMessage());
         }
     }
 

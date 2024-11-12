@@ -2,7 +2,6 @@ package com.rojas.dev.XCampo.service.impl;
 
 import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.Roles;
-import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.entity.User;
 import com.rojas.dev.XCampo.repository.ClientRepository;
 import com.rojas.dev.XCampo.repository.RolesRepository;
@@ -82,13 +81,13 @@ public class ClientServiceImp implements ClientService {
                         client.getId_client(),
                         client.getLocation_description(),
                         client.getName());
-                return ResponseEntity.status(HttpStatus.OK).body("Seller update successfully.");
+                return ResponseEntity.status(HttpStatus.OK).body("Client update successfully.");
             }else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + client.getId_client() + " not found.");
             }
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while update the seller: " + e.getMessage());
+                    .body("Error occurred while update the Client: " + e.getMessage());
         }
     }
 
@@ -123,7 +122,7 @@ public class ClientServiceImp implements ClientService {
         } catch (Exception e) {
             // En caso de cualquier otro error, retornar código 500 (Internal Server Error)
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting the seller: " + e.getMessage());
+                    .body("Error occurred while deleting the client: " + e.getMessage());
         }
     }
 }
