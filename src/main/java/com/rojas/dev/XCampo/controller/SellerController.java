@@ -1,7 +1,7 @@
 package com.rojas.dev.XCampo.controller;
 
 import com.rojas.dev.XCampo.entity.Seller;
-import com.rojas.dev.XCampo.service.Service.SellerService;
+import com.rojas.dev.XCampo.service.Interface.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ public class SellerController {
     @Autowired
     SellerService sellerService;
 
-    @PostMapping
-    public ResponseEntity<?> insertSeller(@RequestBody Seller seller, @RequestParam List<MultipartFile> images){
-        return sellerService.insertSeller(seller,images);
+    @PostMapping("{idRol}")
+    public ResponseEntity<?> insertSeller(@RequestBody Seller seller, @PathVariable Long idRol){
+        return sellerService.insertSeller(seller,idRol);
     }
 
     @DeleteMapping("{id_seller}")
@@ -31,9 +31,14 @@ public class SellerController {
         return sellerService.update(seller);
     }
 
+    @PatchMapping("imgUpdate/{idSeller}")
+    public ResponseEntity<?> updateSellerImg(@RequestParam("img") String img, @PathVariable Long idSeller){
+        return sellerService.updateSellerImg(img,idSeller);
+    }
+
     @GetMapping("idUser/{id_user}")
     public ResponseEntity<?> getIdSellerByIdUser(@PathVariable Long id_user){
-        return sellerService.getSellerById(id_user);
+        return sellerService.getIdSellerByUser(id_user);
     }
 
     @GetMapping("{id_seller}")

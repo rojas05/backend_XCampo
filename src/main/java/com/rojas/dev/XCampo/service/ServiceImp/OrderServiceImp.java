@@ -1,6 +1,6 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
-import com.rojas.dev.XCampo.service.Service.OrderService;
+import com.rojas.dev.XCampo.service.Interface.OrderService;
 import org.springframework.stereotype.Service;
 
 @Service

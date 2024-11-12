@@ -3,7 +3,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.rojas.dev.XCampo.entity.Product;
 import com.rojas.dev.XCampo.exception.ProductNotFoundException;
 import com.rojas.dev.XCampo.repository.ProductRepository;
-import com.rojas.dev.XCampo.service.Service.ProductService;
+import com.rojas.dev.XCampo.service.Interface.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

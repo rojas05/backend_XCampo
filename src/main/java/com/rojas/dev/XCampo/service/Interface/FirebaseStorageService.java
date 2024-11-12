@@ -7,5 +7,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FirebaseStorageService {
-    ResponseEntity<?> uploadMultipleFile(List<MultipartFile> images, Long idSeller, String context);
+    ResponseEntity<?> uploadMultipleFile(List<MultipartFile> file, Long idSeller, String context);
 }

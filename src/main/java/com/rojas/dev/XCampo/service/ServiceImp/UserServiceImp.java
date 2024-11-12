@@ -3,7 +3,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.rojas.dev.XCampo.entity.User;
 import com.rojas.dev.XCampo.exception.UserNotFoundException;
 import com.rojas.dev.XCampo.repository.UserRepository;
-import com.rojas.dev.XCampo.service.Service.UserService;
+import com.rojas.dev.XCampo.service.Interface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
