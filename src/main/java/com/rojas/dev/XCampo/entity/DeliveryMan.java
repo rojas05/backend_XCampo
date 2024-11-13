@@ -3,7 +3,8 @@ package com.rojas.dev.XCampo.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -16,11 +17,12 @@ public class DeliveryMan {
 
     private String rute;
 
-    @OneToOne(mappedBy = "deliveryMan", cascade = CascadeType.ALL)
-    private DeliveryProduct deliveryProducts;
+    @OneToMany(mappedBy = "deliveryMan")
+    private Set<DeliveryProduct> deliveryProducts = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_rol_id")
     private Roles rol;
 
 }

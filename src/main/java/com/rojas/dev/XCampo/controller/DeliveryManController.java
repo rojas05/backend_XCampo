@@ -1,8 +1,6 @@
 package com.rojas.dev.XCampo.controller;
 
-import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.DeliveryMan;
-import com.rojas.dev.XCampo.service.Interface.ClientService;
 import com.rojas.dev.XCampo.service.Interface.DeliveryManService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

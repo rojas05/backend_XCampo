@@ -1,11 +1,11 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.awt.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,19 +19,21 @@ public class Seller {
 
     private String name_store;
 
-    @Column(columnDefinition = "POINT")
-    private Point coordinates;
+    private String coordinates;
 
     private String location;
 
     private String location_description;
 
+    @Column(length = 1000)
     private String img;
 
-    @OneToOne
-    @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_rol_id")
     private Roles rol;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private List<Product> productList;
+    private Set<Order> orders = new HashSet<>();
+
 }

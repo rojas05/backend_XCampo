@@ -6,7 +6,6 @@ import com.rojas.dev.XCampo.entity.User;
 import com.rojas.dev.XCampo.repository.RolesRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.repository.UserRepository;
-import com.rojas.dev.XCampo.service.Interface.FirebaseStorageService;
 import com.rojas.dev.XCampo.service.Interface.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
