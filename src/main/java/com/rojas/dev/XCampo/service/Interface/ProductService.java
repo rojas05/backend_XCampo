@@ -6,11 +6,16 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product createProduct(Product product);
-    List<Product> listProduct();
-    Product updateProductId(Long Id, Product product);
-    void deleteProductId(Long Id);
+    Product createProduct(Product product, Long IdSeller);
+
+    List<Product> listProductIsSeller(Long IdSeller);
+
+    Product updateProductId(Long Id, Long idSeller, Product product);
+
+    void deleteProductId(Long Id, Long idSeller);
+
     Product findId(Long Id);
-    void existsProduct(Long Id);
+
+    void productVerification(Long Id, Long idSeller);
 
 }

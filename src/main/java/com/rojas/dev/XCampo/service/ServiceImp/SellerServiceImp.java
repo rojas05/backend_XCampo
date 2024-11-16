@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -162,6 +163,11 @@ public class SellerServiceImp implements SellerService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + idSeller + " not found.");
         }
 
+    }
+
+    @Override
+    public BigDecimal getTotalEarnings(Long idSeller) {
+        return null;
     }
 
 }

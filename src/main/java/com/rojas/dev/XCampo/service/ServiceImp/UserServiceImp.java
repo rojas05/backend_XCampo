@@ -52,7 +52,7 @@ public class UserServiceImp implements UserService {
     @Override
     public void existsUserId(Long Id) {
         if (!userRepository.existsById(Id)) {
-            throw new UserNotFoundException("Product not found or does not exist with the ID: " + Id);
+            throw new UserNotFoundException("User not found or does not exist with the ID: " + Id);
         }
     }
 

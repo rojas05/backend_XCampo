@@ -15,7 +15,7 @@ public class Shopping_cart {
 
     private Long amount;
 
-    /* Que hace?
+    /* Que hace? xq se llama haci misma
     @OneToOne
     @JoinColumn(name = "shopping_cart", updatable = false, nullable = false)
     private Shopping_cart shoppingCart; */

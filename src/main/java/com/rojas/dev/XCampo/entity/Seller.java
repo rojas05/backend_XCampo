@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,6 +24,8 @@ public class Seller {
 
     private String location_description;
 
+    private BigDecimal totalEarnings;
+
     @Column(length = 1000)
     private String img;
 
@@ -34,6 +35,6 @@ public class Seller {
     private Roles rol;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private Set<Order> orders = new HashSet<>();
+    private List<Product> productList;
 
 }

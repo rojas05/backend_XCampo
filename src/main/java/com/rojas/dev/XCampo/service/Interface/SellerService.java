@@ -3,6 +3,8 @@ package com.rojas.dev.XCampo.service.Interface;
 import com.rojas.dev.XCampo.entity.Seller;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
+
 public interface SellerService {
     ResponseEntity<?> insertSeller(Seller seller, Long idRol);
 
@@ -15,4 +17,7 @@ public interface SellerService {
     ResponseEntity<?> getIdSellerByUser(Long user_id);
 
     ResponseEntity<?> updateSellerImg(String img, Long idSeller);
+
+    // Obtener ganacias
+    BigDecimal getTotalEarnings(Long idSeller);
 }

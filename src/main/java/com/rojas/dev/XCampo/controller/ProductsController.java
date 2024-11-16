@@ -18,23 +18,25 @@ public class ProductsController {
 
     @PostMapping
     public ResponseEntity<?> newProduct(@RequestBody Product product) {
-        Product newProduct = productService.createProduct(product);
+        var idSeller = product.getSeller().getId_seller();
+        Product newProduct = productService.createProduct(product, idSeller);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Created new product: " + newProduct);
     }
 
     @PutMapping("/{Id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long Id, @RequestBody Product product) {
-        Product postProduct = productService.updateProductId(Id, product);
+        var idSeller = product.getSeller().getId_seller();
+        Product postProduct = productService.updateProductId(Id, idSeller, product);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("Product Update: " + postProduct);
     }
 
-    @DeleteMapping("/{Id}")
-    public ResponseEntity<?> deleteProductId(@PathVariable Long Id) {
-        productService.deleteProductId(Id);
+    @DeleteMapping("/{idProduct}/{idSeller}")
+    public ResponseEntity<?> deleteProductId(@PathVariable Long idProduct, Long idSeller) {
+        productService.deleteProductId(idProduct, idSeller);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body("Product delete with ID: " + Id);
+                .body("removed product");
     }
 
     @GetMapping("/{Id}")
@@ -44,9 +46,9 @@ public class ProductsController {
                 .body(findProduct);
     }
 
-    @GetMapping("/listAll")
-    public ResponseEntity<?> listProduct() {
-        List<Product> products = productService.listProduct();
+    @GetMapping("/listAll/{idSeller}")
+    public ResponseEntity<?> listProductIsSeller(@PathVariable Long idSeller) {
+        List<Product> products = productService.listProductIsSeller(idSeller);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(products);
     }

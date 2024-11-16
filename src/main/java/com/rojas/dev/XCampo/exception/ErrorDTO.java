@@ -8,10 +8,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class ErrorDTO {
-
     private String message;
     private String error;
     private int status;
     private Date date;
-
 }

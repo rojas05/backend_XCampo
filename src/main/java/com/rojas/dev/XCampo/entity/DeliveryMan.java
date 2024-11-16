@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,8 +18,8 @@ public class DeliveryMan {
 
     private String rute;
 
-    @OneToMany(mappedBy = "deliveryMan")
-    private Set<DeliveryProduct> deliveryProducts = new HashSet<>();
+    @OneToOne(mappedBy = "deliveryMan", cascade = CascadeType.ALL)
+    private DeliveryProduct deliveryProducts;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
