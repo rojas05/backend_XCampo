@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service.impl;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.Roles;

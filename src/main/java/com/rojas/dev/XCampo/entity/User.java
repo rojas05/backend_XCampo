@@ -1,6 +1,5 @@
 package com.rojas.dev.XCampo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,8 +20,7 @@ public class User {
     private String email;
     private String password;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Roles> roles = new HashSet<>();
+    private Set<Roles> rol;
 
 }

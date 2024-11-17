@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service.impl;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @Service
 public class FirebaseStorageServiceImp implements FirebaseStorageService {
+
     @Override
     public ResponseEntity<?> uploadMultipleFile(List<MultipartFile> images, Long idSeller, String context){
         String url = "";
@@ -44,5 +45,4 @@ public class FirebaseStorageServiceImp implements FirebaseStorageService {
 
         return blob.getMediaLink();
     }
-
 }

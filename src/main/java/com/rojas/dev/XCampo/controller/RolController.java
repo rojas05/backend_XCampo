@@ -1,7 +1,7 @@
 package com.rojas.dev.XCampo.controller;
 
 import com.rojas.dev.XCampo.entity.Roles;
-import com.rojas.dev.XCampo.service.Interface.RoleService;
+import com.rojas.dev.XCampo.service.Interface.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class RolController {
 
     @Autowired
-    RoleService roleService;
+    RolesService roleService;
 
     @PostMapping("{user}")
     public ResponseEntity<?> insertRol(@RequestBody Roles rol, @PathVariable Long user){

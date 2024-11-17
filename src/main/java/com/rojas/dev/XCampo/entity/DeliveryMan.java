@@ -11,18 +11,19 @@ import java.util.Set;
 @Entity
 @Table(name = "deliveryMan")
 public class DeliveryMan {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_deliveryMan;
 
     private String rute;
 
-    @OneToMany(mappedBy = "deliveryMan")
-    private Set<DeliveryProduct> deliveryProducts = new HashSet<>();
+    @OneToOne(mappedBy = "deliveryMan", cascade = CascadeType.ALL)
+    private DeliveryProduct deliveryProducts;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "rol_id")
+    @JoinColumn(name = "fk_rol_id")
     private Roles rol;
 
 }

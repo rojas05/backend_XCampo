@@ -6,22 +6,31 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table (name = "delivery")
+@Table (name = "EnvioProducto")
 public class DeliveryProduct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_delivery;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long ID;
 
     @Temporal(TemporalType.DATE)
     private LocalDate date;
 
-    private String state;
+    private Boolean available;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Order order;
+    @Enumerated(EnumType.STRING)
+    private DeliveryProductState deliveryProductState;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    private String startingPoint;
+    
+    private String destiny;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_order_id")
+    private Order orderProducts;
+
+    @OneToOne
+    @JoinColumn(name = "fk_deliveryMan_id")
     private DeliveryMan deliveryMan;
 
 }

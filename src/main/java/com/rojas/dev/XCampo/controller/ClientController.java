@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/client")
-public class clientController {
+public class ClientController {
     @Autowired
     ClientService clientService;
 
