@@ -11,6 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
       dialect: org.hibernate.dialect.MariaDBDialect
+      open-in-view: false
 
 server:
   port: 8080
@@ -22,3 +23,9 @@ servlet:
     enabled: true
     max-file-size : 10MB
     max-request-size: 10MB
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
