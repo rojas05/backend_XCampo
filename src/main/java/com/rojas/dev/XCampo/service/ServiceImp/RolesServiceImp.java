@@ -2,7 +2,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.User;
-import com.rojas.dev.XCampo.entity.UserRole;
+import com.rojas.dev.XCampo.entity.enumClass.UserRole;
 import com.rojas.dev.XCampo.repository.RolesRepository;
 import com.rojas.dev.XCampo.service.Interface.RolesService;
 import com.rojas.dev.XCampo.service.Interface.UserService;
