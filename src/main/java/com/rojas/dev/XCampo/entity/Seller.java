@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,15 +24,17 @@ public class Seller {
 
     private String location_description;
 
+    private BigDecimal totalEarnings;
+
     @Column(length = 1000)
     private String img;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "rol_id")
+    @JoinColumn(name = "fk_rol_id")
     private Roles rol;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private Set<Order> orders = new HashSet<>();
+    private List<Product> productList;
 
 }

@@ -1,6 +1,5 @@
 package com.rojas.dev.XCampo.service.Interface;
 
-import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.DeliveryMan;
 import org.springframework.http.ResponseEntity;
 

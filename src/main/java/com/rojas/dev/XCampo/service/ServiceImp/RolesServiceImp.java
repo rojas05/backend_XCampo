@@ -1,34 +1,38 @@
-package com.rojas.dev.XCampo.service.impl;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.User;
+import com.rojas.dev.XCampo.entity.UserRole;
 import com.rojas.dev.XCampo.repository.RolesRepository;
-import com.rojas.dev.XCampo.service.Interface.RoleService;
+import com.rojas.dev.XCampo.service.Interface.RolesService;
+import com.rojas.dev.XCampo.service.Interface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.List;
 
 @Service
-public class RolesService implements RoleService {
+public class RolesServiceImp implements RolesService {
 
     @Autowired
-    RolesRepository rolesRepository;
+    private RolesRepository rolesRepository;
 
     @Autowired
     UserService userService;
 
-
     @Override
     public ResponseEntity<?> insertNewRolUser(Roles role, Long user) {
         try {
-            User result = userService.findByIdUser(user);
-            role.setUser(result);
+            Optional<User> result = userService.findByIdUser(user);
+            role.setUser(result.orElse(null));
             rolesRepository.save(role);
-           return ResponseEntity.ok(role);
+            return ResponseEntity.ok(role);
         } catch (Exception e){
             return ResponseEntity.ok().body("Seller created no successfully." + e.getMessage());
         }
@@ -38,7 +42,7 @@ public class RolesService implements RoleService {
     @Override
     public ResponseEntity<?> getRolesByIdUser(Long idUser) {
         try {
-            User user = userService.findByIdUser(idUser);
+            Optional<User> user = userService.findByIdUser(idUser);
             Optional<List<String>> result = rolesRepository.getRolesByUser(user);
             if (result.isPresent()){
                 return ResponseEntity.ok().body(result);
@@ -79,4 +83,29 @@ public class RolesService implements RoleService {
                     .body("Error occurred while get the rol: " + e.getMessage());
         }
     }
+
+    @Transactional
+    @Override
+    public Set<Roles> assignRolesToUser(Set<Long> rolesIds) {
+        Set<Roles> rolesUser = new HashSet<>();
+
+        for (Long rolesId : rolesIds) {
+            Roles rolUser = findRoleById(rolesId);
+            rolesUser.add(rolUser);
+        }
+
+        return rolesUser;
+    }
+
+    @Override
+    public Roles findRolesType(UserRole nameRol) {
+        return null;
+    }
+
+    @Override
+    public Roles findRoleById(Long id) {
+        return rolesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rol not found"));
+    }
+
 }

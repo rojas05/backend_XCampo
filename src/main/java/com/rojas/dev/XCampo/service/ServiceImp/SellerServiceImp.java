@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service.impl;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.Seller;
@@ -12,14 +12,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SellerServiceImp implements SellerService {
-
     @Autowired
     RolesRepository rolesRepository;
 
@@ -35,19 +37,19 @@ public class SellerServiceImp implements SellerService {
         try {
             Optional<Roles> result = rolesRepository.findById(idRol);
             try {
-               if (result.isPresent()){
-                   seller.setRol(result.get());
-                   sellerRepository.save(seller);
-                   URI location = ServletUriComponentsBuilder
-                           .fromCurrentRequest()
-                           .path("/{id_seller}")
-                           .buildAndExpand(seller.getId_seller())
-                           .toUri();
-                   return ResponseEntity.created(location).body(seller);
-               }else {
-                   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                           .body("Error occurred while get the rol: ");
-               }
+                if (result.isPresent()){
+                    seller.setRol(result.get());
+                    sellerRepository.save(seller);
+                    URI location = ServletUriComponentsBuilder
+                            .fromCurrentRequest()
+                            .path("/{id_seller}")
+                            .buildAndExpand(seller.getId_seller())
+                            .toUri();
+                    return ResponseEntity.created(location).body(seller);
+                }else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Error occurred while get the rol: ");
+                }
             } catch (DataIntegrityViolationException e) {
                 // Error si hay violaciones de integridad en los datos (ej. campos únicos)
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -91,7 +93,7 @@ public class SellerServiceImp implements SellerService {
             if (sellerRepository.existsById(seller.getId_seller())){
                 sellerRepository.updateSeller(
                         seller.getId_seller(),
-                        seller.getCoordinates(),
+                        String.valueOf(seller.getCoordinates()),
                         seller.getLocation(),
                         seller.getLocation_description(),
                         seller.getName_store()
@@ -163,5 +165,9 @@ public class SellerServiceImp implements SellerService {
 
     }
 
+    @Override
+    public BigDecimal getTotalEarnings(Long idSeller) {
+        return null;
+    }
 
 }

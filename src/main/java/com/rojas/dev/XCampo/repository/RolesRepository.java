@@ -14,6 +14,6 @@ public interface RolesRepository extends JpaRepository<Roles, Long> {
 
     @Transactional
     @Query("SELECT r.nameRole FROM Roles r WHERE r.user = :id_user")
-    Optional<List<String>> getRolesByUser(@Param("id_user") User user);
+    Optional<List<String>> getRolesByUser(@Param("id_user") Optional<User> user);
 
 }
