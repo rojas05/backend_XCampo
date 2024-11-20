@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.entity.enumClass;
+package com.rojas.dev.XCampo.enumClass;
 
 public enum ClientRole {
     USER,

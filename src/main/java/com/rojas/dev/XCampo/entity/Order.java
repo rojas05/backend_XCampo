@@ -1,13 +1,12 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.rojas.dev.XCampo.enumClass.OrderState;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity

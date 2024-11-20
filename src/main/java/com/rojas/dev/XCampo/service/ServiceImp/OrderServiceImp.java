@@ -1,6 +1,6 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
-import com.rojas.dev.XCampo.entity.OrderState;
+import com.rojas.dev.XCampo.enumClass.OrderState;
 import com.rojas.dev.XCampo.service.Interface.OrderService;
 import org.springframework.stereotype.Service;
 

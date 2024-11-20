@@ -1,10 +1,11 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rojas.dev.XCampo.enumClass.MeasurementUnit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,18 +32,17 @@ public class Product {
 
     private List<String> UrlImage;
 
-    @OneToMany(mappedBy = "products", cascade = CascadeType.ALL)
-    private List<Shopping_cart> shoppingCartList;
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ItemCart> itemCarts;
 
-    @OneToMany(mappedBy = "products", cascade = CascadeType.ALL)
-    private List<Qualification> qualificationList;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Qualification> qualification;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_seller_id")
+    @ManyToOne(fetch = FetchType.EAGER)
     private Seller seller;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_category_id")
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 
 }

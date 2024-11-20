@@ -2,32 +2,29 @@ package com.rojas.dev.XCampo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
 @Entity
-@Table(name = "shoppingCart")
+@Data
+@NoArgsConstructor
+@Table(name = "cart")
 public class Shopping_cart {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id_shopping_cart;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id_cart;
 
-    private Long amount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Client client;
 
-    /* Que hace? xq se llama haci misma
-    @OneToOne
-    @JoinColumn(name = "shopping_cart", updatable = false, nullable = false)
-    private Shopping_cart shoppingCart; */
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemCart> items;
 
-    @OneToOne(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
-    private Order order;
+    @Column(nullable = false)
+    private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_client_id")
-    private Client clients;
-
-    @ManyToOne
-    @JoinColumn(name = "fk_product_id")
-    private Product products;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private java.util.Date createdAt = new java.util.Date();
 }

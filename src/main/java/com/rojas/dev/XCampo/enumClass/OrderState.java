@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.entity;
+package com.rojas.dev.XCampo.enumClass;
 
 public enum OrderState {
     EN_ESPERA,

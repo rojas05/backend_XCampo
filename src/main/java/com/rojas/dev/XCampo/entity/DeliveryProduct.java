@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
@@ -25,8 +26,7 @@ public class DeliveryProduct {
     
     private String destiny;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_order_id")
+    @ManyToOne(fetch = FetchType.EAGER)
     private Order orderProducts;
 
     @OneToOne

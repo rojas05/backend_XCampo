@@ -35,6 +35,6 @@ public class Seller {
     private Roles rol;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private List<Product> productList;
+    private List<Product> product;
 
 }

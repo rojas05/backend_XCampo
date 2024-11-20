@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.rojas.dev.XCampo.enumClass.QualificationType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,8 +18,7 @@ public class Qualification {
 
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_product_id")
-    private Product products;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Product product;
 
 }

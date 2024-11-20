@@ -24,7 +24,7 @@ public class Client {
     @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
-    @OneToMany(mappedBy = "clients", cascade = CascadeType.ALL)
-    private List<Shopping_cart> shoppingCarts;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Shopping_cart> shoppingCart;
 
 }

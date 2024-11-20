@@ -1,6 +1,6 @@
 package com.rojas.dev.XCampo.service.Interface;
 
-import com.rojas.dev.XCampo.entity.OrderState;
+import com.rojas.dev.XCampo.enumClass.OrderState;
 
 import java.math.BigDecimal;
 

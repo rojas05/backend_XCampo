@@ -23,12 +23,15 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
 
     @Override
     public Shopping_cart addProduct(Shopping_cart shoppingCart) {
+        /*
         var idProduct = shoppingCart.getProducts().getId_product();
         var idClient = shoppingCart.getClients().getId_client();
 
         fkVerification(idClient, idProduct);
 
         return shoppingCarRepository.save(shoppingCart);
+        * */
+        return null;
     }
 
     public Long updateStockProduct(Long amount){
@@ -40,8 +43,10 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
 
     @Override
     public void deleteProduct(Long idShoppingCar) {
-        Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
+        /*
+        * Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
         fkVerification(entity.getClients().getId_client(), entity.getProducts().getId_product());
+        * */
 
         shoppingCarRepository.deleteById(idShoppingCar);
     }
@@ -49,7 +54,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     @Override
     public Shopping_cart updateQuantity(Long idShoppingCar, Long amount) {
         Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
-        entity.setAmount(amount);
+        //entity.setAmount(amount);
         return shoppingCarRepository.save(entity);
     }
 

@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.entity.Auth;
+package com.rojas.dev.XCampo.Auth;
 
 import lombok.Builder;
 import lombok.Data;

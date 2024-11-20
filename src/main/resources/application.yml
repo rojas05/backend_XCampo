@@ -2,14 +2,14 @@ spring:
   application:
     name: XCampo
   datasource:
-    url: jdbc:mariadb://localhost:3306/XCampo
+    url: jdbc:mariadb://localhost:3307/XCampo
     username: root
-    password: root
+    password: 1234567890
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       dialect: org.hibernate.dialect.MariaDBDialect
       open-in-view: false
 

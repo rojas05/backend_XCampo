@@ -1,16 +1,15 @@
 package com.rojas.dev.XCampo.service.impl;
 
-import com.rojas.dev.XCampo.entity.Auth.AuthResponse;
-import com.rojas.dev.XCampo.entity.Auth.LoginRequest;
-import com.rojas.dev.XCampo.entity.Auth.RegisterRequest;
+import com.rojas.dev.XCampo.Auth.AuthResponse;
+import com.rojas.dev.XCampo.Auth.LoginRequest;
+import com.rojas.dev.XCampo.Auth.RegisterRequest;
 import com.rojas.dev.XCampo.service.Interface.AuthService;
 import com.rojas.dev.XCampo.entity.User;
-import com.rojas.dev.XCampo.entity.enumClass.ClientRole;
+import com.rojas.dev.XCampo.enumClass.ClientRole;
 import com.rojas.dev.XCampo.repository.UserRepository;
 import com.rojas.dev.XCampo.service.Interface.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,7 +1,7 @@
 package com.rojas.dev.XCampo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rojas.dev.XCampo.entity.enumClass.UserRole;
+import com.rojas.dev.XCampo.enumClass.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
 

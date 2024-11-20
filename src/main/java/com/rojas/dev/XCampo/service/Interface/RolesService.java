@@ -1,7 +1,7 @@
 package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.entity.Roles;
-import com.rojas.dev.XCampo.entity.enumClass.UserRole;
+import com.rojas.dev.XCampo.enumClass.UserRole;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Set;
