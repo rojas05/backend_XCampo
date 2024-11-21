@@ -1,19 +1,21 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.Shopping_cart;
-import com.rojas.dev.XCampo.exception.ShoppingCartNotFoundException;
+import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.ClientRepository;
 import com.rojas.dev.XCampo.repository.ProductRepository;
-import com.rojas.dev.XCampo.repository.ShoppingCarRepository;
+import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
 import com.rojas.dev.XCampo.service.Interface.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ShoppingCarServiceImp implements ShoppingCartService {
 
     @Autowired
-    private ShoppingCarRepository shoppingCarRepository;
+    private ShoppingCartRepository shoppingCarRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -33,13 +35,6 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         * */
         return null;
     }
-
-    public Long updateStockProduct(Long amount){
-
-
-        return 0L;
-    }
-
 
     @Override
     public void deleteProduct(Long idShoppingCar) {
@@ -61,26 +56,26 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     @Override
     public Shopping_cart findByIdShoppingCard(Long id) {
         return shoppingCarRepository.findById(id).
-                orElseThrow(() -> new ShoppingCartNotFoundException("Carrito no encontrado con ID: " + id));
+                orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado con ID: " + id));
+    }
+
+    @Override
+    public List<Shopping_cart> listAllProductsShoppingCart(Long idClient) {
+        return null; //shoppingCarRepository.findByClientId(idClient);
     }
 
     @Override
     public void exitsShoppingCar(Long id) {
-        boolean existRegister = shoppingCarRepository.existsById(id);
-
-        if(!existRegister) {
-            throw new ShoppingCartNotFoundException("Carrito no encontrado con ID: " + id);
+        if(!shoppingCarRepository.existsById(id)) {
+            throw new EntityNotFoundException("Carrito no encontrado con ID: " + id);
         }
 
     }
 
     public void fkVerification(Long idClient, Long idProduct) {
-        /**
-         * boolean exists = shoppingCarRepository.existsByClientAndProduct(idClient, idProduct);
-         *         if (exists) {
-         *             throw new IllegalStateException("El producto ya está en el carrito del cliente.");
-         *         }
-         */
+        if (!shoppingCarRepository.existsByClientAndProduct(idClient)) {
+            throw new IllegalStateException("El producto ya está en el carrito del cliente.");
+        }
     }
 
 

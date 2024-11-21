@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,12 +22,30 @@ public class Shopping_cart {
     private Client client;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ItemCart> items = new HashSet<>();
+    private Set<CartItem> items = new HashSet<>();
 
     @Column(nullable = false)
-    private String status;
+    private boolean status = false;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    // @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
-    private java.util.Date createdAt = new java.util.Date();
+    private LocalDate dateAdded;
+
+    /**
+     * Agrega un CartItem al carrito.
+     * @param item El CartItem que se desea agregar.
+     */
+    public void addItem(CartItem item) {
+        item.setCart(this);
+        this.items.add(item);
+    }
+
+    /**
+     * Elimina un CartItem del carrito.
+     * @param item El CartItem que se desea eliminar.
+     */
+    public void removeItem(CartItem item) {
+        this.items.remove(item);
+        item.setCart(null); // Romper la relación bidireccional
+    }
 }

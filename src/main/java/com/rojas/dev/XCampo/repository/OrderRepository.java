@@ -10,21 +10,18 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 
-
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Incio desde orden paso a carrito y producto
     // verificar el producto con el estado, el id vendedor y el id del producto
-    /***
-     * @Transactional
-     *     @Query("SELECT SUM(p.price * c.amount) AS gananciasTotales " +
-     *             "FROM Order o " +
-     *             "JOIN o.shoppingCart c " +
-     *             "JOIN c.products p " +
-     *             "WHERE o.state = 'ACEPTADA' AND p.seller.id_seller = :idSeller")
-     *     BigDecimal calcularGananciasPorVendedor(@Param("idSeller") Long idSeller);
-     */
+    @Transactional
+    @Query("SELECT SUM(ci.product.price * ci.quantity) AS gananciasTotales " +
+            "FROM Order o " +
+            "JOIN o.shoppingCart sc " +
+            "JOIN sc.items ci " +
+            "WHERE o.state = 'ACEPTADA' AND ci.product.seller.id_seller = :idSeller")
+    BigDecimal calcularGananciasPorVendedor(@Param("idSeller") Long idSeller);
 
 
 }

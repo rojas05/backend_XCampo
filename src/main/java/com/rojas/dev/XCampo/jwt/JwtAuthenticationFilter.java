@@ -1,6 +1,5 @@
 package com.rojas.dev.XCampo.jwt;
 
-
 import com.rojas.dev.XCampo.service.Interface.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {

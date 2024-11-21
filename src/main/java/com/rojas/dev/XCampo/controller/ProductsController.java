@@ -20,8 +20,7 @@ public class ProductsController {
     public ResponseEntity<?> newProduct(@RequestBody Product product) {
         var idSeller = product.getSeller().getId_seller();
         Product newProduct = productService.createProduct(product, idSeller);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Created new product: " + newProduct);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
     @PutMapping("/{Id}")

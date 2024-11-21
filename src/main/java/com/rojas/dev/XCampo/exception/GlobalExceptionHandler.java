@@ -4,16 +4,35 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Date;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {ProductNotFoundException.class})
-    public ResponseEntity<ErrorDTO> handleProductNotFound(ProductNotFoundException e) {
-        ErrorDTO error = createErrorDTO(HttpStatus.NOT_FOUND, "Product not found.", e.getMessage());
+    @ExceptionHandler(value = {EntityNotFoundException.class})
+    public ResponseEntity<ErrorDTO> handleProductNotFound(EntityNotFoundException e) {
+        ErrorDTO error = createErrorDTO(HttpStatus.NOT_FOUND, "Entity not found.", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(value = {HttpClientErrorException.NotFound.class})
+    public ResponseEntity<ErrorDTO> handleEntityNotFound(HttpClientErrorException.NotFound e) {
+        ErrorDTO error = createErrorDTO(HttpStatus.NOT_FOUND, "Entity not found.", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(value = {InvalidDataException.class})
+    public ResponseEntity<ErrorDTO> handleInvalidData(InvalidDataException e) {
+        ErrorDTO error = createErrorDTO(HttpStatus.BAD_REQUEST, "Invalid data provided.", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(value = {DuplicateEntityException.class})
+    public ResponseEntity<ErrorDTO> handleDuplicateEntity(DuplicateEntityException e) {
+        ErrorDTO error = createErrorDTO(HttpStatus.CONFLICT, "Duplicate entity.", e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler (value = {Exception.class})

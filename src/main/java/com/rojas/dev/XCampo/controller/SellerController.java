@@ -3,6 +3,7 @@ package com.rojas.dev.XCampo.controller;
 import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.service.Interface.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,8 @@ public class SellerController {
 
     @PostMapping("{idRol}")
     public ResponseEntity<?> insertSeller(@RequestBody Seller seller, @PathVariable Long idRol){
-        return sellerService.insertSeller(seller,idRol);
+        var sellerDate = sellerService.insertSeller(seller,idRol);
+        return ResponseEntity.status(HttpStatus.CREATED).body(sellerDate);
     }
 
     @DeleteMapping("{id_seller}")

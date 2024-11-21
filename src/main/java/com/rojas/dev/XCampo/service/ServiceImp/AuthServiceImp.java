@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.service.impl;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.Auth.AuthResponse;
 import com.rojas.dev.XCampo.Auth.LoginRequest;
@@ -60,7 +60,7 @@ public class AuthServiceImp implements AuthService {
             userRepository.save(user);
             return  ResponseEntity.ok(AuthResponse.builder().token(jwtService.getToken(user)).build());
         } catch (Exception e){
-            return  ResponseEntity.notFound().build();
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
 

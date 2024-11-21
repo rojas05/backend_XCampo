@@ -1,9 +1,13 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.Product;
-import com.rojas.dev.XCampo.exception.ProductNotFoundException;
+import com.rojas.dev.XCampo.entity.Seller;
+import com.rojas.dev.XCampo.exception.DuplicateEntityException;
+import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.ProductRepository;
+import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.service.Interface.ProductService;
+import com.rojas.dev.XCampo.service.Interface.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +20,12 @@ public class ProductServiceImp implements ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private UserServiceImp userServiceImp;
+    private SellerRepository sellerRepository;
 
     @Override
     public Product createProduct(Product product, Long IdSeller) {
-        Long Id = product.getId_product();
-        userServiceImp.existsUserId(IdSeller);
 
-        if (productRepository.existsById(Id)) {
-            throw new IllegalArgumentException("Product existed with ID: " + Id);
-        }
+        if(!sellerRepository.existsById(IdSeller)) throw new EntityNotFoundException("Seller not found with ID: " + IdSeller);
 
         return productRepository.save(product);
     }
@@ -55,13 +55,13 @@ public class ProductServiceImp implements ProductService {
     @Override
     public Product findId(Long Id) {
         return productRepository.findById(Id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + Id));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + Id));
     }
 
     @Override
     public void productVerification(Long idProduct, Long idSeller) {
         if (!productRepository.existsByIdAndSellerId(idProduct, idSeller)) {
-            throw new ProductNotFoundException(
+            throw new EntityNotFoundException(
                     "Product not found with ID: " + idProduct +
                     "or id Seller not register in Product: " + idSeller
             );

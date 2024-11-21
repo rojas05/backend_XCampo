@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -15,5 +16,6 @@ public interface UserService {
     Optional<User> findByIdUser(Long Id);
 
     void existsUserId(Long Id);
+    List<User> listAllUser();
 
 }

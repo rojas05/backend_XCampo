@@ -1,12 +1,13 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.User;
-import com.rojas.dev.XCampo.exception.UserNotFoundException;
+import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.UserRepository;
 import com.rojas.dev.XCampo.service.Interface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,8 +53,13 @@ public class UserServiceImp implements UserService {
     @Override
     public void existsUserId(Long Id) {
         if (!userRepository.existsById(Id)) {
-            throw new UserNotFoundException("User not found or does not exist with the ID: " + Id);
+            throw new EntityNotFoundException("User not found or does not exist with the ID: " + Id);
         }
+    }
+
+    @Override
+    public List<User> listAllUser() {
+        return userRepository.findAll();
     }
 
 }
