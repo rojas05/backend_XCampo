@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Calificacion")
+@Table(name = "Qualification")
 public class Qualification {
 
     @Id
@@ -16,6 +16,7 @@ public class Qualification {
     @Enumerated(EnumType.STRING)
     private QualificationType qualificationType;
 
+    @Column(length = 1000)
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -6,7 +6,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -32,14 +34,11 @@ public class Order {
 
     private Boolean delivery;
 
-    @OneToMany(mappedBy = "orderProducts")
-    private List<DeliveryProduct> deliveryProductList;
+    @OneToMany(mappedBy = "order")
+    private Set<DeliveryProduct> deliveryProduct = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "fk_shoppingCart_id", updatable = false, nullable = false)
     private Shopping_cart shoppingCart;
 
-    /* Que hace?
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<DeliveryProduct> orders = new HashSet<>();*/
 }

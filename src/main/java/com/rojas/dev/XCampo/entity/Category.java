@@ -3,7 +3,9 @@ package com.rojas.dev.XCampo.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -17,6 +19,5 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Product> productList;
-
+    private Set<Product> productList = new HashSet<>();
 }

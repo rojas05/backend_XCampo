@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "deliveryMan")
@@ -15,12 +19,11 @@ public class DeliveryMan {
 
     private String rute;
 
-    @OneToOne(mappedBy = "deliveryMan", cascade = CascadeType.ALL)
-    private DeliveryProduct deliveryProducts;
+    @OneToMany(mappedBy = "deliveryMan", cascade = CascadeType.ALL)
+    private Set<DeliveryProduct> deliveryProduct = new HashSet<>();
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_rol_id")
     private Roles rol;
 
 }

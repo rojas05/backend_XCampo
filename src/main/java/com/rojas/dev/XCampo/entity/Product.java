@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -28,16 +30,18 @@ public class Product {
 
     private Double price;
 
+    @Enumerated(EnumType.STRING)
     private MeasurementUnit measurementUnit;
 
-    private List<String> UrlImage;
+    @Column(length = 1000)
+    private String UrlImage;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ItemCart> itemCarts;
+    private Set<ItemCart> itemsCarts = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Qualification> qualification;
+    private Set<Qualification> qualification = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Seller seller;

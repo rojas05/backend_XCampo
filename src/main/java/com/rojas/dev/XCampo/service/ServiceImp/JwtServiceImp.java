@@ -1,13 +1,12 @@
-package com.rojas.dev.XCampo.service.impl;
+package com.rojas.dev.XCampo.service.ServiceImp;
 
-import com.rojas.dev.XCampo.entity.User;
+
 import com.rojas.dev.XCampo.service.Interface.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.hibernate.grammars.hql.HqlParser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 

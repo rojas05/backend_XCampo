@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table (name = "EnvioProducto")
+@Table (name = "Delivery")
 public class DeliveryProduct {
 
     @Id
@@ -20,17 +20,17 @@ public class DeliveryProduct {
     private Boolean available;
 
     @Enumerated(EnumType.STRING)
-    private DeliveryProductState deliveryProductState;
+    private DeliveryProductState state;
 
     private String startingPoint;
     
     private String destiny;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Order orderProducts;
+    private Order order;
 
-    @OneToOne
-    @JoinColumn(name = "fk_deliveryMan_id")
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private DeliveryMan deliveryMan;
 
 }

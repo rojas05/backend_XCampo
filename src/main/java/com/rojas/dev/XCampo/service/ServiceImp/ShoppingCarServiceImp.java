@@ -75,10 +75,12 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     }
 
     public void fkVerification(Long idClient, Long idProduct) {
-        boolean exists = shoppingCarRepository.existsByClientAndProduct(idClient, idProduct);
-        if (exists) {
-            throw new IllegalStateException("El producto ya está en el carrito del cliente.");
-        }
+        /**
+         * boolean exists = shoppingCarRepository.existsByClientAndProduct(idClient, idProduct);
+         *         if (exists) {
+         *             throw new IllegalStateException("El producto ya está en el carrito del cliente.");
+         *         }
+         */
     }
 
 

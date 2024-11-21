@@ -12,16 +12,18 @@ import java.util.Optional;
 @Repository
 public interface ShoppingCarRepository extends JpaRepository<Shopping_cart, Long> {
 
-    @Transactional
-    @Query("SELECT COUNT(s) > 0 " +
-            "FROM Shopping_cart s " +
-            "WHERE s.clients.id_client = :clientId AND s.products.id_product = :productId")
-    boolean existsByClientAndProduct(@Param("clientId") Long clientId, @Param("productId") Long productId);
-
-    @Transactional
-    @Query("SELECT s " +
-            "FROM Shopping_cart s " +
-            "WHERE s.clients.id_client = :clientId")
-    Optional<Shopping_cart> findByClientId(@Param("clientId") Long clientId);
+    /**
+     * @Transactional
+     *     @Query("SELECT COUNT(s) > 0 " +
+     *             "FROM Shopping_cart s " +
+     *             "WHERE s.clients.id_client = :clientId AND s.products.id_product = :productId")
+     *     boolean existsByClientAndProduct(@Param("clientId") Long clientId, @Param("productId") Long productId);
+     *
+     *     @Transactional
+     *     @Query("SELECT s " +
+     *             "FROM Shopping_cart s " +
+     *             "WHERE s.clients.id_client = :clientId")
+     *     Optional<Shopping_cart> findByClientId(@Param("clientId") Long clientId);
+     */
 
 }

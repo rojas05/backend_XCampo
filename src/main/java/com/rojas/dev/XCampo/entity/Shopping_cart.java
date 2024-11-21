@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -19,7 +21,7 @@ public class Shopping_cart {
     private Client client;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemCart> items;
+    private Set<ItemCart> items = new HashSet<>();
 
     @Column(nullable = false)
     private String status;

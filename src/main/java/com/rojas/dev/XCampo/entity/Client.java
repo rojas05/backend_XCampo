@@ -25,6 +25,6 @@ public class Client {
     private Roles rol;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<Shopping_cart> shoppingCart;
+    private Set<Shopping_cart> shoppingCart = new HashSet<>();
 
 }
