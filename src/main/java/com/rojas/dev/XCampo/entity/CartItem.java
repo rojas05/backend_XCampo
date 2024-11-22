@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "cart_items")
-public class ItemCart {
-
+@Table(name = "cartItems")
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_cart_item;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Shopping_cart cart;

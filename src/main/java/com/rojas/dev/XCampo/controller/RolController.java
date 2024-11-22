@@ -13,17 +13,17 @@ public class RolController {
     @Autowired
     RolesService roleService;
 
-    @PostMapping("{user}")
-    public ResponseEntity<?> insertRol(@RequestBody Roles rol, @PathVariable Long user){
-        return roleService.insertNewRolUser(rol, user);
+    @PostMapping("{userId}")
+    public ResponseEntity<?> insertRol(@RequestBody Roles rol, @PathVariable Long userId){
+        return roleService.insertNewRolUser(rol, userId);
     }
 
-    @GetMapping("{user}")
-    public ResponseEntity<?> getRolesByIdUser(@PathVariable Long user){
-        return roleService.getRolesByIdUser(user);
+    @GetMapping("{userId}")
+    public ResponseEntity<?> getRolesByIdUser(@PathVariable Long userId){
+        return roleService.getRolesByIdUser(userId);
     }
 
-    @PostMapping("seller")
+    @PostMapping("/seller")
     public ResponseEntity<?> insertNewRol(@RequestBody Roles rol){
         return roleService.insertRoles(rol);
     }

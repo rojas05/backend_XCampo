@@ -34,8 +34,8 @@ public class Order {
 
     private Boolean delivery;
 
-    @OneToMany(mappedBy = "order")
-    private Set<DeliveryProduct> deliveryProduct = new HashSet<>();
+    @OneToMany(mappedBy = "orderProducts")
+    private Set<DeliveryProduct> deliveryProductList = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "fk_shoppingCart_id", updatable = false, nullable = false)

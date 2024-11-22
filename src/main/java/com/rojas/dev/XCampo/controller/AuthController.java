@@ -29,13 +29,13 @@ public class AuthController {
     @Autowired
     JwtService jwtService;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
 
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(authService.register(request));
     }
