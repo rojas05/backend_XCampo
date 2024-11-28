@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rojas.dev.XCampo.listeners.ProductEntityListener;
 import com.rojas.dev.XCampo.enumClass.MeasurementUnit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,10 +13,11 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "products")
+@EntityListeners(ProductEntityListener.class)
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_product;
 
     @NotNull(message = "El nombre no puede ser nulo")
@@ -39,11 +41,14 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<CartItem> itemCarts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Qualification> qualification = new HashSet<>();
 
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Seller seller;
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;

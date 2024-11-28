@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.entity;
 
 import com.rojas.dev.XCampo.enumClass.OrderState;
+import com.rojas.dev.XCampo.listeners.OrderEntityListener;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "orderProducts")
+@EntityListeners(OrderEntityListener.class)
 public class Order {
 
     @Id
@@ -34,8 +36,8 @@ public class Order {
 
     private Boolean delivery;
 
-    @OneToMany(mappedBy = "orderProducts")
-    private Set<DeliveryProduct> deliveryProductList = new HashSet<>();
+    @OneToMany(mappedBy = "order")
+    private Set<DeliveryProduct> deliveryProduct = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "fk_shoppingCart_id", updatable = false, nullable = false)

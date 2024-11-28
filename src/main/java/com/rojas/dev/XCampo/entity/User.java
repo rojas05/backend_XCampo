@@ -33,6 +33,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
+    private String NFSid;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Roles>roles = new HashSet<>();
