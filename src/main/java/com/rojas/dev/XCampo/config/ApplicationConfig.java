@@ -45,4 +45,5 @@ public class ApplicationConfig {
         return email -> userRepository.findByEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException("USER MAIL ERROR (xx|======>"));
     }
+    
 }
