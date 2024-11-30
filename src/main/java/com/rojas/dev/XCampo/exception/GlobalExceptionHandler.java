@@ -58,7 +58,6 @@ public class GlobalExceptionHandler {
         ErrorDTO error = createErrorDTO(HttpStatus.UNAUTHORIZED, "Token Expired", e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
-
     // No es capturada por que spring security o jwt no deja como tal
     @ExceptionHandler(value = {InvalidTokenException.class})
     public ResponseEntity<ErrorDTO> handleInvalidTokenException(InvalidTokenException e) {
@@ -80,5 +79,4 @@ public class GlobalExceptionHandler {
         error.setStatus(status.value());
         return error;
     }
-
 }
