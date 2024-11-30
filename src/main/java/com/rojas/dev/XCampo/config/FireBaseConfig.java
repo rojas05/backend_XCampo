@@ -13,7 +13,6 @@ import java.io.InputStream;
 
 @Configuration
 public class FireBaseConfig {
-
     @Bean
     public FirebaseApp initializeFirebase(
             @Value("${firebase.credentials.path}") String credentialsPath,
