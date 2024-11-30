@@ -50,5 +50,4 @@ public class Product {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
-
 }
