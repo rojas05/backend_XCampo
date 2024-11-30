@@ -27,7 +27,7 @@ public class DeliveryProduct {
     private String destiny;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Order orderProducts;
+    private Order order;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
