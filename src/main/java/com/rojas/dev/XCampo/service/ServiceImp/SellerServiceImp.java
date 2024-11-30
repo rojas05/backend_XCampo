@@ -163,7 +163,6 @@ public class SellerServiceImp implements SellerService {
         }else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + idSeller + " not found.");
         }
-
     }
 
     @Override
