@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.jwt;
 
+import com.rojas.dev.XCampo.exception.InvalidTokenException;
 import com.rojas.dev.XCampo.service.Interface.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

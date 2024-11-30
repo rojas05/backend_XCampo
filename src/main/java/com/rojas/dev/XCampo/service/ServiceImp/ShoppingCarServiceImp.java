@@ -1,7 +1,12 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rojas.dev.XCampo.dto.ShoppingCartDTO;
+import com.rojas.dev.XCampo.entity.CartItem;
 import com.rojas.dev.XCampo.entity.Shopping_cart;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
+import com.rojas.dev.XCampo.repository.CartItemRepository;
 import com.rojas.dev.XCampo.repository.ClientRepository;
 import com.rojas.dev.XCampo.repository.ProductRepository;
 import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
@@ -18,38 +23,42 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     private ShoppingCartRepository shoppingCarRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private CartItemRepository cartItemRepository;
 
     @Autowired
     private ClientRepository clientRepository;
 
     @Override
-    public Shopping_cart addProduct(Shopping_cart shoppingCart) {
-        /*
-        var idProduct = shoppingCart.getProducts().getId_product();
-        var idClient = shoppingCart.getClients().getId_client();
+    public Shopping_cart addProduct(ShoppingCartDTO shoppingCart) throws JsonProcessingException {
+        var client = clientRepository.findById(shoppingCart.getClientId())
+                .orElseThrow(() -> new EntityNotFoundException("Client ID NOT found: " + shoppingCart.getClientId()));
+        CartItem carItem = cartItemRepository.findById(shoppingCart.getItemId())
+                .orElseThrow(() -> new EntityNotFoundException("cart item not found"));
+        Shopping_cart addShoppingCart = new Shopping_cart();
+        addShoppingCart.setClient(client);
 
-        fkVerification(idClient, idProduct);
+        String result = new ObjectMapper().writeValueAsString(carItem);
+        System.out.println("------------------------------------------------------" + result);
+        addShoppingCart.getItems().add(carItem);
 
-        return shoppingCarRepository.save(shoppingCart);
-        * */
-        return null;
+        addShoppingCart.setDateAdded(shoppingCart.getDateAdded());
+        addShoppingCart.setStatus(shoppingCart.isStatus());
+
+        return shoppingCarRepository.save(addShoppingCart);
     }
 
     @Override
     public void deleteProduct(Long idShoppingCar) {
-        /*
-        * Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
-        fkVerification(entity.getClients().getId_client(), entity.getProducts().getId_product());
-        * */
+        Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
+        existsClient(entity.getClient().getId_client());
 
         shoppingCarRepository.deleteById(idShoppingCar);
     }
 
     @Override
-    public Shopping_cart updateQuantity(Long idShoppingCar, Long amount) {
-        Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
-        //entity.setAmount(amount);
+    public Shopping_cart updateState(Long idShoppingCar, boolean state) {
+        Shopping_cart entity = findByIdShoppingCard(idShoppingCar);;
+        entity.setStatus(state);
         return shoppingCarRepository.save(entity);
     }
 
@@ -61,10 +70,9 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
 
     @Override
     public List<Shopping_cart> listAllProductsShoppingCart(Long idClient) {
-        return null; //shoppingCarRepository.findByClientId(idClient);
+        return shoppingCarRepository.findByClientId(idClient);
     }
 
-    @Override
     public void exitsShoppingCar(Long id) {
         if(!shoppingCarRepository.existsById(id)) {
             throw new EntityNotFoundException("Carrito no encontrado con ID: " + id);
@@ -72,11 +80,10 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
 
     }
 
-    public void fkVerification(Long idClient, Long idProduct) {
-        if (!shoppingCarRepository.existsByClientAndProduct(idClient)) {
-            throw new IllegalStateException("El producto ya está en el carrito del cliente.");
+    public void existsClient(Long idClient) {
+        if (!clientRepository.existsById(idClient)) {
+            throw new IllegalStateException("El cliente con el ID no existe: " + idClient);
         }
     }
-
 
 }

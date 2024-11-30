@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.exception;
+package com.rojas.dev.XCampo.dto;
 
 import lombok.Getter;
 import lombok.Setter;

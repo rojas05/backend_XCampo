@@ -19,7 +19,8 @@ public class ProductsController {
     @PostMapping
     public ResponseEntity<?> newProduct(@RequestBody Product product) {
         var idSeller = product.getSeller().getId_seller();
-        Product newProduct = productService.createProduct(product, idSeller);
+        var idCategory = product.getCategory().getId_category();
+        Product newProduct = productService.createProduct(product, idSeller, idCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 

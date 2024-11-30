@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Transactional
-    @Query("SELECT product FROM Product product WHERE product.seller = :idSeller")
+    @Query("SELECT product FROM Product product WHERE product.seller.id_seller = :idSeller")
     List<Product> findAllByIdSeller(@Param("idSeller") Long idSeller);
 
     @Transactional

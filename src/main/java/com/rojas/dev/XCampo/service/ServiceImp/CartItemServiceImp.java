@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.rojas.dev.XCampo.dto.CartItemDTO;
 import com.rojas.dev.XCampo.entity.CartItem;
 import com.rojas.dev.XCampo.entity.Product;
 import com.rojas.dev.XCampo.entity.Shopping_cart;
@@ -8,11 +9,8 @@ import com.rojas.dev.XCampo.repository.CartItemRepository;
 import com.rojas.dev.XCampo.repository.ProductRepository;
 import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
 import com.rojas.dev.XCampo.service.Interface.CartItemService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 @Service
 public class CartItemServiceImp implements CartItemService {
@@ -27,47 +25,31 @@ public class CartItemServiceImp implements CartItemService {
     private ProductRepository productRepository;
 
     @Override
-    public CartItem addProductToCart(CartItem cartItem) {
-        Long clientId = cartItem.getCart().getClient().getId_client();
-        Product product = existProductById(cartItem.getProduct().getId_product());
-        int quantity = cartItem.getQuantity();
+    public CartItem addProductToCart(CartItemDTO cartItem) {
+        Shopping_cart cart = findShoppingID(cartItem.getCardId());
+        Product product = findProductID(cartItem.getProductId());
 
-        var shoppingCart = existCartByUserId(clientId, cartItem);
+        CartItem addCartsItem = new CartItem();
+        var quantity = cartItem.getQuantity();
+        addCartsItem.setProduct(product);
+        addCartsItem.setCart(cart);
+        addCartsItem.setQuantity(quantity);
+        addCartsItem.setUnitPrice(quantity * product.getPrice());
 
-        cartItem.setProduct(product);
-        cartItem.setQuantity(quantity);
-        cartItem.setUnitPrice(quantity * product.getPrice());
+        System.out.println("---------------" + cartItem.getCardId());
+        System.out.println("----------------" + cart);
 
-        shoppingCart.addItem(cartItem);
-        shoppingCartRepository.save(shoppingCart);
-
-        return cartItem;
+        return cartItemRepository.save(addCartsItem);
     }
 
-    @Override
-    public Shopping_cart createShoppingCart(CartItem cartItem) {
-        if (cartItem == null || cartItem.getCart() == null || cartItem.getCart().getClient() == null) {
-            throw new IllegalArgumentException("CartItem or its associated client cannot be null");
-        }
 
-        Shopping_cart shoppingCart = new Shopping_cart();
-        shoppingCart.setClient(cartItem.getCart().getClient());
-        shoppingCart.addItem(cartItem);
-        shoppingCart.setDateAdded(LocalDate.now());
-
-        return shoppingCartRepository.save(shoppingCart);
-    }
-
-    @Override
-    public Product existProductById(Long productId) {
+    public Product findProductID(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
-    @Override
-    @Transactional
-    public Shopping_cart existCartByUserId(Long clientId, CartItem cartItem) {
-        return shoppingCartRepository.findByClientId(clientId)
-                .orElseGet(() -> createShoppingCart(cartItem));
+    public Shopping_cart findShoppingID(Long cartId) {
+        return shoppingCartRepository.findById(cartId)
+                .orElseThrow(() -> new EntityNotFoundException("Shopping not found: " + cartId));
     }
 }

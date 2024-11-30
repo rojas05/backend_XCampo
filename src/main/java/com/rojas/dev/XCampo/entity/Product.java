@@ -15,7 +15,7 @@ import java.util.Set;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_product;
 
     @NotNull(message = "El nombre no puede ser nulo")
@@ -36,15 +36,18 @@ public class Product {
     private String UrlImage;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<CartItem> itemCarts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Qualification> qualification = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Seller seller;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 

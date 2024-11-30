@@ -3,6 +3,9 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.User;
+import com.rojas.dev.XCampo.enumClass.UserRole;
+import com.rojas.dev.XCampo.exception.EntityNotFoundException;
+import com.rojas.dev.XCampo.exception.InvalidDataException;
 import com.rojas.dev.XCampo.repository.ClientRepository;
 import com.rojas.dev.XCampo.repository.RolesRepository;
 import com.rojas.dev.XCampo.repository.UserRepository;
@@ -28,29 +31,26 @@ public class ClientServiceImp implements ClientService {
     @Autowired
     UserRepository userRepository;
 
+    // Verificar que que los datos no esten dupliados co el id
+
     @Override
     public ResponseEntity<?> insertClient(Client client, Long idRol) {
-        try {
-            Optional<Roles> result = rolesRepository.findById(idRol);
-                if (result.isPresent()){
-                    client.setRol(result.get());
-                    clientRepository.save(client);
-                    URI location = ServletUriComponentsBuilder
-                            .fromCurrentRequest()
-                            .path("/{id_client}")
-                            .buildAndExpand(client.getId_client())
-                            .toUri();
-                    return ResponseEntity.created(location).body(client);
-                }else {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("Error occurred while get the rol: ");
-                }
+        Roles result = rolesRepository.findById(idRol)
+                .orElseThrow(() -> new EntityNotFoundException("Error occurred while get the rol: " + idRol));
 
-            } catch (Exception e) {
-                // Cualquier otro error general
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Error occurred while saving the client: " + e.getMessage());
-            }
+        UserRole nameRole = result.getNameRole();
+        if (nameRole != UserRole.CLIENT) {
+            throw new InvalidDataException("EL ID de ROL no es de CLIENT: " + idRol);
+        }
+
+        client.setRol(result);
+        clientRepository.save(client);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id_client}")
+                .buildAndExpand(client.getId_client())
+                .toUri();
+        return ResponseEntity.created(location).body(client);
     }
 
     @Override

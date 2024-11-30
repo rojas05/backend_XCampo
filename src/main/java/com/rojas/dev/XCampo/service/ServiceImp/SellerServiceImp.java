@@ -31,6 +31,7 @@ public class SellerServiceImp implements SellerService {
     @Autowired
     UserRepository userRepository;
 
+    // Verificar que que los datos no esten dupliados co el id
 
     @Override
     public ResponseEntity<?> insertSeller(Seller seller, Long idRol) {
