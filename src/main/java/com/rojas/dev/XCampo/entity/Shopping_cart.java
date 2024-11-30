@@ -32,5 +32,4 @@ public class Shopping_cart {
     // @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
     private LocalDate dateAdded;
-
 }
