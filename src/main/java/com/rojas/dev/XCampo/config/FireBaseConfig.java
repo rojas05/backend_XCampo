@@ -35,5 +35,4 @@ public class FireBaseConfig {
             throw new IllegalStateException("Error initializing Firebase", e);
         }
     }
-
 }
