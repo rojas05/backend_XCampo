@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
