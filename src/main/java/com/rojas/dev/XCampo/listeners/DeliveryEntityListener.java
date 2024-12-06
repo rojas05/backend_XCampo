@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
+import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
 import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -31,5 +33,6 @@ public class DeliveryEntityListener {
             System.err.println("ERROR ====>" + e);
         }
     }
+
 
 }

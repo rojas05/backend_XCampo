@@ -28,6 +28,7 @@ public class CartItemServiceImp implements CartItemService {
 
     @Override
     public CartItem addProductToCart(CartItem cartItem) {
+        /*
         Long clientId = cartItem.getCart().getClient().getId_client();
         Product product = existProductById(cartItem.getProduct().getId_product());
         int quantity = cartItem.getQuantity();
@@ -39,7 +40,8 @@ public class CartItemServiceImp implements CartItemService {
         cartItem.setUnitPrice(quantity * product.getPrice());
 
         shoppingCart.addItem(cartItem);
-        shoppingCartRepository.save(shoppingCart);
+        */
+        cartItemRepository.save(cartItem);
 
         return cartItem;
     }

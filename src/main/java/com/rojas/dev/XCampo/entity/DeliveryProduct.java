@@ -35,5 +35,4 @@ public class DeliveryProduct {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private DeliveryMan deliveryMan;
-
 }

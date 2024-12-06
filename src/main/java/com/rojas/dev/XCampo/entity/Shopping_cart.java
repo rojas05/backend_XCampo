@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class Shopping_cart {
     @ManyToOne(fetch = FetchType.LAZY)
     private Client client;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private Set<CartItem> items = new HashSet<>();
 
     @Column(nullable = false)

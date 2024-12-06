@@ -1,14 +1,19 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.dto.DeliveryClientDTO;
 import com.rojas.dev.XCampo.dto.DeliveryRuteDTO;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
+import com.rojas.dev.XCampo.listeners.DeliveryEntityListener;
 import com.rojas.dev.XCampo.repository.DeliveryRepository;
 import com.rojas.dev.XCampo.service.Interface.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,6 +26,13 @@ public class DeliveryServiceImp implements DeliveryService {
 
     @Autowired
     DeliveryRepository deliveryRepository;
+
+    private static KafkaTemplate<String,String> kafkaTemplate;
+
+    @Autowired
+    public  void init(KafkaTemplate<String,String> kafkaTemplate){
+        DeliveryServiceImp.kafkaTemplate = kafkaTemplate;
+    }
 
 
     @Override
@@ -46,6 +58,7 @@ public class DeliveryServiceImp implements DeliveryService {
     public ResponseEntity<?> updateStateDelivery(DeliveryProduct delivery) {
         try {
             deliveryRepository.updateState(delivery.getID(),delivery.getState());
+            onDeliveryUpdate(delivery.getID());
             return ResponseEntity.ok().body("delivery update");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -57,7 +70,7 @@ public class DeliveryServiceImp implements DeliveryService {
     public ResponseEntity<?> updateDeliveryMan(DeliveryProduct delivery) {
        try {
            deliveryRepository.updateDeliveryMan(delivery.getID(),delivery.getDeliveryMan());
-           System.out.println(delivery);
+
            return ResponseEntity.ok().body("delivery update");
        }catch (Exception e) {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -130,6 +143,19 @@ public class DeliveryServiceImp implements DeliveryService {
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred while get the delivery: " + e.getMessage());
+        }
+    }
+
+    void onDeliveryUpdate(Long deliveryId){
+        try{
+            Optional<DeliveryProduct> deliveryProduct = deliveryRepository.findById(deliveryId);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            String deliveryJson = mapper.writeValueAsString(deliveryProduct.get());
+            kafkaTemplate.send("deliveryUpdate-notification", deliveryJson);
+            System.out.println("evento enviado a Kafka");
+        } catch (JsonProcessingException e) {
+            System.err.println("ERROR ====>" + e);
         }
     }
 }
