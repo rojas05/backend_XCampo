@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,34 +21,31 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<?> registerUser(@RequestBody User newUser) {
-        try {
-            User createUser = userService.addUser(newUser);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createUser);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        User createUser = userService.addUser(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createUser);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findByUserId(@PathVariable Long id) {
-        try {
-            Optional<User> userId = userService.findByIdUser(id);
-            return ResponseEntity.status(HttpStatus.FOUND).body(userId);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not Found user:" + id);
-        }
+        Optional<User> userId = userService.findByIdUser(id);
+        return ResponseEntity.status(HttpStatus.FOUND).body(userId);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
         userService.deleteUserID(userId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
+    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
         User user = userService.updateUser(userId, updatedUser);
-        return ResponseEntity.ok(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "CartItem updated successfully");
+        response.put("cartItem", user);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping()

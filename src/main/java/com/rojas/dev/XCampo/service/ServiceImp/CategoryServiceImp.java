@@ -17,7 +17,6 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public Category createNewCategory(Category category) {
-        Long id = category.getId_category();
         return categoryRepository.save(category);
     }
 
@@ -44,10 +43,9 @@ public class CategoryServiceImp implements CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException("Category NOT FOUND with ID: " + id));
     }
 
-
     public void exitsCategoryId(Long categoryId) {
         if(!categoryRepository.existsById(categoryId)){
-            throw new EntityNotFoundException("No existe esta categoria");
+            throw new EntityNotFoundException("This category does not exist whit ID: " + categoryId);
         }
     }
 

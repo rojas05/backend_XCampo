@@ -49,11 +49,6 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Product updateImageProduct(Long id, Long idSeller, String url) {
-        return null;
-    }
-
-    @Override
     public void deleteProductId(Long Id, Long idSeller) {
         productVerification(Id, idSeller);
         productRepository.deleteById(Id);

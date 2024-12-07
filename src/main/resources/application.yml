@@ -24,12 +24,6 @@ servlet:
     max-file-size : 10MB
     max-request-size: 10MB
 
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-
 firebase:
   credentials:
     path: agromarket-3d34d-firebase-adminsdk-flhqr-6a352e2853.json

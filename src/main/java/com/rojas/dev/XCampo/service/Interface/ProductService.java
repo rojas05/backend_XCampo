@@ -12,8 +12,6 @@ public interface ProductService {
 
     Product updateProductId(Long Id, Long idSeller, Product product);
 
-    Product updateImageProduct(Long id, Long idSeller, String url);
-
     void deleteProductId(Long Id, Long idSeller);
 
     Product findId(Long Id);

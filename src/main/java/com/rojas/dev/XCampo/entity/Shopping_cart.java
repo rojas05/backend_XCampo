@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,11 @@ public class Shopping_cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     private Client client;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<CartItem> items = new HashSet<>();
 
     @Column(nullable = false)
@@ -29,5 +31,4 @@ public class Shopping_cart {
     // @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
     private LocalDate dateAdded;
-
 }

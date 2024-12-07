@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RestController
@@ -15,12 +16,12 @@ public class StorageController {
     FirebaseStorageService firebaseStorageService;
 
     @PostMapping("{id}")
-    public ResponseEntity<?> upload(@RequestParam("images") List<MultipartFile> images,
-                                    @RequestParam("context") String context,
-                                    @PathVariable Long id
-                                    )  {
+    public ResponseEntity<?> upload(
+            @RequestParam("images") List<MultipartFile> images,
+            @RequestParam("context") String context,
+            @PathVariable Long id
+    )  {
         return firebaseStorageService.uploadMultipleFile(images,id,context);
     }
-
 
 }

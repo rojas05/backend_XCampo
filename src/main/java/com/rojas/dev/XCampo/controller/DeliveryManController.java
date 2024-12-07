@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/deliveryMan")
 public class DeliveryManController {
+
     @Autowired
     DeliveryManService deliveryManService;
 
@@ -20,7 +21,6 @@ public class DeliveryManController {
     public ResponseEntity<?> deleteDeliveryMan(@PathVariable Long id_deliveryMan){
         return deliveryManService.delete(id_deliveryMan);
     }
-
 
     @GetMapping("idUser/{id_user}")
     public ResponseEntity<?> getIdDeliveryManByIdUser(@PathVariable Long id_user){

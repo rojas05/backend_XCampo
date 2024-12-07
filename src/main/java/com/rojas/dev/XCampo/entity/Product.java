@@ -1,8 +1,8 @@
 package com.rojas.dev.XCampo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rojas.dev.XCampo.listeners.ProductEntityListener;
 import com.rojas.dev.XCampo.enumClass.MeasurementUnit;
+import com.rojas.dev.XCampo.listeners.ProductEntityListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -41,14 +41,13 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<CartItem> itemCarts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Qualification> qualification = new HashSet<>();
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Seller seller;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 

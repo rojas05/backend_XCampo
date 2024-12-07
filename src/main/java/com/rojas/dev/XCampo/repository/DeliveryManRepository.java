@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface DeliveryManRepository extends JpaRepository<DeliveryMan,Long> {
+
     @Transactional
     @Query("SELECT d.id_deliveryMan FROM DeliveryMan d INNER JOIN d.rol r WHERE r.user = :user")
     Optional<Long> getIdClientByIdUser(@Param("user") User user);

@@ -1,6 +1,5 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
-import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.entity.User;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.UserRepository;
@@ -67,17 +66,13 @@ public class UserServiceImp implements UserService {
 
     @Override
     public ResponseEntity<?> getNFSidByIdUser(Long id_user) {
-        try {
-            Optional<String> result = userRepository.getNFSidByIdUser(id_user);
-            if(result.isPresent()){
-                return ResponseEntity.ok().body(result);
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user with id " + id_user + " not found.");
-            }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the user: " + e.getMessage());
+        Optional<String> result = userRepository.getNFSidByIdUser(id_user);
+        if(result.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user with id " + id_user + " not found.");
+
         }
+
+        return ResponseEntity.ok().body(result);
     }
 
 }

@@ -18,4 +18,5 @@ public class OrderServiceImp implements OrderService {
     public BigDecimal calculateEarningsOrder(Long Id) {
         return null;
     }
+
 }

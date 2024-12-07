@@ -1,7 +1,6 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 
-import com.rojas.dev.XCampo.exception.InvalidTokenException;
 import com.rojas.dev.XCampo.exception.TokenExpiredException;
 import com.rojas.dev.XCampo.service.Interface.JwtService;
 import io.jsonwebtoken.Claims;
@@ -35,7 +34,7 @@ public class JwtServiceImp implements JwtService {
     }
 
     @Override
-    public boolean isTokentValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String mail=getUserNameFromToken(token);
         return (mail.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }

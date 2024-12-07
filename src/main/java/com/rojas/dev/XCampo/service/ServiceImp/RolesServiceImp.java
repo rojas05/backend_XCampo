@@ -3,6 +3,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.User;
 import com.rojas.dev.XCampo.enumClass.UserRole;
+import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.RolesRepository;
 import com.rojas.dev.XCampo.service.Interface.RolesService;
 import com.rojas.dev.XCampo.service.Interface.UserService;
@@ -12,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RolesServiceImp implements RolesService {
@@ -24,77 +25,50 @@ public class RolesServiceImp implements RolesService {
     private RolesRepository rolesRepository;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Override
     public ResponseEntity<?> insertNewRolUser(Roles role, Long user) {
-        try {
-            Optional<User> result = userService.findByIdUser(user);
-            role.setUser(result.orElse(null));
-            rolesRepository.save(role);
-            return ResponseEntity.ok(role);
-        } catch (Exception e){
-            return ResponseEntity.ok().body("Seller created no successfully." + e.getMessage());
-        }
-
+        Optional<User> result = userService.findByIdUser(user);
+        role.setUser(result.orElse(null));
+        rolesRepository.save(role);
+        return ResponseEntity.ok(role);
     }
 
     @Override
     public ResponseEntity<?> getRolesByIdUser(Long idUser) {
-        try {
-            Optional<User> user = userService.findByIdUser(idUser);
-            Optional<List<String>> result = rolesRepository.getRolesByUser(user);
-            if (result.isPresent()){
-                return ResponseEntity.ok().body(result);
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user with id " + userService + " not found.");
-            }
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the user: " + e.getMessage());
-        }
+        User user = userService.findByIdUser(idUser)
+                .orElseThrow(() -> new EntityNotFoundException("User not found for the specified ID: " + idUser));
+        Optional<List<String>> result = rolesRepository.getRolesByUser(user);
+
+        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user with id " + userService + " not found.");
+
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
     public ResponseEntity<?> getRolesById(Long id) {
-        try {
-            Optional<Roles> role = rolesRepository.findById(id);
-            if(role.isPresent()){
-                return ResponseEntity.ok().body(role);
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + id + " not found.");
-            }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the seller: " + e.getMessage());
-        }
+        Optional<Roles> role = rolesRepository.findById(id);
+        if(role.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + id + " not found.");
+
+        return ResponseEntity.ok().body(role);
     }
 
     @Override
     public ResponseEntity<?> insertRoles(Roles rol) {
-        try {
-            if(rol.getSeller() != null){
-                rol.getSeller().setRol(rol);
-            }
-            rolesRepository.save(rol);
-            return ResponseEntity.ok().body(rol);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the rol: " + e.getMessage());
+        if(rol.getSeller() != null){
+            rol.getSeller().setRol(rol);
         }
+        rolesRepository.save(rol);
+        return ResponseEntity.ok().body(rol);
     }
 
     @Transactional
     @Override
     public Set<Roles> assignRolesToUser(Set<Long> rolesIds) {
-        Set<Roles> rolesUser = new HashSet<>();
-
-        for (Long rolesId : rolesIds) {
-            Roles rolUser = findRoleById(rolesId);
-            rolesUser.add(rolUser);
-        }
-
-        return rolesUser;
+        return rolesIds.stream()
+                .map(this::findRoleById)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -103,9 +77,9 @@ public class RolesServiceImp implements RolesService {
     }
 
     @Override
-    public Roles findRoleById(Long id) {
-        return rolesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rol not found"));
+    public Roles findRoleById(Long idRol) {
+        return rolesRepository.findById(idRol)
+                .orElseThrow(() -> new EntityNotFoundException("Error occurred while get the rol: " + idRol));
     }
 
 }

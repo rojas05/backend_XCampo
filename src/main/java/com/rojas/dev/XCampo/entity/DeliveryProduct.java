@@ -1,10 +1,11 @@
 package com.rojas.dev.XCampo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rojas.dev.XCampo.listeners.DeliveryEntityListener;
 import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
+import com.rojas.dev.XCampo.listeners.DeliveryEntityListener;
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDate;
 
 @Data
@@ -31,7 +32,7 @@ public class DeliveryProduct {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    private Order orderProducts;
+    private Order order;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private DeliveryMan deliveryMan;

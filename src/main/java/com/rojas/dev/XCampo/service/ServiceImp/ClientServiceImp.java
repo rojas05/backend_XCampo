@@ -7,7 +7,6 @@ import com.rojas.dev.XCampo.enumClass.UserRole;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.exception.InvalidDataException;
 import com.rojas.dev.XCampo.repository.ClientRepository;
-import com.rojas.dev.XCampo.repository.RolesRepository;
 import com.rojas.dev.XCampo.repository.UserRepository;
 import com.rojas.dev.XCampo.service.Interface.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +25,15 @@ public class ClientServiceImp implements ClientService {
     ClientRepository clientRepository;
 
     @Autowired
-    RolesRepository rolesRepository;
+    RolesServiceImp rolesServiceImp;
 
     @Autowired
     UserRepository userRepository;
 
-    // Verificar que que los datos no esten dupliados co el id
-
     @Override
     public ResponseEntity<?> insertClient(Client client, Long idRol) {
-        Roles result = rolesRepository.findById(idRol)
-                .orElseThrow(() -> new EntityNotFoundException("Error occurred while get the rol: " + idRol));
-
-        UserRole nameRole = result.getNameRole();
-        if (nameRole != UserRole.CLIENT) {
-            throw new InvalidDataException("EL ID de ROL no es de CLIENT: " + idRol);
-        }
+        Roles result = rolesServiceImp.findRoleById(idRol);
+        if (result.getNameRole() != UserRole.CLIENT) throw new InvalidDataException("EL ID de ROL no es de CLIENT: " + idRol);
 
         client.setRol(result);
         clientRepository.save(client);
@@ -50,79 +42,60 @@ public class ClientServiceImp implements ClientService {
                 .path("/{id_client}")
                 .buildAndExpand(client.getId_client())
                 .toUri();
+
         return ResponseEntity.created(location).body(client);
     }
 
     @Override
     public ResponseEntity<?> getIdClientByUser(Long user_id) {
-        try {
-            Optional<User> user = userRepository.findById(user_id);
-            if (user.isPresent()){
-                Optional<Long> result = clientRepository.getIdClientByIdUser(user.get());
-                if (result.isPresent()){
-                    return ResponseEntity.ok().body(result);
-                }else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
-                }
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
-            }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the id seller by id user: " + e.getMessage());
-        }
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+
+        Optional<Long> result = clientRepository.getIdClientByIdUser(user.get());
+        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+
+        return ResponseEntity.ok().body(result);
     }
 
     @Override
     public ResponseEntity<?> updateClient(Client client) {
-        try {
-            if(clientRepository.existsById(client.getId_client())){
-                clientRepository.updateClient(
-                        client.getId_client(),
-                        client.getLocation_description(),
-                        client.getName());
-                return ResponseEntity.status(HttpStatus.OK).body("Client update successfully.");
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + client.getId_client() + " not found.");
-            }
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while update the Client: " + e.getMessage());
-        }
+        existsClient(client.getId_client());
+
+        clientRepository.updateClient(
+                client.getId_client(),
+                client.getLocation_description(),
+                client.getName());
+
+        return ResponseEntity.status(HttpStatus.OK).body("Client update successfully.");
     }
 
     @Override
     public ResponseEntity<?> getSellerById(Long id) {
-        try {
-            Optional<Client> client = clientRepository.findById(id);
-            if(client.isPresent()){
-                return ResponseEntity.ok().body(client);
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client with id " + id + " not found.");
-            }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the client: " + e.getMessage());
+        Optional<Client> client = clientRepository.findById(id);
+        if(client.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client with id " + id + " not found.");
         }
+
+        return ResponseEntity.ok().body(client);
     }
 
     @Override
     public ResponseEntity<?> delete(Long id_client) {
-        try {
-            // Verificar si el vendedor existe
-            if (clientRepository.existsById(id_client)) {
-                // existe, eliminar el vendedor
-                clientRepository.deleteById(id_client);
-                // Retornar código 200 (OK) indicando que se eliminó correctamente
-                return ResponseEntity.status(HttpStatus.OK).body("client deleted successfully.");
-            } else {
-                // Si no se encuentra el vendedor, retornar 404 (Not Found)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client with id " + id_client + " not found.");
-            }
-        } catch (Exception e) {
-            // En caso de cualquier otro error, retornar código 500 (Internal Server Error)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting the client: " + e.getMessage());
+        existsClient(id_client);
+        clientRepository.deleteById(id_client);
+
+        return ResponseEntity.status(HttpStatus.OK).body("client deleted successfully.");
+    }
+
+    public Client findClientById(Long clientId) {
+        return clientRepository.findById(clientId)
+                .orElseThrow(() -> new EntityNotFoundException("Client ID NOT found: " + clientId));
+    }
+
+    public void existsClient(Long idClient) {
+        if (!clientRepository.existsById(idClient)) {
+            throw new IllegalStateException("client with id " + idClient + " not found.");
         }
     }
+
 }

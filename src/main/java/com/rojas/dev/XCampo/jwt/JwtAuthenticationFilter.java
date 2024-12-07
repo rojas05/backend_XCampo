@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String token = getTokenFromRequest(request);
         final String mail;
 
-        if (token==null){
+        if (token == null){
             filterChain.doFilter(request,response);
             return;
         }
@@ -42,10 +42,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         mail = jwtService.getUserNameFromToken(token);
         System.out.println("=================" + mail + "=================================");
         System.out.println("=================" + token + "=================================");
-        if(mail != null && SecurityContextHolder.getContext().getAuthentication()==null){
+
+        if(mail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(mail);
 
-            if(jwtService.isTokentValid(token, userDetails)){
+            if(jwtService.isTokenValid(token, userDetails)){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -53,10 +54,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 authenticationToken.setDetails( new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } else {
+                throw new InvalidTokenException("Invalid or expired token");
             }
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {

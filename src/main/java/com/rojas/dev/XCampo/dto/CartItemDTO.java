@@ -1,16 +1,17 @@
 package com.rojas.dev.XCampo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartItemDTO {
     private Long cardId;
     private Long productId;
     private int quantity;
     private double unitPrice;
-    private LocalDateTime dateAdded;
 }

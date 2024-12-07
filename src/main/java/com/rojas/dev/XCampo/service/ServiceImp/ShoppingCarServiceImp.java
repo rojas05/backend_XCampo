@@ -1,14 +1,14 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rojas.dev.XCampo.dto.CartItemDTO;
+import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
 import com.rojas.dev.XCampo.dto.ShoppingCartDTO;
 import com.rojas.dev.XCampo.entity.CartItem;
+import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.Shopping_cart;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
+import com.rojas.dev.XCampo.exception.InvalidDataException;
 import com.rojas.dev.XCampo.repository.CartItemRepository;
-import com.rojas.dev.XCampo.repository.ClientRepository;
-import com.rojas.dev.XCampo.repository.ProductRepository;
 import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
 import com.rojas.dev.XCampo.service.Interface.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,21 +26,19 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     private CartItemRepository cartItemRepository;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientServiceImp clientServiceImp;
 
     @Override
-    public Shopping_cart addProduct(ShoppingCartDTO shoppingCart) throws JsonProcessingException {
-        var client = clientRepository.findById(shoppingCart.getClientId())
-                .orElseThrow(() -> new EntityNotFoundException("Client ID NOT found: " + shoppingCart.getClientId()));
-        CartItem carItem = cartItemRepository.findById(shoppingCart.getItemId())
-                .orElseThrow(() -> new EntityNotFoundException("cart item not found"));
+    public Shopping_cart createShoppingCart(ShoppingCartDTO shoppingCart) {
+        var client = clientServiceImp.findClientById(shoppingCart.getClientId());
+        var existingCart = findExistingCart(client);
+
+        if (existingCart != null) {
+            return existingCart;
+        }
+
         Shopping_cart addShoppingCart = new Shopping_cart();
         addShoppingCart.setClient(client);
-
-        String result = new ObjectMapper().writeValueAsString(carItem);
-        System.out.println("------------------------------------------------------" + result);
-        addShoppingCart.getItems().add(carItem);
-
         addShoppingCart.setDateAdded(shoppingCart.getDateAdded());
         addShoppingCart.setStatus(shoppingCart.isStatus());
 
@@ -50,14 +48,13 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     @Override
     public void deleteProduct(Long idShoppingCar) {
         Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
-        existsClient(entity.getClient().getId_client());
-
+        clientServiceImp.existsClient(entity.getClient().getId_client());
         shoppingCarRepository.deleteById(idShoppingCar);
     }
 
     @Override
     public Shopping_cart updateState(Long idShoppingCar, boolean state) {
-        Shopping_cart entity = findByIdShoppingCard(idShoppingCar);;
+        Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
         entity.setStatus(state);
         return shoppingCarRepository.save(entity);
     }
@@ -65,25 +62,48 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     @Override
     public Shopping_cart findByIdShoppingCard(Long id) {
         return shoppingCarRepository.findById(id).
-                orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado con ID: " + id));
+                orElseThrow(() -> new EntityNotFoundException("Shopping cart not found with ID: " + id));
     }
 
     @Override
-    public List<Shopping_cart> listAllProductsShoppingCart(Long idClient) {
-        return shoppingCarRepository.findByClientId(idClient);
+    public List<GetShoppingCartDTO> listAllProductsShoppingCart(Long idClient) {
+        return shoppingCarRepository.findByClientId(idClient).stream()
+                .map(this::convertToShoppingCartDTO)
+                .toList();
     }
 
-    public void exitsShoppingCar(Long id) {
-        if(!shoppingCarRepository.existsById(id)) {
-            throw new EntityNotFoundException("Carrito no encontrado con ID: " + id);
-        }
+    public GetShoppingCartDTO convertToShoppingCartDTO(Shopping_cart shoppingCart) {
+        var cartItemDTOList = cartItemRepository.findByIdShoppingCart(shoppingCart.getId_cart()).stream()
+                .map(this::convertToCartItemDTO)
+                .toList();
 
+        return new GetShoppingCartDTO(
+                shoppingCart.getId_cart(),
+                shoppingCart.getClient().getId_client(),
+                shoppingCart.getClient().getName(),
+                shoppingCart.isStatus(),
+                shoppingCart.getDateAdded(),
+                cartItemDTOList
+        );
     }
 
-    public void existsClient(Long idClient) {
-        if (!clientRepository.existsById(idClient)) {
-            throw new IllegalStateException("El cliente con el ID no existe: " + idClient);
+    private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
+        return new CartItemDTO(
+                cartItem.getId_cart_item(),
+                cartItem.getProduct().getId_product(),
+                cartItem.getQuantity(),
+                cartItem.getUnitPrice()
+        );
+    }
+
+    private Shopping_cart findExistingCart(Client client) {
+        List<Shopping_cart> existingCarts = shoppingCarRepository.findStatusFalse(client.getId_client());
+
+        if (existingCarts.size() > 1) {
+            throw new InvalidDataException("Multiple carts with 'false' status found for this client");
         }
+
+        return existingCarts.isEmpty() ? null : existingCarts.get(0);
     }
 
 }
