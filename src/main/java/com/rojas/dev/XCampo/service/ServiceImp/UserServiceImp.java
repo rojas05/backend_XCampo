@@ -1,10 +1,13 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.entity.User;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.UserRepository;
 import com.rojas.dev.XCampo.service.Interface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,6 +63,21 @@ public class UserServiceImp implements UserService {
     @Override
     public List<User> listAllUser() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public ResponseEntity<?> getNFSidByIdUser(Long id_user) {
+        try {
+            Optional<String> result = userRepository.getNFSidByIdUser(id_user);
+            if(result.isPresent()){
+                return ResponseEntity.ok().body(result);
+            }else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user with id " + id_user + " not found.");
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred while get the user: " + e.getMessage());
+        }
     }
 
 }

@@ -36,6 +36,7 @@ public class Seller {
     @JoinColumn(name = "fk_rol_id")
     private Roles rol;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private Set<Product> products = new HashSet<>();
 

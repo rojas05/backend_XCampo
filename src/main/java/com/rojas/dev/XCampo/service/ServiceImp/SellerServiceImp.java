@@ -35,9 +35,8 @@ public class SellerServiceImp implements SellerService {
 
     @Override
     public ResponseEntity<?> insertSeller(Seller seller, Long idRol) {
-        try {
-            Optional<Roles> result = rolesRepository.findById(idRol);
             try {
+                Optional<Roles> result = rolesRepository.findById(idRol);
                 if (result.isPresent()){
                     seller.setRol(result.get());
                     sellerRepository.save(seller);
@@ -60,10 +59,6 @@ public class SellerServiceImp implements SellerService {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Error occurred while saving the seller: " + e.getMessage());
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while get the rol: " + e.getMessage());
-        }
     }
 
 

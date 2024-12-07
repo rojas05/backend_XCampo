@@ -19,6 +19,7 @@ public class DeliveryMan {
 
     private String rute;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "deliveryMan", cascade = CascadeType.ALL)
     private Set<DeliveryProduct> deliveryProduct = new HashSet<>();
 

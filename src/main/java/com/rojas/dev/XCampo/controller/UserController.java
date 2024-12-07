@@ -55,5 +55,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.FOUND).body(user);
     }
 
+    @GetMapping("nfs/{id}")
+    public ResponseEntity<?> getNFSidByIdUser(@PathVariable Long id){
+        return userService.getNFSidByIdUser(id);
+    }
+
 
 }

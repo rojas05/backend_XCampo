@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthServiceImp implements AuthService {
 
@@ -48,21 +50,24 @@ public class AuthServiceImp implements AuthService {
     @Override
     public ResponseEntity<?> register(RegisterRequest request) {
         try {
-            User user = User.builder()
-                    .name(request.getName())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .city(request.getCity())
-                    .cell(request.getCell())
-                    .email(request.getEmail())
-                    .roleClient(ClientRole.USER)
-                    .build();
+            Optional<User> result = userRepository.findByEmail(request.getEmail());
+            if (result.isPresent()){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("user mail exist " + result.get().getEmail());
+            }else {
+                User user = User.builder()
+                        .name(request.getName())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .city(request.getCity())
+                        .cell(request.getCell())
+                        .email(request.getEmail())
+                        .roleClient(ClientRole.USER)
+                        .build();
 
-            userRepository.save(user);
-            return  ResponseEntity.ok(AuthResponse.builder().token(jwtService.getToken(user)).build());
+                userRepository.save(user);
+                return  ResponseEntity.ok(AuthResponse.builder().token(jwtService.getToken(user)).build());
+            }
         } catch (Exception e){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-
     }
 }

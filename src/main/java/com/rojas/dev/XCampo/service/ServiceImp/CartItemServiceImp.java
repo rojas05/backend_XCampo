@@ -25,6 +25,30 @@ public class CartItemServiceImp implements CartItemService {
     private ProductRepository productRepository;
 
     @Override
+    public CartItem addProductToCart(CartItem cartItem) {
+        /*
+        Long clientId = cartItem.getCart().getClient().getId_client();
+        Product product = existProductById(cartItem.getProduct().getId_product());
+        int quantity = cartItem.getQuantity();
+
+        var shoppingCart = existCartByUserId(clientId, cartItem);
+
+        cartItem.setProduct(product);
+        cartItem.setQuantity(quantity);
+        cartItem.setUnitPrice(quantity * product.getPrice());
+
+        shoppingCart.addItem(cartItem);
+        */
+        cartItemRepository.save(cartItem);
+
+        return cartItem;
+    }
+
+    @Override
+    public Shopping_cart createShoppingCart(CartItem cartItem) {
+        if (cartItem == null || cartItem.getCart() == null || cartItem.getCart().getClient() == null) {
+            throw new IllegalArgumentException("CartItem or its associated client cannot be null");
+        }
     public CartItem addProductToCart(CartItemDTO cartItem) {
         Shopping_cart cart = findShoppingID(cartItem.getCardId());
         Product product = findProductID(cartItem.getProductId());
