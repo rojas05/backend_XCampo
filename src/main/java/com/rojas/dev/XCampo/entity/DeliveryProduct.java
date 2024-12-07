@@ -1,10 +1,11 @@
 package com.rojas.dev.XCampo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rojas.dev.XCampo.listeners.DeliveryEntityListener;
 import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
+import com.rojas.dev.XCampo.listeners.DeliveryEntityListener;
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDate;
 
 @Data

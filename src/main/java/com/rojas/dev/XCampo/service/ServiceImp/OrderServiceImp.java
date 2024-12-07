@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 @Service
 public class OrderServiceImp implements OrderService {
+
     @Override
     public void updateState(Long idOrder, OrderState state) {
 
@@ -17,4 +18,5 @@ public class OrderServiceImp implements OrderService {
     public BigDecimal calculateEarningsOrder(Long Id) {
         return null;
     }
+
 }

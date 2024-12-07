@@ -1,21 +1,18 @@
 package com.rojas.dev.XCampo.service.Interface;
 
-import com.rojas.dev.XCampo.entity.CartItem;
-import com.rojas.dev.XCampo.entity.Product;
-import com.rojas.dev.XCampo.entity.Shopping_cart;
+import com.rojas.dev.XCampo.dto.CartItemDTO;
+import com.rojas.dev.XCampo.dto.GetCartItemDTO;
+
+import java.util.List;
 
 public interface CartItemService {
 
-    // Metodo para agregar un producto al carrito
-    CartItem addProductToCart(CartItem cartItem);
+    void addProductToCart(CartItemDTO cartItem);
 
-    // Metodo para crear un carrito de compras para un cliente
-    Shopping_cart createShoppingCart(CartItem cartItem);
+    List<GetCartItemDTO> listAllCartItem(Long idClient);
 
-    // Metodo para verificar si un producto existe
-    Product existProductById(Long productId);
+    GetCartItemDTO updateCarItem(Long idCartItem, int quantity);
 
-    // Metodo para verificar si un carrito de compras existe
-    Shopping_cart existCartByUserId(Long userId, CartItem cartItem);
+    void deleteCartItem(Long idCartItem);
 
 }

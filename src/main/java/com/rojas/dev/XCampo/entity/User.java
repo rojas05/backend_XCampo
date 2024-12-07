@@ -32,7 +32,6 @@ public class User implements UserDetails {
     private Long cell;
     private String email;
     private String password;
-
     private String NFSid;
 
     @JsonIgnore

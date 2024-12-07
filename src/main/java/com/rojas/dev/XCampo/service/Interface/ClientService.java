@@ -1,8 +1,6 @@
 package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.entity.Client;
-import com.rojas.dev.XCampo.entity.Seller;
-import com.rojas.dev.XCampo.entity.User;
 import org.springframework.http.ResponseEntity;
 
 public interface ClientService {

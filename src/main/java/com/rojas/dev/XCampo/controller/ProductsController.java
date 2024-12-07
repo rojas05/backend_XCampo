@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -19,7 +21,9 @@ public class ProductsController {
     @PostMapping
     public ResponseEntity<?> newProduct(@RequestBody Product product) {
         var idSeller = product.getSeller().getId_seller();
-        Product newProduct = productService.createProduct(product, idSeller);
+        var idCategory = product.getCategory().getId_category();
+
+        Product newProduct = productService.createProduct(product, idSeller, idCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
@@ -27,8 +31,13 @@ public class ProductsController {
     public ResponseEntity<?> updateProduct(@PathVariable Long Id, @RequestBody Product product) {
         var idSeller = product.getSeller().getId_seller();
         Product postProduct = productService.updateProductId(Id, idSeller, product);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Product updated successfully");
+        response.put("Product", postProduct);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body("Product Update: " + postProduct);
+                .body(response);
     }
 
     @DeleteMapping("/{idProduct}/{idSeller}")

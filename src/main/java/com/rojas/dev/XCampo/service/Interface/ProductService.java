@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product createProduct(Product product, Long IdSeller);
+    Product createProduct(Product product, Long IdSeller, Long idCategory);
 
     List<Product> listProductIsSeller(Long IdSeller);
 

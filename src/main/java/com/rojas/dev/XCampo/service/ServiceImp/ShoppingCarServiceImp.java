@@ -1,9 +1,14 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.rojas.dev.XCampo.dto.CartItemDTO;
+import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
+import com.rojas.dev.XCampo.dto.ShoppingCartDTO;
+import com.rojas.dev.XCampo.entity.CartItem;
+import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.Shopping_cart;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
-import com.rojas.dev.XCampo.repository.ClientRepository;
-import com.rojas.dev.XCampo.repository.ProductRepository;
+import com.rojas.dev.XCampo.exception.InvalidDataException;
+import com.rojas.dev.XCampo.repository.CartItemRepository;
 import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
 import com.rojas.dev.XCampo.service.Interface.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,65 +23,87 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     private ShoppingCartRepository shoppingCarRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private CartItemRepository cartItemRepository;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientServiceImp clientServiceImp;
 
     @Override
-    public Shopping_cart addProduct(Shopping_cart shoppingCart) {
-        /*
-        var idProduct = shoppingCart.getProducts().getId_product();
-        var idClient = shoppingCart.getClients().getId_client();
+    public Shopping_cart createShoppingCart(ShoppingCartDTO shoppingCart) {
+        var client = clientServiceImp.findClientById(shoppingCart.getClientId());
+        var existingCart = findExistingCart(client);
 
-        fkVerification(idClient, idProduct);
+        if (existingCart != null) {
+            return existingCart;
+        }
 
-        return shoppingCarRepository.save(shoppingCart);
-        * */
-        return null;
+        Shopping_cart addShoppingCart = new Shopping_cart();
+        addShoppingCart.setClient(client);
+        addShoppingCart.setDateAdded(shoppingCart.getDateAdded());
+        addShoppingCart.setStatus(shoppingCart.isStatus());
+
+        return shoppingCarRepository.save(addShoppingCart);
     }
 
     @Override
     public void deleteProduct(Long idShoppingCar) {
-        /*
-        * Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
-        fkVerification(entity.getClients().getId_client(), entity.getProducts().getId_product());
-        * */
-
+        Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
+        clientServiceImp.existsClient(entity.getClient().getId_client());
         shoppingCarRepository.deleteById(idShoppingCar);
     }
 
     @Override
-    public Shopping_cart updateQuantity(Long idShoppingCar, Long amount) {
+    public Shopping_cart updateState(Long idShoppingCar, boolean state) {
         Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
-        //entity.setAmount(amount);
+        entity.setStatus(state);
         return shoppingCarRepository.save(entity);
     }
 
     @Override
     public Shopping_cart findByIdShoppingCard(Long id) {
         return shoppingCarRepository.findById(id).
-                orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado con ID: " + id));
+                orElseThrow(() -> new EntityNotFoundException("Shopping cart not found with ID: " + id));
     }
 
     @Override
-    public List<Shopping_cart> listAllProductsShoppingCart(Long idClient) {
-        return null; //shoppingCarRepository.findByClientId(idClient);
+    public List<GetShoppingCartDTO> listAllProductsShoppingCart(Long idClient) {
+        return shoppingCarRepository.findByClientId(idClient).stream()
+                .map(this::convertToShoppingCartDTO)
+                .toList();
     }
 
-    @Override
-    public void exitsShoppingCar(Long id) {
-        if(!shoppingCarRepository.existsById(id)) {
-            throw new EntityNotFoundException("Carrito no encontrado con ID: " + id);
+    public GetShoppingCartDTO convertToShoppingCartDTO(Shopping_cart shoppingCart) {
+        var cartItemDTOList = cartItemRepository.findByIdShoppingCart(shoppingCart.getId_cart()).stream()
+                .map(this::convertToCartItemDTO)
+                .toList();
+
+        return new GetShoppingCartDTO(
+                shoppingCart.getId_cart(),
+                shoppingCart.getClient().getId_client(),
+                shoppingCart.getClient().getName(),
+                shoppingCart.isStatus(),
+                shoppingCart.getDateAdded(),
+                cartItemDTOList
+        );
+    }
+
+    private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
+        return new CartItemDTO(
+                cartItem.getId_cart_item(),
+                cartItem.getProduct().getId_product(),
+                cartItem.getQuantity(),
+                cartItem.getUnitPrice()
+        );
+    }
+
+    private Shopping_cart findExistingCart(Client client) {
+        List<Shopping_cart> existingCarts = shoppingCarRepository.findStatusFalse(client.getId_client());
+
+        if (existingCarts.size() > 1) {
+            throw new InvalidDataException("Multiple carts with 'false' status found for this client");
         }
 
+        return existingCarts.isEmpty() ? null : existingCarts.get(0);
     }
-
-    public void fkVerification(Long idClient, Long idProduct) {
-        if (!shoppingCarRepository.existsByClientAndProduct(idClient)) {
-            throw new IllegalStateException("El producto ya está en el carrito del cliente.");
-        }
-    }
-
 
 }

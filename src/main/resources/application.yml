@@ -2,9 +2,9 @@ spring:
   application:
     name: XCampo
   datasource:
-    url: jdbc:mariadb://localhost:3307/XCampo
+    url: jdbc:mariadb://localhost:3306/XCampo
     username: root
-    password: 1234567890
+    password: root
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     show-sql: true
@@ -12,7 +12,6 @@ spring:
       ddl-auto: update
       dialect: org.hibernate.dialect.MariaDBDialect
       open-in-view: false
-
 
 server:
   port: 8080
@@ -25,6 +24,8 @@ servlet:
     max-file-size : 10MB
     max-request-size: 10MB
 
-
-
-
+firebase:
+  credentials:
+    path: agromarket-3d34d-firebase-adminsdk-flhqr-6a352e2853.json
+  storage:
+    bucket: agromarket-3d34d.appspot.com

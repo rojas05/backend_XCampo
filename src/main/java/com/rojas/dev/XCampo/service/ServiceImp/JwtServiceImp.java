@@ -1,8 +1,10 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 
+import com.rojas.dev.XCampo.exception.TokenExpiredException;
 import com.rojas.dev.XCampo.service.Interface.JwtService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -32,7 +34,7 @@ public class JwtServiceImp implements JwtService {
     }
 
     @Override
-    public boolean isTokentValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String mail=getUserNameFromToken(token);
         return (mail.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
@@ -43,7 +45,7 @@ public class JwtServiceImp implements JwtService {
                 .setClaims(extraClaims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*24))
+                .setExpiration(new Date(System.currentTimeMillis()+1000L*60*60*24))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -53,13 +55,17 @@ public class JwtServiceImp implements JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private Claims getAllClaims (String token){
-        return Jwts
-                .parser()
-                .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    private Claims getAllClaims (String token) {
+        try {
+            return Jwts
+                    .parser()
+                    .setSigningKey(getKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException ex) {
+            throw new TokenExpiredException("Token Expired: " + token);
+        }
     }
 
     public <T> T getClaim(String token, Function<Claims,T> claimsResolver){
