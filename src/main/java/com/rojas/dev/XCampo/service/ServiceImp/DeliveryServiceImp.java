@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.dto.DeliveryClientDTO;
 import com.rojas.dev.XCampo.dto.DeliveryRuteDTO;
+import com.rojas.dev.XCampo.dto.GetDeliveryProductDTO;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
-import com.rojas.dev.XCampo.listeners.DeliveryEntityListener;
+import com.rojas.dev.XCampo.repository.DeliveryManRepository;
 import com.rojas.dev.XCampo.repository.DeliveryRepository;
+import com.rojas.dev.XCampo.repository.OrderRepository;
 import com.rojas.dev.XCampo.service.Interface.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +31,12 @@ public class DeliveryServiceImp implements DeliveryService {
     @Autowired
     DeliveryRepository deliveryRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private DeliveryManRepository deliveryManRepository;
+
     private static KafkaTemplate<String,String> kafkaTemplate;
 
     @Autowired
@@ -36,14 +45,31 @@ public class DeliveryServiceImp implements DeliveryService {
     }
 
     @Override
-    public ResponseEntity<?> insertDelivery(DeliveryProduct delivery) {
+    public ResponseEntity<?> insertDelivery(GetDeliveryProductDTO delivery) {
         try {
-            deliveryRepository.save(delivery);
+            var idOrder = delivery.getOrderId();
+            var order = orderRepository.findById(idOrder)
+                    .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " + idOrder));
+            var deliveryMan = deliveryManRepository.findById(delivery.getDeliveryManId())
+                    .orElseThrow(() -> new EntityNotFoundException("Delivery man not found with ID: " + delivery.getDeliveryManId()));
+
+            DeliveryProduct deliveryProduct = new DeliveryProduct();
+            deliveryProduct.setDate(LocalDate.now());
+            deliveryProduct.setAvailable(delivery.getAvailable());
+            deliveryProduct.setState(delivery.getState());
+            deliveryProduct.setStartingPoint(delivery.getStartingPoint());
+            deliveryProduct.setDestiny(delivery.getDestiny());
+            deliveryProduct.setOrder(order);
+            deliveryProduct.setDeliveryMan(deliveryMan);
+
+            deliveryRepository.save(deliveryProduct);
+
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(delivery.getID())
+                    .buildAndExpand(delivery.getId())
                     .toUri();
+
             return ResponseEntity.created(location).body(delivery);
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

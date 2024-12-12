@@ -13,7 +13,7 @@ public interface ShoppingCartService {
 
     void deleteProduct(Long idShoppingCar);
 
-    Shopping_cart updateState(Long shoppingCart, boolean state);
+    void updateState(Long shoppingCart, boolean state);
 
     Shopping_cart findByIdShoppingCard(Long id);
 

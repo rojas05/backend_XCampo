@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,4 +32,10 @@ public class Shopping_cart {
     // @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
     private LocalDate dateAdded;
+
+    @Column(nullable = false)
+    private Double totalEarnings;
+
+    @OneToOne(mappedBy = "shoppingCart")
+    private Order order;
 }

@@ -2,12 +2,13 @@ package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.dto.DeliveryClientDTO;
 import com.rojas.dev.XCampo.dto.DeliveryRuteDTO;
+import com.rojas.dev.XCampo.dto.GetDeliveryProductDTO;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
 import org.springframework.http.ResponseEntity;
 
 public interface DeliveryService {
 
-    ResponseEntity<?> insertDelivery(DeliveryProduct delivery);
+    ResponseEntity<?> insertDelivery(GetDeliveryProductDTO delivery);
 
     ResponseEntity<?> updateStateDelivery(DeliveryProduct delivery);
 

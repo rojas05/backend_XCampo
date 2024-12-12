@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Table (name = "Delivery")
 @EntityListeners(DeliveryEntityListener.class)
 public class DeliveryProduct {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
@@ -30,8 +29,8 @@ public class DeliveryProduct {
     
     private String destiny;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     private Order order;
 
     @ManyToOne(fetch = FetchType.EAGER)

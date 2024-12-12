@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,5 +20,6 @@ public class GetShoppingCartDTO {
     private String clientName;
     private boolean cartStatus;
     private LocalDate cartDateAdded;
+    private double totalEarnings = 0;
     private List<CartItemDTO> cartItems = new ArrayList<>();
 }

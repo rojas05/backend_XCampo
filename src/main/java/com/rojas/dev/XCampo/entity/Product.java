@@ -37,12 +37,12 @@ public class Product {
     @Column(length = 1000)
     private String UrlImage;
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<CartItem> itemCarts = new HashSet<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Qualification> qualification = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)

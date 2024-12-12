@@ -14,7 +14,9 @@ import com.rojas.dev.XCampo.service.Interface.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShoppingCarServiceImp implements ShoppingCartService {
@@ -33,14 +35,14 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         var client = clientServiceImp.findClientById(shoppingCart.getClientId());
         var existingCart = findExistingCart(client);
 
-        if (existingCart != null) {
-            return existingCart;
-        }
+        if (existingCart != null) return existingCart;
 
         Shopping_cart addShoppingCart = new Shopping_cart();
+        var total = totalEarnings(addShoppingCart.getId_cart());
         addShoppingCart.setClient(client);
         addShoppingCart.setDateAdded(shoppingCart.getDateAdded());
         addShoppingCart.setStatus(shoppingCart.isStatus());
+        addShoppingCart.setTotalEarnings(total);
 
         return shoppingCarRepository.save(addShoppingCart);
     }
@@ -53,10 +55,11 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     }
 
     @Override
-    public Shopping_cart updateState(Long idShoppingCar, boolean state) {
+    public void updateState(Long idShoppingCar, boolean state) {
         Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
         entity.setStatus(state);
-        return shoppingCarRepository.save(entity);
+        entity.setTotalEarnings(totalEarnings(idShoppingCar));
+        shoppingCarRepository.save(entity);
     }
 
     @Override
@@ -83,8 +86,15 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
                 shoppingCart.getClient().getName(),
                 shoppingCart.isStatus(),
                 shoppingCart.getDateAdded(),
+                shoppingCart.getTotalEarnings(),
                 cartItemDTOList
         );
+    }
+
+    public double totalEarnings(Long IdCart) {
+        return cartItemRepository.findByIdShoppingCart(IdCart).stream()
+                .mapToDouble(CartItem::getUnitPrice)
+                .sum();
     }
 
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {

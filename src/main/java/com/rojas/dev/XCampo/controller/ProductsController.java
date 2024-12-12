@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.controller;
 
+import com.rojas.dev.XCampo.dto.GetProductDTO;
 import com.rojas.dev.XCampo.entity.Product;
 import com.rojas.dev.XCampo.service.Interface.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class ProductsController {
 
     @GetMapping("/listAll/{idSeller}")
     public ResponseEntity<?> listProductIsSeller(@PathVariable Long idSeller) {
-        List<Product> products = productService.listProductIsSeller(idSeller);
+        List<GetProductDTO> products = productService.listProductIsSeller(idSeller);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(products);
     }
