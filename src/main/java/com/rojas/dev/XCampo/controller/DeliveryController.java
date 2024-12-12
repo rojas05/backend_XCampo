@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.controller;
 
 import com.rojas.dev.XCampo.dto.DeliveryClientDTO;
 import com.rojas.dev.XCampo.dto.DeliveryRuteDTO;
+import com.rojas.dev.XCampo.dto.GetDeliveryProductDTO;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
 import com.rojas.dev.XCampo.service.Interface.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class DeliveryController {
     DeliveryService deliveryService;
 
     @PostMapping
-    ResponseEntity<?> insertDelivery(@RequestBody DeliveryProduct delivery){
+    ResponseEntity<?> insertDelivery(@RequestBody GetDeliveryProductDTO delivery){
         return deliveryService.insertDelivery(delivery);
     }
 

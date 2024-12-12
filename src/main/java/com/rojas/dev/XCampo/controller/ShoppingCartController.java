@@ -45,11 +45,9 @@ public class ShoppingCartController {
 
     @PutMapping("/{idShoppingCart}/{state}")
     public ResponseEntity<?> updateState(@PathVariable Long idShoppingCart, @PathVariable boolean state) {
-        Shopping_cart productQuantityShoppingCart = shoppingCartService.updateState(idShoppingCart, state);
-
+        shoppingCartService.updateState(idShoppingCart, state);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Update state product");
-        response.put("ShoppingCart", productQuantityShoppingCart);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);

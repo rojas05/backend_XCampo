@@ -11,7 +11,6 @@ import java.util.List;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
-
     @Transactional
     @Query("SELECT ci FROM CartItem ci " +
             "INNER JOIN ci.cart c " +
@@ -24,5 +23,4 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
             "INNER JOIN ci.cart c " +
             "WHERE c.id_cart = :cartId")
     List<CartItem> findByIdShoppingCart(@Param("cartId") Long cartId);
-
 }

@@ -27,15 +27,17 @@ public class Order {
     private LocalTime hour;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderState state;
 
     private String message;
 
+    @Column(nullable = false)
     private Long price_delivery;
 
     private Boolean delivery;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DeliveryProduct> deliveryProduct = new HashSet<>();
 
     @OneToOne

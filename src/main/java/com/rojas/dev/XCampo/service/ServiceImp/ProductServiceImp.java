@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.rojas.dev.XCampo.dto.GetProductDTO;
 import com.rojas.dev.XCampo.entity.Product;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.exception.InvalidDataException;
@@ -33,8 +34,11 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<Product> listProductIsSeller(Long IdSeller) {
-        return productRepository.findAllByIdSeller(IdSeller);
+    public List<GetProductDTO> listProductIsSeller(Long IdSeller) {
+        if(!sellerRepository.existsById(IdSeller)) throw new EntityNotFoundException("Seller not found with ID: " + IdSeller);
+        return productRepository.findAllByIdSeller(IdSeller).stream()
+                .map(this::convertProductsDTO)
+                .toList();
     }
 
     @Override
@@ -68,6 +72,21 @@ public class ProductServiceImp implements ProductService {
                     "or id Seller not register in Product: " + idSeller
             );
         }
+    }
+
+    public GetProductDTO convertProductsDTO(Product product) {
+        return new GetProductDTO(
+                product.getId_product(),
+                product.getName(),
+                product.getDescription(),
+                product.getStock(),
+                product.getState(),
+                product.getPrice(),
+                product.getMeasurementUnit(),
+                product.getUrlImage(),
+                product.getSeller().getId_seller(),
+                product.getCategory().getId_category()
+        );
     }
 
 }
