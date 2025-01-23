@@ -1,0 +1,97 @@
+package com.rojas.dev.XCampo.Auditor;
+
+import com.rojas.dev.XCampo.service.Interface.AuditoriaService;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class AuditoriaAspect {
+
+    @Autowired
+    private AuditoriaService auditoriaArchivoService;
+
+
+    /**
+     * Audita INSERT en la base de datos
+     * @param joinPoint punto de union
+     * @param result resultado del INSERT
+     */
+    @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.insert*(..))", returning = "result")
+    public void auditarInsert(JoinPoint joinPoint, Object result) {
+        String usuario = getUserNameAuthenticate();
+        String entidad = result.getClass().getSimpleName();
+        Long id = getIdEntity(result);
+
+        auditoriaArchivoService.registerAudit(
+                usuario,
+                "CREADO",
+                entidad,
+                id,
+                result.toString()
+        );
+    }
+
+    /**
+     * audita UPDATE en la base de datos
+     * @param joinPoint
+     * @param result
+     */
+    @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.update*(..))", returning = "result")
+    public void auditarUpdate(JoinPoint joinPoint, Object result) {
+        String usuario = getUserNameAuthenticate();
+        String entidad = result.getClass().getSimpleName();
+        Long id = getIdEntity(result);
+
+        auditoriaArchivoService.registerAudit(
+                usuario,
+                "MODIFICADO",
+                entidad,
+                id,
+                result.toString()
+        );
+    }
+
+    /**
+     * audita DELETE en la base de datos
+     * @param joinPoint
+     */
+    @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.delete*(..))", returning = "resul")
+    public void auditarDelete(JoinPoint joinPoint) {
+        String usuario = getUserNameAuthenticate();
+        Object[] args = joinPoint.getArgs();
+        if (args.length > 0) {
+            Long id = (Long) args[0];
+            String entidad = joinPoint.getSignature().getDeclaringTypeName();
+
+            auditoriaArchivoService.registerAudit(
+                    usuario,
+                    "ELIMINADO",
+                    entidad,
+                    id,
+                    "Recurso eliminado"
+            );
+        }
+    }
+
+    /**
+     * accede al context holder de spring security
+     * @return user name de spring
+     */
+    private String getUserNameAuthenticate() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private Long getIdEntity(Object entidad) {
+        try {
+            return (Long) entidad.getClass().getMethod("getId").invoke(entidad);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
+

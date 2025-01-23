@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration  debug="true">
+
+<!-- AUDITORIA -->
+    <!-- Appender para archivo de auditoría -->
+    <appender name="AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/auditoria.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/auditoria-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level - %msg%n</pattern>
+        </encoder>
+
+    </appender>
+
+    <!-- Logger para Auditoría -->
+    <logger name="AuditLogger" level="INFO" additivity="false">
+        <appender-ref ref="AUDIT_FILE" />
+    </logger>
+
+<!-- LOGGING -->
+    <!-- Configuración para Logging Orientado a Aspectos -->
+    <appender name="ASPECT_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/aspectos.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/aspectos-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date | %-5level | %logger{36} | %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger para Aspectos -->
+    <logger name="AspectLogger" level="INFO" additivity="false">
+        <appender-ref ref="ASPECT_LOG_FILE" />
+    </logger>
+
+<!-- LOGS GLOBALES -->
+    <!-- Configuración para Logs Globales -->
+    <appender name="GLOBAL_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/global.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/global-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date | %-5level | %logger{36} | %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="GLOBAL_LOG_FILE" />
+    </root>
+</configuration>

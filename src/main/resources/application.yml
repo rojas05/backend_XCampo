@@ -2,11 +2,17 @@ spring:
   application:
     name: XCampo
   datasource:
-    url: jdbc:mariadb://localhost:3306/XCampo
+    url: jdbc:mariadb://localhost:3307/XCampo
     username: root
-    password: root
+    password: 1234567890
     driver-class-name: org.mariadb.jdbc.Driver
+
   jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
     show-sql: true
     hibernate:
       ddl-auto: update
@@ -15,6 +21,7 @@ spring:
 
 server:
   port: 8080
+  address: 0.0.0.0
   servlet:
     context-path: /XCampo/api/v1
 
@@ -29,3 +36,16 @@ firebase:
     path: agromarket-3d34d-firebase-adminsdk-flhqr-6a352e2853.json
   storage:
     bucket: agromarket-3d34d.appspot.com
+
+jwt:
+    secret : miClaveSecreta
+    secretKey : LKFLGJLJDFHJKDHFJKGJKSADFKJADSHFJKGKDJSHGDFKJGH
+    expiration : 900000 # 15 minutos en milisegundos para el Access Token
+    refreshExpiration : 1296000000 # 7 días en milisegundos para el Refresh Token
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          logging: DEBUG
+

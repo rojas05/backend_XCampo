@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -44,5 +46,21 @@ public class FirebaseStorageServiceImp implements FirebaseStorageService {
         Blob blob = bucket.create(phat+fileName,file.getBytes(),file.getContentType());
 
         return blob.getMediaLink();
+    }
+
+    @Override
+    public String uploadLogFile(String rutaArchivo, String nombreArchivo) {
+        try {
+            File archivo = new File(rutaArchivo);
+            FileInputStream contenido = new FileInputStream(archivo);
+
+            Bucket bucket = StorageClient.getInstance().bucket();
+            Blob blob = bucket.create("logs/" + nombreArchivo, contenido, "text/plain");
+
+            return blob.getMediaLink(); // Devuelve el enlace público del archivo
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

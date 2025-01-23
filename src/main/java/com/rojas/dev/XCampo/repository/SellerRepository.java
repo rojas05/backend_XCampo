@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -33,4 +34,16 @@ public interface SellerRepository extends JpaRepository  <Seller, Long> {
     @Query("UPDATE Seller s SET s.img = :img WHERE s.id_seller = :id_seller")
     void updateSellerImg(@Param("id_seller") Long idSeller,
                       @Param("img") String img);
+
+    @Query("SELECT s FROM Seller s " +
+            "INNER JOIN s.rol r " +
+            "INNER JOIN r.user u WHERE u.city = :city")
+    Optional<List<Seller>> getSellerByCity(
+            @Param("city") String city
+    );
+
+    @Query("SELECT s FROM Seller s WHERE s.location = :location")
+    Optional<List<Seller>> getSellerByLocation(
+            @Param("location") String location
+    );
 }

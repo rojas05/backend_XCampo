@@ -10,6 +10,7 @@ import com.rojas.dev.XCampo.service.Interface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class RolesServiceImp implements RolesService {
 
+
     @Autowired
     private RolesRepository rolesRepository;
 
@@ -28,7 +30,7 @@ public class RolesServiceImp implements RolesService {
     private UserService userService;
 
     @Override
-    public ResponseEntity<?> insertNewRolUser(Roles role, Long user) {
+    public ResponseEntity<?> insert(Roles role, Long user) {
         Optional<User> result = userService.findByIdUser(user);
         role.setUser(result.orElse(null));
         rolesRepository.save(role);

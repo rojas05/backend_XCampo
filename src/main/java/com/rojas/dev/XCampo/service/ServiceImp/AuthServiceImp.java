@@ -13,9 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -38,8 +39,8 @@ public class AuthServiceImp implements AuthService {
     public ResponseEntity<?> login(LoginRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getMail(),request.getPassword()));
-            UserDetails user = userRepository.findByEmail(request.getMail()).orElseThrow();
-            String token = jwtService.getToken(user);
+            User user = userRepository.findByEmail(request.getMail()).orElseThrow();
+            AuthResponse token = jwtService.getToken(user, user.getUser_id());
             return ResponseEntity.ok(token);
         }catch (Exception e){
             return  ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -54,6 +55,7 @@ public class AuthServiceImp implements AuthService {
             if (result.isPresent()){
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("user mail exist " + result.get().getEmail());
             }else {
+                System.out.println(passwordEncoder.encode(request.getPassword()));
                 User user = User.builder()
                         .name(request.getName())
                         .password(passwordEncoder.encode(request.getPassword()))
@@ -64,7 +66,7 @@ public class AuthServiceImp implements AuthService {
                         .build();
 
                 userRepository.save(user);
-                return  ResponseEntity.ok(AuthResponse.builder().token(jwtService.getToken(user)).build());
+                return  ResponseEntity.ok(jwtService.getToken(user,user.getUser_id()));
             }
         } catch (Exception e){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

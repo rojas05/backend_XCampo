@@ -1,14 +1,13 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 
+import com.rojas.dev.XCampo.Auth.AuthResponse;
 import com.rojas.dev.XCampo.exception.TokenExpiredException;
 import com.rojas.dev.XCampo.service.Interface.JwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +20,22 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImp implements JwtService {
 
-    private static final String KEY = "5644SD5S4DFS54F5D4FS5DF4SD54F5DF4G65FDG4DF5G4F54GFG456F4GF";
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.secretKey}")
+    private String KEY;
+
+    @Value("${jwt.expiration}")
+    private long accessTokenExpiration; // 15 minutos
+    @Value("${jwt.refreshExpiration}")
+    private long refreshTokenExpiration; // 7 días
 
     @Override
-    public String getToken(UserDetails user) {
-        return generateToken(new HashMap<>(), user);
+    public AuthResponse getToken(UserDetails user, Long id_user) {
+        String token = generateToken(new HashMap<>(), user.getUsername());
+        String tokenRefresh = generateRefreshToken(user);
+        return AuthResponse.builder().token(token).refreshToken(tokenRefresh).id_user(id_user).build();
     }
 
     @Override
@@ -39,13 +49,51 @@ public class JwtServiceImp implements JwtService {
         return (mail.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails user) {
+    @Override
+    public String generateRefreshToken(UserDetails user) {
+        return Jwts
+                .builder()
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    @Override
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Claims claims = getAllClaims(refreshToken);
+            return claims.getExpiration().after(new Date());
+        } catch (ExpiredJwtException ex) {
+            return false; // Token expirado
+        } catch (JwtException ex) {
+            throw new IllegalArgumentException("Refresh token inválido");
+        }
+    }
+
+    @Override
+    public String refreshAccessToken(String refreshToken) {
+        if (!validateRefreshToken(refreshToken)) {
+            throw new IllegalArgumentException("Refresh token inválido o expirado");
+        }
+
+        String username = getUserNameFromToken(refreshToken);
+        Map<String, Object> extraClaims = new HashMap<>();
+        return generateToken(extraClaims, username);
+    }
+
+    public String getUsernameFromToken(String token){
+        return getClaim(token, Claims::getSubject);
+    }
+
+    private String generateToken(Map<String, Object> extraClaims, String user) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getUsername())
+                .setSubject(user)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000L*60*60*24))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -54,6 +102,7 @@ public class JwtServiceImp implements JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 
     private Claims getAllClaims (String token) {
         try {

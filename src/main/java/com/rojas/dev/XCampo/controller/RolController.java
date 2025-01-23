@@ -15,7 +15,7 @@ public class RolController {
 
     @PostMapping("{userId}")
     public ResponseEntity<?> insertRol(@RequestBody Roles rol, @PathVariable Long userId){
-        return roleService.insertNewRolUser(rol, userId);
+        return roleService.insert(rol, userId);
     }
 
     @GetMapping("{userId}")

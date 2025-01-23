@@ -127,4 +127,33 @@ public class SellerServiceImp implements SellerService {
         return null;
     }
 
+    @Override
+    public ResponseEntity<?> getSellerByCity(String city) {
+        try {
+            Optional<List<Seller>> result = sellerRepository.getSellerByCity(city);
+            if(result.isPresent())
+                return ResponseEntity.ok((result));
+            else
+                return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                        .body("Na data");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred while update the seller: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getSellerByLocation(String location) {
+        try {
+            Optional<List<Seller>> result = sellerRepository.getSellerByLocation(location);
+            if(result.isPresent())
+                return ResponseEntity.ok((result));
+            else
+                return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                        .body("No data");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred while update the seller: " + e.getMessage());
+        }
+    }
 }

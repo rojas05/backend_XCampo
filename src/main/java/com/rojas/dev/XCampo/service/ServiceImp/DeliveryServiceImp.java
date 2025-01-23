@@ -24,6 +24,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class DeliveryServiceImp implements DeliveryService {
@@ -69,7 +71,6 @@ public class DeliveryServiceImp implements DeliveryService {
                     .path("/{id}")
                     .buildAndExpand(delivery.getId())
                     .toUri();
-
             return ResponseEntity.created(location).body(delivery);
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

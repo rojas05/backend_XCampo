@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface RolesService {
 
-    ResponseEntity<?> insertNewRolUser(Roles role, Long user);
+    ResponseEntity<?> insert(Roles role, Long user);
 
     ResponseEntity<?> getRolesByIdUser(Long idUser);
 

@@ -9,4 +9,5 @@ public interface FirebaseStorageService {
 
     ResponseEntity<?> uploadMultipleFile(List<MultipartFile> file, Long idSeller, String context);
 
+    String uploadLogFile(String rutaArchivo, String nombreArchivo);
 }

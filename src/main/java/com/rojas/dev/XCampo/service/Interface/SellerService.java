@@ -20,4 +20,8 @@ public interface SellerService {
 
     // Obtener ganacias
     BigDecimal getTotalEarnings(Long idSeller);
+
+    ResponseEntity<?> getSellerByCity(String city);
+
+    ResponseEntity<?> getSellerByLocation(String location);
 }

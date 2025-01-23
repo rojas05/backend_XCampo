@@ -48,5 +48,14 @@ public class SellerController {
         return sellerService.getSellerById(id_seller);
     }
 
+    @GetMapping("city/{city}")
+    public ResponseEntity<?> getSellerByCity(@PathVariable String city){
+        return sellerService.getSellerByCity(city);
+    }
+
+    @GetMapping("location/{location}")
+    public ResponseEntity<?> getSellerByLocation(@PathVariable String location){
+        return sellerService.getSellerByLocation(location);
+    }
 }
 
