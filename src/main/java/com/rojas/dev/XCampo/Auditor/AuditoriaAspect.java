@@ -31,7 +31,6 @@ public class AuditoriaAspect {
                 usuario,
                 "CREADO",
                 entidad,
-                id,
                 result.toString()
         );
     }
@@ -51,7 +50,6 @@ public class AuditoriaAspect {
                 usuario,
                 "MODIFICADO",
                 entidad,
-                id,
                 result.toString()
         );
     }
@@ -65,14 +63,12 @@ public class AuditoriaAspect {
         String usuario = getUserNameAuthenticate();
         Object[] args = joinPoint.getArgs();
         if (args.length > 0) {
-            Long id = (Long) args[0];
             String entidad = joinPoint.getSignature().getDeclaringTypeName();
 
             auditoriaArchivoService.registerAudit(
                     usuario,
                     "ELIMINADO",
                     entidad,
-                    id,
                     "Recurso eliminado"
             );
         }
@@ -80,11 +76,12 @@ public class AuditoriaAspect {
 
     /**
      * accede al context holder de spring security
-     * @return user name de spring
+     * @return userName autenticado en spring boot
      */
     private String getUserNameAuthenticate() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
+
 
     private Long getIdEntity(Object entidad) {
         try {

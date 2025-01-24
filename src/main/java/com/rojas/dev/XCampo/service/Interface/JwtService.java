@@ -1,6 +1,8 @@
 package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.Auth.AuthResponse;
+import com.rojas.dev.XCampo.Auth.TokenRefreshResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtService {
@@ -11,9 +13,9 @@ public interface JwtService {
 
     boolean isTokenValid(String token, UserDetails userDetails);
 
-    String generateRefreshToken(UserDetails user);
+    String generateRefreshToken(String user);
 
     boolean validateRefreshToken(String refreshToken);
 
-    String refreshAccessToken(String refreshToken);
+    ResponseEntity<?> refreshAccessToken(String refreshToken);
 }

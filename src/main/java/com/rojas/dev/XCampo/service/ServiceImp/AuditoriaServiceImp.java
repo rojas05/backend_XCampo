@@ -18,14 +18,13 @@ public class AuditoriaServiceImp implements AuditoriaService {
      * @param usuario
      * @param accion
      * @param entidad
-     * @param id
      * @param detalles
      */
     @Override
-    public void registerAudit(String usuario, String accion, String entidad, Long id, String detalles) {
+    public void registerAudit(String usuario, String accion, String entidad, String detalles) {
         String registro = String.format(
-                "Usuario: %s | Acción: %s | Entidad: %s | ID: %s | Detalles: %s",
-                usuario, accion, entidad, id, detalles
+                "Usuario: %s | Acción: %s | Entidad: %s | Detalles: %s",
+                usuario, accion, entidad, detalles
         );
         AUDITORIA_LOGGER.info(registro);
     }

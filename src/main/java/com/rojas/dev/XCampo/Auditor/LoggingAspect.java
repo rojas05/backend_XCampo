@@ -3,6 +3,7 @@ package com.rojas.dev.XCampo.Auditor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 
@@ -25,9 +26,20 @@ public class LoggingAspect {
 
     @AfterReturning(pointcut = "controllerPointcut()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result){
+
+        String resultSummary;
+
+        if (result instanceof ResponseEntity) {
+            ResponseEntity<?> response = (ResponseEntity<?>) result;
+            resultSummary = "Status: " + response.getStatusCode();
+
+        } else {
+            resultSummary = result != null ? result.toString() : "null";
+        }
+
         aspectLogger.info("Método ejecutado: {}, Retorno: {}",
                 joinPoint.getSignature().toShortString(),
-                result
+                resultSummary
                 );
     }
 

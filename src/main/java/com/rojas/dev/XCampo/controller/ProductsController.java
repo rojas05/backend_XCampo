@@ -20,7 +20,7 @@ public class ProductsController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<?> newProduct(@RequestBody Product product) {
+    public ResponseEntity<?> insertProduct(@RequestBody Product product) {
         var idSeller = product.getSeller().getId_seller();
         var idCategory = product.getCategory().getId_category();
 

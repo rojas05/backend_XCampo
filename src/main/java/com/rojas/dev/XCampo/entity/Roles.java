@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rojas.dev.XCampo.enumClass.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -24,14 +25,17 @@ public class Roles {
     private User user;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
     private Seller seller;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
     private Client client;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
     private DeliveryMan deliveryMan;
 }

@@ -2,12 +2,16 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 
 
 import com.rojas.dev.XCampo.Auth.AuthResponse;
+import com.rojas.dev.XCampo.Auth.TokenRefreshRequest;
+import com.rojas.dev.XCampo.Auth.TokenRefreshResponse;
 import com.rojas.dev.XCampo.exception.TokenExpiredException;
 import com.rojas.dev.XCampo.service.Interface.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +38,7 @@ public class JwtServiceImp implements JwtService {
     @Override
     public AuthResponse getToken(UserDetails user, Long id_user) {
         String token = generateToken(new HashMap<>(), user.getUsername());
-        String tokenRefresh = generateRefreshToken(user);
+        String tokenRefresh = generateRefreshToken(user.getUsername());
         return AuthResponse.builder().token(token).refreshToken(tokenRefresh).id_user(id_user).build();
     }
 
@@ -50,10 +54,10 @@ public class JwtServiceImp implements JwtService {
     }
 
     @Override
-    public String generateRefreshToken(UserDetails user) {
+    public String generateRefreshToken(String user) {
         return Jwts
                 .builder()
-                .setSubject(user.getUsername())
+                .setSubject(user)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
@@ -73,14 +77,23 @@ public class JwtServiceImp implements JwtService {
     }
 
     @Override
-    public String refreshAccessToken(String refreshToken) {
+    public ResponseEntity<?> refreshAccessToken(String refreshToken) {
         if (!validateRefreshToken(refreshToken)) {
             throw new IllegalArgumentException("Refresh token inválido o expirado");
         }
 
-        String username = getUserNameFromToken(refreshToken);
-        Map<String, Object> extraClaims = new HashMap<>();
-        return generateToken(extraClaims, username);
+
+        try {
+            String username = getUserNameFromToken(refreshToken);
+            Map<String, Object> extraClaims = new HashMap<>();
+            String token = generateToken(extraClaims, username);
+            String tokenRefresh = generateRefreshToken(username);
+            return ResponseEntity.ok(new TokenRefreshResponse(token,tokenRefresh));
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired refresh token");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error");
+        }
     }
 
     public String getUsernameFromToken(String token){

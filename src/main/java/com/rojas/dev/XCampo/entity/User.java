@@ -3,10 +3,7 @@ package com.rojas.dev.XCampo.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rojas.dev.XCampo.enumClass.ClientRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +35,7 @@ public class User implements UserDetails {
     private String NFSid;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Roles>roles = new HashSet<>();
 

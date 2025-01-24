@@ -1,7 +1,9 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +22,8 @@ public class Client {
     private String location_description;
 
     @OneToOne
+    @JsonIgnore
+    @ToString.Exclude
     @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
