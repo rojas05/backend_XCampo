@@ -24,14 +24,13 @@ public class FirebaseStorageServiceImp implements FirebaseStorageService {
         for (MultipartFile image : images) {
             try {
                 String imageUrl = uploadFile(image, idSeller, context);
-                url = url.concat("[" + imageUrl +"]"+ " ");
+                url = url.concat(imageUrl+ " ");
             }catch (Exception e){
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Error occurred " + e);
             }
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(url);
+        return ResponseEntity.ok(url);
     }
 
 

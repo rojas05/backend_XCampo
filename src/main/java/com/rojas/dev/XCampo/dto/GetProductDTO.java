@@ -14,7 +14,7 @@ public class GetProductDTO {
     private String description;
     private Integer stock;
     private Boolean state;
-    private Double price;
+    private Integer price;
     private MeasurementUnit measurementUnit;
     private String urlImage;
     private Long sellerId;

@@ -16,7 +16,7 @@ public class GetCartItemDTO {
     // date product
     private Long productId;
     private String productName;
-    private Double productPrice;
+    private Integer productPrice;
     private Integer productStock;
     private Boolean productState;
     // date cart item

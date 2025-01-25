@@ -29,7 +29,7 @@ public class Product {
 
     private Boolean state;
 
-    private Double price;
+    private Integer price;
 
     @Enumerated(EnumType.STRING)
     private MeasurementUnit measurementUnit;
@@ -37,17 +37,21 @@ public class Product {
     @Column(length = 1000)
     private String UrlImage;
 
-    @OneToMany(cascade = CascadeType.ALL)
+
     @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<CartItem> itemCarts = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+
     @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Qualification> qualification = new HashSet<>();
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Seller seller;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 
