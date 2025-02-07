@@ -48,8 +48,8 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         return shoppingCarRepository.save(addShoppingCart);
     }
 
-    public Shopping_cart addItemToCart(Long cartId, Long itemId) {
-        Shopping_cart cart = findByIdShoppingCard(cartId);
+    public Shopping_cart addItemToCart(Long cartIds, Long itemId) {
+        Shopping_cart cart = findByIdShoppingCard(cartIds);
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
 
