@@ -36,6 +36,25 @@ public class AuditoriaAspect {
     }
 
     /**
+     * Audita INSERT en la base de datos
+     * @param joinPoint punto de union
+     * @param result resultado del INSERT
+     */
+    @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.create*(..))", returning = "result")
+    public void auditarCreate(JoinPoint joinPoint, Object result) {
+        String usuario = getUserNameAuthenticate();
+        String entidad = result.getClass().getSimpleName();
+        Long id = getIdEntity(result);
+
+        auditoriaArchivoService.registerAudit(
+                usuario,
+                "CREADO",
+                entidad,
+                result.toString()
+        );
+    }
+
+    /**
      * audita UPDATE en la base de datos
      * @param joinPoint
      * @param result

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -26,5 +27,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("UPDATE Product p SET p.UrlImage = :img WHERE p.id_product = :id_product")
     void updateProductImg(@Param("id_product") Long idSeller,
                          @Param("img") String img);
+
+    @Transactional
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%',:letter,'%')) " +
+            "OR LOWER(p.description) LIKE LOWER(CONCAT('%',:letter,'%')) " +
+            "AND p.seller.rol.user.city = :city")
+    List<Product> search(@Param("letter") String letter, @Param("city") String city);
 
 }

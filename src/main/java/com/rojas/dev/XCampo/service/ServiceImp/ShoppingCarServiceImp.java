@@ -12,6 +12,7 @@ import com.rojas.dev.XCampo.repository.CartItemRepository;
 import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
 import com.rojas.dev.XCampo.service.Interface.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,8 +49,8 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         return shoppingCarRepository.save(addShoppingCart);
     }
 
-    public Shopping_cart addItemToCart(Long cartIds, Long itemId) {
-        Shopping_cart cart = findByIdShoppingCard(cartIds);
+    public Shopping_cart addItemToCart(Long cartId, Long itemId) {
+        Shopping_cart cart = findByIdShoppingCard(cartId);
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
 
@@ -98,23 +99,13 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     }
 
     // COnvertir en un dto el carrito
-    public GetShoppingCartDTO convertToShoppingCartDTO(Shopping_cart shoppingCart) {
-        var cartItemDTOList = cartItemRepository.findByIdShoppingCart(shoppingCart.getId_cart()).stream()
-                .map(this::convertToCartItemDTO)
-                .collect(Collectors.toSet());
-
-        return new GetShoppingCartDTO(
-                shoppingCart.getId_cart(),
-                shoppingCart.getClient().getId_client(),
-                shoppingCart.getClient().getName(),
-                shoppingCart.isStatus(),
-                shoppingCart.getDateAdded(),
-                shoppingCart.getTotalEarnings(),
-                cartItemDTOList
-        );
+    @Override
+    public ResponseEntity<?> getIdCartByIdUser(Long id) {
+        return null;
     }
 
-    /*public GetShoppingCartDTO convertToShoppingCartDTOFilter(Shopping_cart shoppingCart, Set<CartItem> filteredItems) {
+
+    public GetShoppingCartDTO convertToShoppingCartDTOFilter(Shopping_cart shoppingCart, Set<CartItem> filteredItems) {
         var itemsDTO = filteredItems.stream()
                 .map(this::convertToCartItemDTO)
                 .collect(Collectors.toSet());
@@ -130,7 +121,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
                 shoppingCart.getTotalEarnings(),
                 itemsDTO
         );
-    }*/
+    }
 
     // Convertir en un dto los items del carrito
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {

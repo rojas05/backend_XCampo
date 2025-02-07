@@ -22,7 +22,7 @@ public class ClientController {
     }
 
     @GetMapping("idUser/{id_user}")
-    public ResponseEntity<?> getIdSellerByIdUser(@PathVariable Long id_user){
+    public ResponseEntity<?> getIdClientByIdUser(@PathVariable Long id_user){
         return clientService.getIdClientByUser(id_user);
     }
 

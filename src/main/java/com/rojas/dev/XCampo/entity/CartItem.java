@@ -21,8 +21,8 @@ public class CartItem {
     private Product product;
 
     @Column(nullable = false)
-    private int quantity;
+    private Long quantity;
 
     @Column(nullable = false)
-    private double unitPrice;
+    private Long unitPrice;
 }

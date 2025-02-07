@@ -25,7 +25,7 @@ public class Product {
 
     private String description;
 
-    private Integer stock;
+    private Long stock;
 
     private Boolean state;
 

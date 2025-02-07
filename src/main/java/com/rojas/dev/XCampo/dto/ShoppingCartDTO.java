@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Data
 public class ShoppingCartDTO {
     private Long clientId;
-    private Long itemId;
+    private Long itemId; //para?
     private boolean status = false;
     private LocalDate dateAdded;
 }

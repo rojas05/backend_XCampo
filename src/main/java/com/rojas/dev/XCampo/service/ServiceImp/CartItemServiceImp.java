@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartItemServiceImp implements CartItemService {
@@ -27,6 +28,7 @@ public class CartItemServiceImp implements CartItemService {
 
     @Autowired
     private ProductRepository productRepository;
+
 
     @Override
     public void addProductToCart(CartItemDTO cartItem) {
@@ -53,7 +55,7 @@ public class CartItemServiceImp implements CartItemService {
     }
 
     @Override
-    public GetCartItemDTO updateCarItem(Long idCartItem, int quantity) {
+    public GetCartItemDTO updateCarItem(Long idCartItem, Long quantity) {
         var cartItem = findIdCartItem(idCartItem);
         validateStockAvailability(quantity, cartItem.getProduct().getStock());
 
@@ -68,6 +70,12 @@ public class CartItemServiceImp implements CartItemService {
         cartItemRepository.deleteById(idCartItem);
     }
 
+    @Override
+    public Long getItemsTotal(Long idShoppingCard) {
+        Optional<Shopping_cart> existingCart = shoppingCartRepository.findById(idShoppingCard);
+        return cartItemRepository.getItemsTotal(existingCart.get());
+    }
+
     public GetCartItemDTO convertToCartItemDTO(CartItem cartItem) {
         return new GetCartItemDTO(
                 cartItem.getId_cart_item(),
@@ -76,6 +84,7 @@ public class CartItemServiceImp implements CartItemService {
                 cartItem.getCart().getDateAdded(),
                 cartItem.getProduct().getId_product(),
                 cartItem.getProduct().getName(),
+                cartItem.getProduct().getUrlImage(),
                 cartItem.getProduct().getPrice(),
                 cartItem.getProduct().getStock(),
                 cartItem.getProduct().getState(),
@@ -84,7 +93,7 @@ public class CartItemServiceImp implements CartItemService {
         );
     }
 
-    private void validateStockAvailability(int requestedQuantity, int availableStock) {
+    private void validateStockAvailability(Long requestedQuantity, Long availableStock) {
         if (requestedQuantity > availableStock) {
             throw new InvalidDataException("Insufficient stock for product");
         }

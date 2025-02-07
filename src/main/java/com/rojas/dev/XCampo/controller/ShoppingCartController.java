@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
+import com.rojas.dev.XCampo.dto.ResponseCartItemDTO;
 import com.rojas.dev.XCampo.dto.ShoppingCartDTO;
 import com.rojas.dev.XCampo.entity.Shopping_cart;
 import com.rojas.dev.XCampo.repository.CartItemRepository;
@@ -31,7 +32,7 @@ public class ShoppingCartController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProductShoppingCart(@RequestBody ShoppingCartDTO shoppingCart) throws JsonProcessingException {
-        Shopping_cart newProductsAdd = shoppingCartService.createShoppingCart(shoppingCart);
+        ResponseCartItemDTO newProductsAdd = shoppingCartService.createShoppingCart(shoppingCart);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(newProductsAdd);
     }
@@ -60,9 +61,12 @@ public class ShoppingCartController {
 
     @GetMapping("/{idClient}")
     public ResponseEntity<?> listAllProductsShoppingCart(@PathVariable Long idClient) {
-        List<GetShoppingCartDTO> products = shoppingCartService.listAllProductsShoppingCart(idClient);
+        Shopping_cart products = shoppingCartService.findByIdShoppingCard(idClient);
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
-
+    @GetMapping("get/{idClient}")
+    public ResponseEntity<?> getIdCart(@PathVariable Long idClient) {
+        return shoppingCartService.getIdCartByIdUser(idClient);
+    }
 }

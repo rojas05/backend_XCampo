@@ -26,11 +26,11 @@ public class CartItemController {
     @GetMapping("all/{idClient}")
     public ResponseEntity<?> findByIdCartItemAll(@PathVariable Long idClient) {
         var cartItem = cartItemService.listAllCartItem(idClient);
-        return ResponseEntity.status(HttpStatus.FOUND).body(cartItem);
+        return ResponseEntity.status(HttpStatus.OK).body(cartItem);
     }
 
     @PutMapping("{idItemCart}/{quantity}")
-    public ResponseEntity<?> updateItemCart(@PathVariable Long idItemCart, @PathVariable int quantity) {
+    public ResponseEntity<?> updateItemCart(@PathVariable Long idItemCart, @PathVariable Long quantity) {
         var cartItem = cartItemService.updateCarItem(idItemCart, quantity);
 
         Map<String, Object> response = new HashMap<>();
@@ -44,6 +44,12 @@ public class CartItemController {
     public ResponseEntity<?> deleteIdCartItem(@PathVariable Long idItemCart) {
         cartItemService.deleteCartItem(idItemCart);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Delete cart item with id: " + idItemCart);
+    }
+
+    @GetMapping("{idShoppingCart}")
+    public ResponseEntity<?> getItemsCart(@PathVariable Long idShoppingCart) {
+        Long response = cartItemService.getItemsTotal(idShoppingCart);
+        return ResponseEntity.ok(response);
     }
 
 }

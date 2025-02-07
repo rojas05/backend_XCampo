@@ -52,7 +52,7 @@ public class ClientServiceImp implements ClientService {
         if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
 
         Optional<Long> result = clientRepository.getIdClientByIdUser(user.get());
-        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client with id " + user_id + " not found.");
 
         return ResponseEntity.ok().body(result);
     }

@@ -12,7 +12,7 @@ public class GetProductDTO {
     private Long idProduct;
     private String name;
     private String description;
-    private Integer stock;
+    private Long stock;
     private Boolean state;
     private Integer price;
     private MeasurementUnit measurementUnit;

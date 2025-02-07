@@ -11,8 +11,10 @@ public interface CartItemService {
 
     List<GetCartItemDTO> listAllCartItem(Long idClient);
 
-    GetCartItemDTO updateCarItem(Long idCartItem, int quantity);
+    GetCartItemDTO updateCarItem(Long idCartItem, Long quantity);
 
     void deleteCartItem(Long idCartItem);
+
+    Long getItemsTotal(Long idShoppingCard);
 
 }

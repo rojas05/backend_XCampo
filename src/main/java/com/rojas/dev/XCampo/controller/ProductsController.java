@@ -69,4 +69,9 @@ public class ProductsController {
                 .body(products);
     }
 
+    @GetMapping("search")
+    public ResponseEntity<?> search(@RequestParam String city, @RequestParam String letter) {
+        return productService.search(letter,city);
+    }
+
 }
