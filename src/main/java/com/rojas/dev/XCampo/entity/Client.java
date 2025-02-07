@@ -21,8 +21,8 @@ public class Client {
 
     private String location_description;
 
-    @JsonIgnore
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
