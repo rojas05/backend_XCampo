@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.controller;
 
 import com.rojas.dev.XCampo.dto.GetProductDTO;
 import com.rojas.dev.XCampo.entity.Product;
+import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.service.Interface.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -42,7 +44,7 @@ public class ProductsController {
     }
 
     @PatchMapping("/{IdProduct}/imgUpdate/{idSeller}")
-    public ResponseEntity<?> updateProductImg(@RequestParam("images") String img, @PathVariable Long IdProduct, @PathVariable Long idSeller) {
+    public ResponseEntity<?> updateProductImg(@RequestParam("images") String img, @PathVariable Long IdProduct, @PathVariable Long idSeller){
         return productService.updateProductImg(img, IdProduct, idSeller);
     }
 
@@ -67,9 +69,9 @@ public class ProductsController {
                 .body(products);
     }
 
-    /*@GetMapping("search")
+    @GetMapping("search")
     public ResponseEntity<?> search(@RequestParam String city, @RequestParam String letter) {
         return productService.search(letter,city);
-    }*/
+    }
 
 }
