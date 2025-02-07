@@ -29,8 +29,7 @@ public class LoggingAspect {
 
         String resultSummary;
 
-        if (result instanceof ResponseEntity) {
-            ResponseEntity<?> response = (ResponseEntity<?>) result;
+        if (result instanceof ResponseEntity<?> response) {
             resultSummary = "Status: " + response.getStatusCode();
 
         } else {

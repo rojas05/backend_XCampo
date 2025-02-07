@@ -19,15 +19,16 @@ public class Shopping_cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_cart;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private Set<CartItem> items = new HashSet<>();
 
     @Column(nullable = false)
-    private boolean status = false;
+    private boolean status;
 
     // @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)

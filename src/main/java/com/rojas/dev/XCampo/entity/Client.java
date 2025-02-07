@@ -21,12 +21,12 @@ public class Client {
 
     private String location_description;
 
-    @OneToOne
     @JsonIgnore
-    @ToString.Exclude
+    @OneToOne
     @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Shopping_cart> shoppingCart = new HashSet<>();
 
