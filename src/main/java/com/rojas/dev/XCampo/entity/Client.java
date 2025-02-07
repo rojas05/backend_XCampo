@@ -23,7 +23,6 @@ public class Client {
 
     @OneToOne
     @JsonIgnore
-    @ToString.Exclude
     @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
