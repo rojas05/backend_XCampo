@@ -97,6 +97,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
                 .toList();
     }
 
+    // COnvertir en un dto el carrito
     public GetShoppingCartDTO convertToShoppingCartDTO(Shopping_cart shoppingCart) {
         var cartItemDTOList = cartItemRepository.findByIdShoppingCart(shoppingCart.getId_cart()).stream()
                 .map(this::convertToCartItemDTO)
@@ -131,6 +132,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         );
     }*/
 
+    // Convertir en un dto los items del carrito
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
         return new CartItemDTO(
                 cartItem.getId_cart_item(),
