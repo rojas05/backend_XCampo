@@ -30,13 +30,13 @@ public class Seller {
     @Column(length = 1000)
     private String img;
 
-    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     @JoinColumn(name = "fk_rol_id")
     private Roles rol;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
 }

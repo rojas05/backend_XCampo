@@ -3,16 +3,18 @@ package com.rojas.dev.XCampo.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rojas.dev.XCampo.enumClass.UserRole;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "role")
+@ToString(onlyExplicitlyIncluded = true)
 public class Roles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +23,9 @@ public class Roles {
     @Enumerated(EnumType.STRING)
     private UserRole nameRole;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
+    @ToString.Exclude
     private User user;
 
     @JsonIgnore
@@ -30,12 +34,17 @@ public class Roles {
     private Seller seller;
 
     @JsonIgnore
-    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
+    @ToString.Exclude
     private Client client;
 
     @JsonIgnore
-    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
+    @ToString.Exclude
     private DeliveryMan deliveryMan;
+
+    @Override
+    public int hashCode() {
+        return roles_id != null ? roles_id.hashCode() : 0;
+    }
 }
