@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.dto.CartItemDTO;
 import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
+import com.rojas.dev.XCampo.dto.ResponseCartItemDTO;
 import com.rojas.dev.XCampo.dto.ShoppingCartDTO;
 import com.rojas.dev.XCampo.entity.CartItem;
 import com.rojas.dev.XCampo.entity.Client;
@@ -32,11 +33,12 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     private ClientServiceImp clientServiceImp;
 
     @Override
-    public Shopping_cart createShoppingCart(ShoppingCartDTO shoppingCart) {
+    public ResponseCartItemDTO createShoppingCart(ShoppingCartDTO shoppingCart) {
         var client = clientServiceImp.findClientById(shoppingCart.getClientId());
-        var existingCart = findExistingCart(client);
+        Shopping_cart existingCart = findExistingCart(client);
 
-        if (existingCart != null) return existingCart;
+        if (existingCart != null) return response(existingCart);
+
 
         Shopping_cart addShoppingCart = new Shopping_cart();
         var total = totalEarnings(addShoppingCart.getId_cart());
@@ -45,7 +47,9 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         addShoppingCart.setStatus(shoppingCart.isStatus());
         addShoppingCart.setTotalEarnings(total);
 
-        return shoppingCarRepository.save(addShoppingCart);
+        Shopping_cart newShoppingCart = shoppingCarRepository.save(addShoppingCart);
+
+        return response(newShoppingCart);
     }
 
     public Shopping_cart addItemToCart(Long cartIds, Long itemId) {
@@ -114,6 +118,20 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         );
     }
 
+    public ResponseCartItemDTO response (Shopping_cart shoppingCart) {
+        Long items = cartItemRepository.getItemsTotal(shoppingCart);
+
+        return new ResponseCartItemDTO(
+                shoppingCart.getId_cart(),
+                shoppingCart.getClient(),
+                items,
+                shoppingCart.getDateAdded(),
+                shoppingCart.getTotalEarnings(),
+                shoppingCart.getOrder()
+        )
+                ;
+    }
+
     /*public GetShoppingCartDTO convertToShoppingCartDTOFilter(Shopping_cart shoppingCart, Set<CartItem> filteredItems) {
         var itemsDTO = filteredItems.stream()
                 .map(this::convertToCartItemDTO)
@@ -132,7 +150,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         );
     }*/
 
-    // Convertir en un dto los items del carrito
+    // Convertir en un DTO los items del carrito
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
         return new CartItemDTO(
                 cartItem.getId_cart_item(),

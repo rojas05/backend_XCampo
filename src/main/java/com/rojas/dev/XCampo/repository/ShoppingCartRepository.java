@@ -31,7 +31,11 @@ public interface ShoppingCartRepository extends JpaRepository<Shopping_cart, Lon
             "WHERE s.client.id_client = :clientId AND s.status = false")
     List<Shopping_cart> findStatusFalse(@Param("clientId") Long clientId);
 
-
+    @Transactional
+    @Query("SELECT s.status " +
+            "FROM Shopping_cart s " +
+            "WHERE s.client.id_client = :clientId AND s.status = false")
+    List<Shopping_cart> verifyStatusFalse(@Param("clientId") Long clientId);
 
 
 }

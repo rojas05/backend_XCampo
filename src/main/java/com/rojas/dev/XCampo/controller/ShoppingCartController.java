@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
+import com.rojas.dev.XCampo.dto.ResponseCartItemDTO;
 import com.rojas.dev.XCampo.dto.ShoppingCartDTO;
 import com.rojas.dev.XCampo.entity.Shopping_cart;
 import com.rojas.dev.XCampo.repository.CartItemRepository;
@@ -29,7 +30,7 @@ public class ShoppingCartController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProductShoppingCart(@RequestBody ShoppingCartDTO shoppingCart) throws JsonProcessingException {
-        Shopping_cart newProductsAdd = shoppingCartService.createShoppingCart(shoppingCart);
+        ResponseCartItemDTO newProductsAdd = shoppingCartService.createShoppingCart(shoppingCart);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(newProductsAdd);
     }
