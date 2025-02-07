@@ -19,6 +19,7 @@ public class Shopping_cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_cart;
 
+    // Funciona
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private Client client;
