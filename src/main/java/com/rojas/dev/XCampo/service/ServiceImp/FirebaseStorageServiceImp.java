@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 public class FirebaseStorageServiceImp implements FirebaseStorageService {
@@ -47,7 +47,7 @@ public class FirebaseStorageServiceImp implements FirebaseStorageService {
 
         Blob blob = bucket.create(path + fileName, file.getBytes(), file.getContentType());
 
-        String encodedPath = URLEncoder.encode(blob.getName(), StandardCharsets.UTF_8.toString());
+        String encodedPath = URLEncoder.encode(blob.getName(), StandardCharsets.UTF_8);
         String fileUrl = String.format(
                 "https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media",
                 bucket.getName(),

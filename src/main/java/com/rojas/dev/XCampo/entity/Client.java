@@ -26,6 +26,7 @@ public class Client {
     @JoinColumn(name = "fk_rol_id", updatable = false, nullable = false)
     private Roles rol;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Shopping_cart> shoppingCart = new HashSet<>();
 

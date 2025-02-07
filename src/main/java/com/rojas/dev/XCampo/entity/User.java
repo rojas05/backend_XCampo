@@ -35,7 +35,6 @@ public class User implements UserDetails {
     private String NFSid;
 
     @JsonIgnore
-    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Roles>roles = new HashSet<>();
 

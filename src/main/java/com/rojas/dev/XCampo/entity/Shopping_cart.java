@@ -25,10 +25,11 @@ public class Shopping_cart {
     private Client client;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<CartItem> items = new HashSet<>();
 
     @Column(nullable = false)
-    private boolean status = false;
+    private boolean status;
 
     // @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
