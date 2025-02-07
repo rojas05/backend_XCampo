@@ -23,7 +23,7 @@ public class Shopping_cart {
     @JsonIgnore
     private Client client;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private Set<CartItem> items = new HashSet<>();
 
     @Column(nullable = false)

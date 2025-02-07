@@ -16,8 +16,8 @@ import java.util.Optional;
 public interface SellerRepository extends JpaRepository  <Seller, Long> {
 
     @Transactional
-    @Query("SELECT s.id_seller FROM Seller s INNER JOIN s.rol r WHERE r.user = :user")
-    Optional<Long> getIdSellerByIdUser(@Param("user") User user);
+    @Query("SELECT s.id_seller FROM Seller s INNER JOIN s.rol r INNER JOIN r.user u WHERE u.user_id = :user")
+    Optional<Long> getIdSellerByIdUser(@Param("user") Long user);
 
     @Transactional
     @Modifying

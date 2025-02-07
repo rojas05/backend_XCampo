@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +48,20 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         return shoppingCarRepository.save(addShoppingCart);
     }
 
+    public Shopping_cart addItemToCart(Long cartId, Long itemId) {
+        Shopping_cart cart = findByIdShoppingCard(cartId);
+        CartItem item = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
+
+        cart.setItems((Set<CartItem>) item);
+        item.setCart(cart);
+        cart.getItems().add(item);
+        
+        updateCartTotal(cart);
+        
+        return shoppingCarRepository.save(cart);
+    }
+
     @Override
     public void deleteProduct(Long idShoppingCar) {
         Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
@@ -60,6 +75,13 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         entity.setStatus(state);
         entity.setTotalEarnings(totalEarnings(idShoppingCar));
         shoppingCarRepository.save(entity);
+    }
+
+    private void updateCartTotal(Shopping_cart cart) {
+        double total = cart.getItems().stream()
+                .mapToDouble(item -> item.getQuantity() * item.getUnitPrice())
+                .sum();
+        cart.setTotalEarnings(total);
     }
 
     @Override
@@ -78,7 +100,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     public GetShoppingCartDTO convertToShoppingCartDTO(Shopping_cart shoppingCart) {
         var cartItemDTOList = cartItemRepository.findByIdShoppingCart(shoppingCart.getId_cart()).stream()
                 .map(this::convertToCartItemDTO)
-                .toList();
+                .collect(Collectors.toSet());
 
         return new GetShoppingCartDTO(
                 shoppingCart.getId_cart(),
@@ -91,11 +113,23 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         );
     }
 
-    public double totalEarnings(Long IdCart) {
-        return cartItemRepository.findByIdShoppingCart(IdCart).stream()
-                .mapToDouble(CartItem::getUnitPrice)
-                .sum();
-    }
+    /*public GetShoppingCartDTO convertToShoppingCartDTOFilter(Shopping_cart shoppingCart, Set<CartItem> filteredItems) {
+        var itemsDTO = filteredItems.stream()
+                .map(this::convertToCartItemDTO)
+                .collect(Collectors.toSet());
+
+        var client = shoppingCart.getClient();
+
+        return new GetShoppingCartDTO(
+                shoppingCart.getId_cart(),
+                client.getId_client(),
+                client.getName(),
+                shoppingCart.isStatus(),
+                shoppingCart.getDateAdded(),
+                shoppingCart.getTotalEarnings(),
+                itemsDTO
+        );
+    }*/
 
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
         return new CartItemDTO(
@@ -114,6 +148,12 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         }
 
         return existingCarts.isEmpty() ? null : existingCarts.get(0);
+    }
+
+    public double totalEarnings(Long IdCart) {
+        return cartItemRepository.findByIdShoppingCart(IdCart).stream()
+                .mapToDouble(CartItem::getUnitPrice)
+                .sum();
     }
 
 }

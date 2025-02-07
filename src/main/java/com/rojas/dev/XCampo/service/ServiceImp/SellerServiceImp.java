@@ -94,11 +94,8 @@ public class SellerServiceImp implements SellerService {
 
     @Override
     public ResponseEntity<?> getIdSellerByUser(Long user_id) {
-        Optional<User> user = userRepository.findById(user_id);
-        if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
-
-        Optional<Long> result = sellerRepository.getIdSellerByIdUser(user.get());
-        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+        Optional<Long> result = sellerRepository.getIdSellerByIdUser(user_id);
+        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found. -");
 
         return ResponseEntity.ok().body(result);
     }

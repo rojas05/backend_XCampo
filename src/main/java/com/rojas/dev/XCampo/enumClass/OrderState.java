@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.enumClass;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum OrderState {
     EN_ESPERA,
@@ -9,8 +10,11 @@ public enum OrderState {
     LISTA_ENVIAR,
     FINALIZADA;
 
-    public static boolean contains(String value) {
+    // Metodo para encontrar el estado correspondiente
+    public static Optional<OrderState> fromString(String value) {
         return Arrays.stream(OrderState.values())
-                .anyMatch(state -> state.name().equalsIgnoreCase(value));
+                .filter(state -> state.name().replace("_", " ")
+                        .equalsIgnoreCase(value.replace("_", " ")))
+                .findFirst();
     }
 }

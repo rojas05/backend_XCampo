@@ -20,6 +20,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findOrdersByClientId(@Param("clientId") Long clientId);
 
     @Transactional
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "JOIN o.shoppingCart sc " +
+            "JOIN sc.items ci " +
+            "JOIN ci.product p " +
+            "WHERE p.seller.id_seller = :sellerId " +
+            "AND o.state = :state")
+    List<Order> findOrdersBySeller(@Param("state") OrderState state, @Param("sellerId") Long sellerId);
+
+    @Transactional
     @Query("SELECT o FROM Order o " +
             "WHERE o.state = :state AND o.shoppingCart.client.id_client = :clientId")
     Order findOrdersBySellerId(@Param("state") OrderState state, @Param("clientId") Long clientId);

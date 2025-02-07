@@ -11,6 +11,8 @@ public interface ShoppingCartService {
 
     Shopping_cart createShoppingCart(ShoppingCartDTO shoppingCart) throws JsonProcessingException;
 
+    Shopping_cart addItemToCart(Long cartId, Long itemId);
+
     void deleteProduct(Long idShoppingCar);
 
     void updateState(Long shoppingCart, boolean state);

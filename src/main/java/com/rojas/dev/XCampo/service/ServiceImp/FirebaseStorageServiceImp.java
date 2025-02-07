@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,18 +35,36 @@ public class FirebaseStorageServiceImp implements FirebaseStorageService {
         return ResponseEntity.ok(url);
     }
 
-
     private String uploadFile(MultipartFile file, Long idSeller, String context) throws IOException {
 
-        final String phat = context+"/"+idSeller+"/";
+        final String path = context+"/"+idSeller+"/";
 
-        String fileName = UUID.randomUUID().toString() + file.getOriginalFilename();
+        String fileName = file.getOriginalFilename();
 
         Bucket bucket = StorageClient.getInstance().bucket();
 
-        Blob blob = bucket.create(phat+fileName,file.getBytes(),file.getContentType());
+        deleteFile(path + fileName);
 
-        return blob.getMediaLink();
+        Blob blob = bucket.create(path + fileName, file.getBytes(), file.getContentType());
+
+        String encodedPath = URLEncoder.encode(blob.getName(), StandardCharsets.UTF_8.toString());
+        String fileUrl = String.format(
+                "https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media",
+                bucket.getName(),
+                encodedPath
+        );
+
+        return fileUrl;
+
+        //return blob.getMediaLink();
+    }
+
+    private void deleteFile(String filePath) {
+        Bucket bucket = StorageClient.getInstance().bucket();
+        Blob blob = bucket.get(filePath);
+        if (blob != null) {
+            blob.delete();
+        }
     }
 
     @Override

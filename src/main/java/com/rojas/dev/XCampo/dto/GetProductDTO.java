@@ -19,4 +19,5 @@ public class GetProductDTO {
     private String urlImage;
     private Long sellerId;
     private Long categoryId;
+    private String nameCategory;
 }

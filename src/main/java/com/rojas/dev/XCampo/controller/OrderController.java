@@ -40,6 +40,12 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
 
+    @GetMapping("/getSeller/{sellerId}/state/{state}")
+    public ResponseEntity<?> getOrderBySeller(@PathVariable Long sellerId, @PathVariable String state ){
+        var order = orderService.getOrdersBySellerID(sellerId, state);
+        return ResponseEntity.status(HttpStatus.FOUND).body(order);
+    }
+
     @PatchMapping("{idOrder}/{state}")
     public ResponseEntity<?> updateOrderState(@PathVariable Long idOrder, @PathVariable String state){
         var order = orderService.updateOrderState(idOrder, state);
