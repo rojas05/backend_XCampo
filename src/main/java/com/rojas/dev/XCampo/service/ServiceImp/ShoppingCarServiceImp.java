@@ -14,6 +14,7 @@ import com.rojas.dev.XCampo.service.Interface.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -80,7 +81,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         double total = cart.getItems().stream()
                 .mapToDouble(item -> item.getQuantity() * item.getUnitPrice())
                 .sum();
-        cart.setTotalEarnings(total);
+        cart.setTotalEarnings((long) total);
     }
 
     @Override
@@ -151,9 +152,9 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         return existingCarts.isEmpty() ? null : existingCarts.get(0);
     }
 
-    public double totalEarnings(Long IdCart) {
+    public Long totalEarnings(Long IdCart) {
         return cartItemRepository.findByIdShoppingCart(IdCart).stream()
-                .mapToDouble(CartItem::getUnitPrice)
+                .mapToLong(CartItem::getUnitPrice)
                 .sum();
     }
 

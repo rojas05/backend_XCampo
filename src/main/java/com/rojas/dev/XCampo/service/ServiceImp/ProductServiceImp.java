@@ -102,7 +102,7 @@ public class ProductServiceImp implements ProductService {
         if (!productRepository.existsByIdAndSellerId(idProduct, idSeller)) {
             throw new EntityNotFoundException(
                     "Product not found with ID: " + idProduct +
-                    "or id Seller not register in Product: " + idSeller
+                            "or id Seller not register in Product: " + idSeller
             );
         }
     }

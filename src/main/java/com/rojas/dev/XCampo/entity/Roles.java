@@ -21,19 +21,21 @@ public class Roles {
     @Enumerated(EnumType.STRING)
     private UserRole nameRole;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
     private Seller seller;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
     private Client client;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToOne(mappedBy = "rol")
     private DeliveryMan deliveryMan;
 }
