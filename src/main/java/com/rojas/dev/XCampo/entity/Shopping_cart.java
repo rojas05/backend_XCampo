@@ -19,12 +19,12 @@ public class Shopping_cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_cart;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     private Client client;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<CartItem> items = new HashSet<>();
 
     @Column(nullable = false)
