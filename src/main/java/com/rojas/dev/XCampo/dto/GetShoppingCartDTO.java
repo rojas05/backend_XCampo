@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -21,5 +23,5 @@ public class GetShoppingCartDTO {
     private boolean cartStatus;
     private LocalDate cartDateAdded;
     private double totalEarnings = 0;
-    private List<CartItemDTO> cartItems = new ArrayList<>();
+    private Set<CartItemDTO> cartItems = new HashSet<>();
 }

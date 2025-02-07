@@ -102,6 +102,6 @@ public class CartItemServiceImp implements CartItemService {
 
     public Shopping_cart findShoppingID(Long cartId) {
         return shoppingCartRepository.findById(cartId)
-                .orElseThrow(() -> new EntityNotFoundException("Shopping not found: " + cartId));
+                .orElseThrow(() -> new EntityNotFoundException("Shopping Cart not found: " + cartId));
     }
 }

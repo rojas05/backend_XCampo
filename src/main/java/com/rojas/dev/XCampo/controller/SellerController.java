@@ -34,7 +34,7 @@ public class SellerController {
     }
 
     @PatchMapping("imgUpdate/{idSeller}")
-    public ResponseEntity<?> updateSellerImg(@RequestParam("img") String img, @PathVariable Long idSeller){
+    public ResponseEntity<?> updateSellerImg(@RequestParam("images") String img, @PathVariable Long idSeller){
         return sellerService.updateSellerImg(img,idSeller);
     }
 

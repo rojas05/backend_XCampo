@@ -1,6 +1,8 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
 import com.rojas.dev.XCampo.dto.OrderDTO;
+import com.rojas.dev.XCampo.entity.CartItem;
 import com.rojas.dev.XCampo.entity.Order;
 import com.rojas.dev.XCampo.enumClass.OrderState;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
@@ -11,10 +13,11 @@ import com.rojas.dev.XCampo.service.Interface.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImp implements OrderService {
@@ -69,8 +72,21 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public List<OrderDTO> getOrdersBySellerID(Long sellerId, String state) {
+        if (!sellerRepository.existsById(sellerId))
+            throw new EntityNotFoundException("Seller not exist whit ID: " + sellerId);
+
+        OrderState orderState = OrderState.fromString(state)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
+
+        return orderRepository.findOrdersBySeller(orderState, sellerId).stream()
+                .map(this::convertToOrder)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public OrderDTO updateOrderState(Long idOrder, String state) {
-        if (!OrderState.contains(state)) throw new InvalidDataException("State is incorrect");
+        OrderState.fromString(state).orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
 
         var order = getOrderById(idOrder);
         order.setState(OrderState.valueOf(state.toUpperCase()));
@@ -81,8 +97,9 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public Double calculateEarningsOrder(Long sellerId) {
-        if (!sellerRepository.existsById(sellerId)) throw new EntityNotFoundException("Seller not exist whit ID: " + sellerId);
-        var order =orderRepository.findOrdersBySellerId(OrderState.ACEPTADA, sellerId);
+        if (!sellerRepository.existsById(sellerId))
+            throw new EntityNotFoundException("Seller not exist whit ID: " + sellerId);
+        var order = orderRepository.findOrdersBySellerId(OrderState.ACEPTADA, sellerId);
 
         return order != null ? calculateTotalEarnings(order) : 0.0;
     }
@@ -93,7 +110,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public OrderDTO convertToOrder(Order order){
+    public OrderDTO convertToOrder(Order order) {
         var shoppingCartDTO = shoppingCarServiceImp.convertToShoppingCartDTO(order.getShoppingCart());
 
         return new OrderDTO(
@@ -105,5 +122,24 @@ public class OrderServiceImp implements OrderService {
                 shoppingCartDTO
         );
     }
+
+    /*public OrderDTO convertToOrderFilter(Order order, Long sellerId) {
+
+        Set<CartItem> filteredItems = order.getShoppingCart().getItems().stream()
+                .filter(ci -> ci.getProduct().getSeller().getId_seller().equals(sellerId))
+                .collect(Collectors.toSet());
+
+        var shoppingCartDTO = shoppingCarServiceImp.convertToShoppingCartDTOFilter(order.getShoppingCart(), filteredItems);
+
+
+        return new OrderDTO(
+                order.getId_order(),
+                order.getState(),
+                order.getMessage(),
+                order.getDelivery(),
+                order.getPrice_delivery(),
+                shoppingCartDTO
+        );
+    }*/
 
 }

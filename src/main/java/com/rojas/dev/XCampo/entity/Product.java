@@ -20,7 +20,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_product;
 
-    @NotNull(message = "El nombre no puede ser nulo")
+    //@NotNull(message = "El nombre no puede ser nulo")
     private String name;
 
     private String description;
@@ -51,7 +51,6 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     private Seller seller;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 

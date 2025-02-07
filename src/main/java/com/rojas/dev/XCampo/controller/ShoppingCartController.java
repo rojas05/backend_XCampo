@@ -46,11 +46,16 @@ public class ShoppingCartController {
     @PutMapping("/{idShoppingCart}/{state}")
     public ResponseEntity<?> updateState(@PathVariable Long idShoppingCart, @PathVariable boolean state) {
         shoppingCartService.updateState(idShoppingCart, state);
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Update state product");
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(response);
+                .body("Update state product");
+    }
+
+    @PatchMapping("/cart/{cartId}/items/{itemId}")
+    public ResponseEntity<Shopping_cart> addItemToCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+        Shopping_cart cart = shoppingCartService.addItemToCart(cartId, itemId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(cart);
     }
 
     @GetMapping("/{idClient}")

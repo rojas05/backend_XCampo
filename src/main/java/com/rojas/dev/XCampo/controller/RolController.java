@@ -23,6 +23,11 @@ public class RolController {
         return roleService.getRolesByIdUser(userId);
     }
 
+    @GetMapping("id/{userId}")
+    public ResponseEntity<?> getIdRolesByIdUser(@PathVariable Long userId){
+        return roleService.getRolesById(userId);
+    }
+
     @PostMapping("/seller")
     public ResponseEntity<?> insertNewRol(@RequestBody Roles rol){
         return roleService.insertRoles(rol);
