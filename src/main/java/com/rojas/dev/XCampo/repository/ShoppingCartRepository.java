@@ -38,4 +38,9 @@ public interface ShoppingCartRepository extends JpaRepository<Shopping_cart, Lon
     List<Shopping_cart> verifyStatusFalse(@Param("clientId") Long clientId);
 
 
+    @Transactional
+    @Query("SELECT s.id_cart " +
+            "FROM Shopping_cart s " +
+            "WHERE s.client.rol.user.user_id = :idUser AND s.status = false")
+    Long getIdCartByIdUser(@Param("idUser") Long idUser);
 }

@@ -16,8 +16,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Transactional
     @Query("SELECT ci FROM CartItem ci " +
             "INNER JOIN ci.cart c " +
-            "INNER JOIN c.client cl " +
-            "WHERE cl.id_client = :clientId")
+            "WHERE c.id_cart = :clientId")
     List<CartItem> findByClientIdAll(@Param("clientId") Long clientId);
 
     @Transactional

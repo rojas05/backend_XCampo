@@ -63,5 +63,9 @@ public class ShoppingCartController {
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
+    @GetMapping("/id/{idUser}")
+    public ResponseEntity<?> getIdCartByIdUser(@PathVariable Long idUser) {
+        return shoppingCartService.getIdCartByIdUser(idUser);
+    }
 
 }

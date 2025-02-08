@@ -13,6 +13,9 @@ import com.rojas.dev.XCampo.repository.CartItemRepository;
 import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
 import com.rojas.dev.XCampo.service.Interface.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -99,6 +102,16 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         return shoppingCarRepository.findByClientId(idClient).stream()
                 .map(this::convertToShoppingCartDTO)
                 .toList();
+    }
+
+    @Override
+    public ResponseEntity<?> getIdCartByIdUser(Long idUser) {
+        try {
+            Long response = shoppingCarRepository.getIdCartByIdUser(idUser);
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
     }
 
     // Convertir en un dto el carrito

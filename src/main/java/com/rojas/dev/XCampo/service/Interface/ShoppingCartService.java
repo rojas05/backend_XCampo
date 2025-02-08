@@ -5,6 +5,7 @@ import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
 import com.rojas.dev.XCampo.dto.ResponseCartItemDTO;
 import com.rojas.dev.XCampo.dto.ShoppingCartDTO;
 import com.rojas.dev.XCampo.entity.Shopping_cart;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -21,5 +22,7 @@ public interface ShoppingCartService {
     Shopping_cart findByIdShoppingCard(Long id);
 
     List<GetShoppingCartDTO> listAllProductsShoppingCart(Long idClient);
+
+    ResponseEntity<?> getIdCartByIdUser(Long idUser);
 
 }
