@@ -16,8 +16,12 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Transactional
-    @Query("SELECT o FROM Order o WHERE o.shoppingCart.client.id_client = :clientId")
-    List<Order> findOrdersByClientId(@Param("clientId") Long clientId);
+    @Query("SELECT o FROM Order o WHERE o.shoppingCart.client.id_client = :clientId AND o.state =:state")
+    List<Order> findOrdersByClientId(@Param("clientId") Long clientId, @Param("state") OrderState state);
+
+    @Transactional
+    @Query("SELECT o FROM Order o WHERE o.shoppingCart.client.id_client = :clientId AND o.state !=:state")
+    List<Order> findOrdersByClientIdNext(@Param("clientId") Long clientId, @Param("state") OrderState state);
 
     @Transactional
     @Query("SELECT DISTINCT o FROM Order o " +

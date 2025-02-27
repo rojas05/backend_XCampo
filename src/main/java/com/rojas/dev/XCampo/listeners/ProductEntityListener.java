@@ -1,36 +1,32 @@
 package com.rojas.dev.XCampo.listeners;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.rojas.dev.XCampo.entity.Order;
+import com.rojas.dev.XCampo.dto.Notifications;
 import com.rojas.dev.XCampo.entity.Product;
+import com.rojas.dev.XCampo.enumClass.UserRole;
+import com.rojas.dev.XCampo.event.PersistCreatedEvent;
+import com.rojas.dev.XCampo.repository.NotificationService;
 import jakarta.persistence.PostPersist;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductEntityListener {
+        private static ApplicationEventPublisher eventPublisher;
 
-    private static KafkaTemplate<String,String> kafkaTemplate;
-
-    @Autowired
-    public  void init(KafkaTemplate<String,String> kafkaTemplate){
-        ProductEntityListener.kafkaTemplate = kafkaTemplate;
-    }
-
-    @PostPersist
-    public void onProductCreated(Product product){
-        try{
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            String orderJson = mapper.writeValueAsString(product);
-            kafkaTemplate.send("product-notifications", orderJson);
-            System.out.println("evento enviado a Kafka");
-        } catch (JsonProcessingException e) {
-            System.err.println("ERROR ====>" + e);
+        @Autowired
+        public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
+            ProductEntityListener.eventPublisher = eventPublisher;
         }
-    }
 
+        @PostPersist
+        public void onProductCreated(Product product) {
+            System.out.println("📩 Disparando evento de notificación para producto...");
+            Notifications notification = new Notifications(UserRole.CLIENT, "Nuevo producto", product.getName(), null,null);
+            eventPublisher.publishEvent(new PersistCreatedEvent(notification));
+        }
 }
+
+
+

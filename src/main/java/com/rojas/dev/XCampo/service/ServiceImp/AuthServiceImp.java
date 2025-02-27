@@ -58,6 +58,7 @@ public class AuthServiceImp implements AuthService {
                 System.out.println(passwordEncoder.encode(request.getPassword()));
                 User user = User.builder()
                         .name(request.getName())
+                        .department(request.getDepartment())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .city(request.getCity())
                         .cell(request.getCell())

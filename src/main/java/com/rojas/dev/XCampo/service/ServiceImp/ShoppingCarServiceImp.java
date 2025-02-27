@@ -108,6 +108,8 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     public ResponseEntity<?> getIdCartByIdUser(Long idUser) {
         try {
             Long response = shoppingCarRepository.getIdCartByIdUser(idUser);
+            if(response.equals(""))
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no dates");
             return ResponseEntity.ok(response);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);

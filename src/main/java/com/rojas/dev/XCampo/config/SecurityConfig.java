@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .csrf(csrf-> csrf.disable())
                 .authorizeHttpRequests(authRequest-> authRequest
                                 .requestMatchers(regexMatcher(".*auth.*")).permitAll()
+                                .requestMatchers(regexMatcher(".*firebase.*")).permitAll()
                                 .anyRequest().authenticated()
                 ).sessionManagement(sessionManagement->
                         sessionManagement

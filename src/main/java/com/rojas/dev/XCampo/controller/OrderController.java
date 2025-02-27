@@ -25,7 +25,7 @@ public class OrderController {
     public ResponseEntity<?> getOrderId(@PathVariable Long id){
         var order = orderService.getOrderById(id);
         var orderDTO = orderService.convertToOrder(order);
-        return ResponseEntity.status(HttpStatus.FOUND).body(orderDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(orderDTO);
     }
 
     @GetMapping()
@@ -34,10 +34,10 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
 
-    @GetMapping("/getClient/{idClient}")
-    public ResponseEntity<?> getOrderByClient(@PathVariable Long idClient){
-        var order = orderService.getOrdersByClient(idClient);
-        return ResponseEntity.status(HttpStatus.FOUND).body(order);
+    @GetMapping("/get/{idClient}/{state}")
+    public ResponseEntity<?> getOrderByClient(@PathVariable Long idClient, @PathVariable OrderState state){
+        var order = orderService.getOrdersByClient(idClient,state);
+        return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
     @GetMapping("/getSeller/{sellerId}/state/{state}")

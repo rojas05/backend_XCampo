@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.entity.User;
+import com.rojas.dev.XCampo.enumClass.UserRole;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -22,4 +23,7 @@ public interface UserService {
 
     ResponseEntity<?> getNFSidByIdUser(Long id_user);
 
+    ResponseEntity<?> updateNfs(User user);
+
+    List<String> findFcmTokensByRole(UserRole role);
 }

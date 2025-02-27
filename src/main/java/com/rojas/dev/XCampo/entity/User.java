@@ -30,16 +30,17 @@ public class User implements UserDetails {
     private Long user_id;
 
     private String name;
+    private String department;
     private String city;
     private Long cell;
     private String email;
     private String password;
-    private String NFSid;
+    private String nfs;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private Set<Roles>roles = new HashSet<>();
+
+    private Set<Roles> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private ClientRole roleClient;

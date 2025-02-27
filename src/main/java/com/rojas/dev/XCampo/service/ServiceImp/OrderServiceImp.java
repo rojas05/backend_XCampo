@@ -65,8 +65,14 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> getOrdersByClient(Long clientId) {
-        return orderRepository.findOrdersByClientId(clientId).stream()
+    public List<OrderDTO> getOrdersByClient(Long clientId, OrderState state) {
+        if(state.equals(OrderState.FINALIZADA)){
+            return orderRepository.findOrdersByClientId(clientId, state).stream()
+                    .map(this::convertToOrder)
+                    .toList();
+        }
+
+        return orderRepository.findOrdersByClientIdNext(clientId, OrderState.FINALIZADA).stream()
                 .map(this::convertToOrder)
                 .toList();
     }
@@ -119,7 +125,8 @@ public class OrderServiceImp implements OrderService {
                 order.getMessage(),
                 order.getDelivery(),
                 order.getPrice_delivery(),
-                shoppingCartDTO
+                shoppingCartDTO,
+                order.getDate()
         );
     }
 

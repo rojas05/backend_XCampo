@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.dto.OrderDTO;
 import com.rojas.dev.XCampo.entity.Order;
+import com.rojas.dev.XCampo.enumClass.OrderState;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface OrderService {
 
     List<OrderDTO> getAllOrders();
 
-    List<OrderDTO> getOrdersByClient(Long clientId);
+    List<OrderDTO> getOrdersByClient(Long clientId, OrderState state);
 
     List<OrderDTO> getOrdersBySellerID(Long sellerId, String state);
 

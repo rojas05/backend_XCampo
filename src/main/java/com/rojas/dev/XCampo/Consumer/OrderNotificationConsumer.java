@@ -2,7 +2,10 @@ package com.rojas.dev.XCampo.Consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.rojas.dev.XCampo.dto.Notifications;
 import com.rojas.dev.XCampo.entity.Order;
+import com.rojas.dev.XCampo.service.Interface.FirebaseNotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -10,13 +13,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderNotificationConsumer {
 
+    @Autowired
+    FirebaseNotificationService firebaseNotificationService;
+
     @KafkaListener(topics = "order-notifications", groupId = "delivery-group")
     public void consumerOrderEvent(String message){
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
-            Order order  = mapper.readValue(message, Order.class);
-            System.out.println("notificacion enviada desde kafka nuevo pedido en " + order.getMessage());
+            Notifications notification  = mapper.readValue(message, Notifications.class);
+            firebaseNotificationService.sendNotifications(notification);
         } catch (Exception e) {
             System.err.println(e);
         }

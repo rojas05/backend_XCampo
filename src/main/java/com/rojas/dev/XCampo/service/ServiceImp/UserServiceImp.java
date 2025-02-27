@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.entity.User;
+import com.rojas.dev.XCampo.enumClass.UserRole;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.UserRepository;
 import com.rojas.dev.XCampo.service.Interface.UserService;
@@ -18,13 +19,14 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+
     @Override
     public User addUser(User newUser) {
         Long Id = newUser.getUser_id();
         if(userRepository.existsById(Id)) {
             throw new IllegalArgumentException("User existed with ID: " + Id);
         }
-
+        System.out.println(newUser);
         return userRepository.save(newUser);
     }
 
@@ -74,5 +76,31 @@ public class UserServiceImp implements UserService {
 
         return ResponseEntity.ok().body(result);
     }
+
+    @Override
+    public ResponseEntity<?> updateNfs(User user) {
+        try {
+            if (user.getUser_id()==null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no id");
+            }
+            System.out.println(user.getUser_id() + user.getNfs() + user.getEmail());
+            userRepository.updateNfs(user.getUser_id(), user.getNfs());
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+    }
+
+    @Override
+    public List<String> findFcmTokensByRole(UserRole role) {
+        try {
+            return userRepository.findFcmTokensByRole(role);
+        } catch (Exception e){
+            System.err.println("ERROR EN CONSULTA =====>"+e);
+            return null;
+        }
+    }
+
+
 
 }

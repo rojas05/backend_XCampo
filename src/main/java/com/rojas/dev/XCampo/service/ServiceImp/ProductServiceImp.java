@@ -29,11 +29,15 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public Product createProduct(Product product, Long IdSeller, Long idCategory) {
-        if (!sellerRepository.existsById(IdSeller))
-            throw new EntityNotFoundException("Seller not found with ID: " + IdSeller);
-        categoryRepository.exitsCategoryId(idCategory);
+        try{
+            if (!sellerRepository.existsById(IdSeller))
+                throw new EntityNotFoundException("Seller not found with ID: " + IdSeller);
+            categoryRepository.exitsCategoryId(idCategory);
 
-        return productRepository.save(product);
+            return productRepository.save(product);
+        } catch (Exception e){
+            throw new EntityNotFoundException("Seller not found with ID: " + e);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.controller;
 
 import com.rojas.dev.XCampo.entity.User;
+import com.rojas.dev.XCampo.enumClass.UserRole;
 import com.rojas.dev.XCampo.service.Interface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findByUserId(@PathVariable Long id) {
         Optional<User> userId = userService.findByIdUser(id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userId);
     }
 
     @DeleteMapping("/{userId}")
@@ -59,5 +60,18 @@ public class UserController {
         return userService.getNFSidByIdUser(id);
     }
 
+    @GetMapping("nfs/rol")
+    public ResponseEntity<?> getNFSidByUserRol(@RequestParam UserRole role){
+        try {
+            List<String> result = userService.findFcmTokensByRole(role);
+            return ResponseEntity.ok(result);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+    }
 
+    @PatchMapping("nfs")
+    public ResponseEntity<?> updateNfs(@RequestBody User user){
+        return userService.updateNfs(user);
+    }
 }

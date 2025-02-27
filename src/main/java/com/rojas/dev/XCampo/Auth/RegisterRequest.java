@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class RegisterRequest {
     String name;
+    String department;
     String city;
     Long cell;
     String email;
