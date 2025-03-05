@@ -29,7 +29,7 @@ public class OrderEntityListener {
     public void onOrderCreated(Order order) {
         System.out.println("📩 Disparando evento de notificación para orden...");
 
-        Notifications notification = new Notifications(UserRole.SELLER, "Nueva orden por atender ", order.getId_order().toString(), null,null);
+        Notifications notification = new Notifications(UserRole.SELLER, "Nueva orden por atender ", order.getId_order().toString(), null, order.getId_order());
         eventPublisher.publishEvent(new PersistCreatedEvent(notification));
     }
 }

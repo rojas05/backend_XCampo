@@ -3,35 +3,34 @@ package com.rojas.dev.XCampo.listeners;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.rojas.dev.XCampo.dto.Notifications;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
+import com.rojas.dev.XCampo.entity.Product;
 import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
+import com.rojas.dev.XCampo.enumClass.UserRole;
+import com.rojas.dev.XCampo.event.PersistCreatedEvent;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DeliveryEntityListener {
 
-    private static KafkaTemplate<String,String> kafkaTemplate;
+    private static ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public  void init(KafkaTemplate<String,String> kafkaTemplate){
-        DeliveryEntityListener.kafkaTemplate = kafkaTemplate;
+    public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
+        DeliveryEntityListener.eventPublisher = eventPublisher;
     }
 
     @PostPersist
-    public void onDeliveryCreated(DeliveryProduct deliveryProduct){
-        try{
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            String deliveryJson = mapper.writeValueAsString(deliveryProduct);
-            kafkaTemplate.send("delivery-notifications", deliveryJson);
-            System.out.println("evento enviado a Kafka");
-        } catch (JsonProcessingException e) {
-            System.err.println("ERROR ====>" + e);
-        }
+    public void onProductCreated(DeliveryProduct delivery) {
+        System.out.println("📩 Disparando evento de notificación para delivery...");
+        Notifications notification = new Notifications(UserRole.DELIVERYMAN, "Nuevo delivery", delivery.getDate().toString(), null,delivery.getID());
+        eventPublisher.publishEvent(new PersistCreatedEvent(notification));
     }
 
 

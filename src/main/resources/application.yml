@@ -31,11 +31,7 @@ servlet:
     max-file-size : 10MB
     max-request-size: 10MB
 
-firebase:
-  credentials:
-    path: agromarket-3d34d-firebase-adminsdk-flhqr-6a352e2853.json
-  storage:
-    bucket: agromarket-3d34d.appspot.com
+
 
 jwt:
     secret : miClaveSecreta

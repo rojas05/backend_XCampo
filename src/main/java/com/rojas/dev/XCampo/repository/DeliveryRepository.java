@@ -1,5 +1,6 @@
 package com.rojas.dev.XCampo.repository;
 
+import com.rojas.dev.XCampo.dto.DeliveryMatchDto;
 import com.rojas.dev.XCampo.entity.Client;
 import com.rojas.dev.XCampo.entity.DeliveryMan;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
@@ -60,4 +61,25 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
     void updateDeliveryMan(
             @Param("id") Long id,
             @Param("deliveryMan") DeliveryMan deliveryMan);
+
+    @Transactional
+    @Query("SELECT DISTINCT s.location FROM DeliveryProduct d " +
+            "INNER JOIN d.order o " +
+            "INNER JOIN o.shoppingCart c " +
+            "INNER JOIN c.items i " +
+            "INNER JOIN i.product p " +
+            "INNER JOIN p.seller s " +
+            "WHERE d.ID = :id ")
+    Optional<String> getDeliveryLocation(
+            @Param("id") Long id);
+
+    @Transactional
+    @Query("SELECT d.ID s.location FROM DeliveryProduct d " +
+            "INNER JOIN d.order o " +
+            "INNER JOIN o.shoppingCart c " +
+            "INNER JOIN c.items i " +
+            "INNER JOIN i.product p " +
+            "INNER JOIN p.seller s " +
+            "WHERE s.location = :location ")
+    Optional<List<DeliveryMatchDto>> getLocationsDelivery(@Param("location") String location);
 }

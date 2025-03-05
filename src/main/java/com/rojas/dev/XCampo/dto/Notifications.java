@@ -14,5 +14,5 @@ public class Notifications {
     private String title;
     private String message;
     private List<String> tokens;
-    private String token;
+    private Long id;
 }

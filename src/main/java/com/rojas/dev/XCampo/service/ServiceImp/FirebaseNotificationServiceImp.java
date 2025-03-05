@@ -41,7 +41,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
             System.out.println(notification);
             // Crear mensaje multicast
             MulticastMessage message = MulticastMessage.builder()
-                    .addAllTokens(verifyTokens(tokens))
+                    .addAllTokens(tokens)
                     .setNotification(notification)
                     .build();
             System.out.println(message);
@@ -61,7 +61,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
     public void sendNotification(Notifications notifications) {
         try {
             Message message = Message.builder()
-                    .setToken(notifications.getToken())
+                    .setToken(notifications.getTokens().get(0))
                     .setNotification(Notification.builder()
                             .setTitle(notifications.getTitle())
                             .setBody(notifications.getMessage())
@@ -83,7 +83,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
         List<String> listCheck = new ArrayList<>();
         for (String token : tokens) {
             try {
-                FirebaseMessaging.getInstance().send(Message.builder().setToken(token).build());
+                firebaseMessaging.send(Message.builder().setToken(token).build());
                 listCheck.add(token);
             } catch (FirebaseMessagingException e) {
                 System.err.println("❌ Token inválido: " + token);

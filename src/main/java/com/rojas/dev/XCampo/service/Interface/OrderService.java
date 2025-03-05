@@ -24,4 +24,6 @@ public interface OrderService {
 
     OrderDTO convertToOrder(Order order);
 
+    List<String> getNfsSellersByOrderId(Long id);
+
 }

@@ -37,5 +37,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE o.state = :state AND o.shoppingCart.client.id_client = :clientId")
     Order findOrdersBySellerId(@Param("state") OrderState state, @Param("clientId") Long clientId);
 
+    @Transactional
+    @Query("SELECT DISTINCT u.nfs FROM Order o " +
+            "JOIN o.shoppingCart sc " +
+            "JOIN sc.items ci " +
+            "JOIN ci.product p " +
+            "JOIN p.seller s " +
+            "JOIN s.rol r " +
+            "JOIN r.user u " +
+            "WHERE o.id_order = :id")
+    List<String> getNfsSellersByOrderId(@Param("id") Long id);
+
 
 }

@@ -3,6 +3,8 @@ package com.rojas.dev.XCampo.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -17,22 +19,28 @@ import java.io.InputStream;
 @Configuration
 public class FireBaseConfig {
 
+    @Value("${firebase.credentials.path}")
+    private String credentialsPath;
+
+    @Value("${firebase.storage.bucket}")
+    private String storageBucket;
+
     @Bean
-    public FirebaseApp initializeFirebase(
-            @Value("${firebase.credentials.path}") String credentialsPath,
-            @Value("${firebase.storage.bucket}") String storageBucket
-    ) {
+    public FirebaseApp initializeFirebase() {
         try {
             if (FirebaseApp.getApps().isEmpty()) {
+                InputStream serviceAccount = new ClassPathResource(credentialsPath).getInputStream();
+
                 FirebaseOptions options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(
-                                new ClassPathResource("agromarket-3d34d-firebase-adminsdk-flhqr-9ca1979333.json").getInputStream()))
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .setStorageBucket(storageBucket)
                         .build();
+
                 FirebaseApp firebaseApp = FirebaseApp.initializeApp(options);
                 System.out.println("Firebase inicializado correctamente: " + firebaseApp.getName());
                 return firebaseApp;
             } else {
-                return FirebaseApp.getInstance(); // Devuelve la instancia existente
+                return FirebaseApp.getInstance();
             }
         } catch (IOException e) {
             throw new IllegalStateException("Error initializing Firebase", e);
@@ -41,21 +49,33 @@ public class FireBaseConfig {
 
     @Bean
     public Firestore firestore() throws IOException {
-        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("agromarket-3d34d-firebase-adminsdk-flhqr-9ca1979333.json");
+        InputStream serviceAccount = new ClassPathResource(credentialsPath).getInputStream();
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
+
         FirestoreOptions options = FirestoreOptions.newBuilder()
                 .setCredentials(credentials)
                 .build();
+        System.out.println("Firebase inicializado correctamente.");
         return options.getService();
     }
 
-
     @Bean
-    FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
+    public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
         FirebaseMessaging messaging = FirebaseMessaging.getInstance(firebaseApp);
         System.out.println("FirebaseMessaging inicializado correctamente.");
         return messaging;
     }
 
+    @Bean
+    public Storage firebaseStorage() throws IOException {
+        InputStream serviceAccount = new ClassPathResource(credentialsPath).getInputStream();
+        GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
 
+        StorageOptions options = StorageOptions.newBuilder()
+                .setCredentials(credentials)
+                .build();
+
+        System.out.println("Firebase Storage inicializado correctamente.");
+        return options.getService();
+    }
 }

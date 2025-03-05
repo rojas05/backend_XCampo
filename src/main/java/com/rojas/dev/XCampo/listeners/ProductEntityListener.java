@@ -4,11 +4,9 @@ import com.rojas.dev.XCampo.dto.Notifications;
 import com.rojas.dev.XCampo.entity.Product;
 import com.rojas.dev.XCampo.enumClass.UserRole;
 import com.rojas.dev.XCampo.event.PersistCreatedEvent;
-import com.rojas.dev.XCampo.repository.NotificationService;
 import jakarta.persistence.PostPersist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,7 +21,7 @@ public class ProductEntityListener {
         @PostPersist
         public void onProductCreated(Product product) {
             System.out.println("📩 Disparando evento de notificación para producto...");
-            Notifications notification = new Notifications(UserRole.CLIENT, "Nuevo producto", product.getName(), null,null);
+            Notifications notification = new Notifications(UserRole.CLIENT, "Nuevo producto", product.getName(), null,product.getId_product());
             eventPublisher.publishEvent(new PersistCreatedEvent(notification));
         }
 }

@@ -13,6 +13,7 @@ import com.rojas.dev.XCampo.service.Interface.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Executable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -128,6 +129,16 @@ public class OrderServiceImp implements OrderService {
                 shoppingCartDTO,
                 order.getDate()
         );
+    }
+
+    @Override
+    public List<String> getNfsSellersByOrderId(Long id) {
+        try {
+            return orderRepository.getNfsSellersByOrderId(id);
+        }catch (Exception e){
+            System.err.println("ERROR EN CONSULTA =====> "+e);
+            return null;
+        }
     }
 
     /*public OrderDTO convertToOrderFilter(Order order, Long sellerId) {
