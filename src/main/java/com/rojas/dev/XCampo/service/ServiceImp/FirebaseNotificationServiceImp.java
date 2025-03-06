@@ -62,7 +62,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
     public void sendNotification(Notifications notifications) {
         try {
             Message message = Message.builder()
-                    .setToken(notifications.getTokens().get(0))
+                    .setToken(notifications.getFirstToken())
                     .setNotification(Notification.builder()
                             .setTitle(notifications.getTitle())
                             .setBody(notifications.getMessage())

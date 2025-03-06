@@ -10,7 +10,6 @@ import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.DeliveryManRepository;
 import com.rojas.dev.XCampo.repository.DeliveryRepository;
-import com.rojas.dev.XCampo.repository.OrderRepository;
 import com.rojas.dev.XCampo.service.Interface.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,7 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -55,10 +53,7 @@ public class DeliveryServiceImp implements DeliveryService {
             var idOrder = delivery.getOrderId();
             var order = orderRepository.getOrderById(idOrder);
 
-           /* if (delivery.getIdDelivery() == null) {
-                throw new IllegalArgumentException("Delivery ID cannot be null");
-            }
-
+           /*
             var deliveryMan = deliveryManRepository.findById(delivery.getDeliveryManId())
                     .orElseThrow(() -> new EntityNotFoundException("Delivery man not found with ID: " + delivery.getDeliveryManId()));
             */
@@ -78,8 +73,6 @@ public class DeliveryServiceImp implements DeliveryService {
                     .path("/{idDelivery}")
                     .buildAndExpand(deliveryProduct.getId())
                     .toUri();
-
-
 
             return ResponseEntity.created(location).body(convertDeliveryProductsDTO(deliveryProduct));
         } catch (DataIntegrityViolationException e) {
