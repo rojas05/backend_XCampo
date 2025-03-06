@@ -136,7 +136,7 @@ public class MatchmakingServiceImp implements MatchmakingService {
                         String key = deliveryIdStr + "-" + deliveryMan.getToken(); // Clave única para pedido-repartidor
 
                         if (!matchedPairs.contains(key)) { // Verificamos que no se haya agregado antes para el mismo pedido
-                            System.out.println("MATCH IN " + delivery.getLocation());
+                            System.out.println("✅ MATCH IN " + delivery.getLocation());
                             tokensList.offer(new TokenNotificationID(delivery.getId(), deliveryMan.getToken()));
                             matchedPairs.add(key); // Guardamos la coincidencia para evitar duplicados del mismo pedido
                             assignedDeliveries.add(deliveryIdStr); // Marcamos el pedido como asignado
