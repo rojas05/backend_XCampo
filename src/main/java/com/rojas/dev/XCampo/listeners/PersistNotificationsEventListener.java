@@ -2,7 +2,6 @@ package com.rojas.dev.XCampo.listeners;
 
 import com.rojas.dev.XCampo.event.PersistCreatedEvent;
 import com.rojas.dev.XCampo.repository.NotificationService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

@@ -32,11 +32,6 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "WHERE d.state = :state")
     List<DeliveryProduct> getDeliveryState(@Param("state") DeliveryProductState state);
 
-    @Transactional
-    @Query("SELECT  COUNT(d) > 0 FROM DeliveryProduct d " +
-            "WHERE d.state != TOMADO AND d.id = :IdDelivery")
-    boolean verificateStateById(@Param("IdDelivery") Long IdDelivery);
-
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
             "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
@@ -134,7 +129,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
      *El d.ID se cambio a d.id
      */
     @jakarta.transaction.Transactional
-    @Query("SELECT new com.rojas.dev.XCampo.dto.DeliveryMatchDto(d.id, s.location) FROM DeliveryProduct d " +
+    @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.DeliveryMatchDto(d.id, s.location) FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
             "INNER JOIN o.shoppingCart c " +
             "INNER JOIN c.items i " +
@@ -142,4 +137,13 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "INNER JOIN p.seller s " +
             "WHERE s.location = :location ")
     Optional<List<DeliveryMatchDto>> getLocationsDelivery(@Param("location") String location);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE DeliveryProduct d SET d.state = :stateNew " +
+            "WHERE d.id = :id AND d.state = :state")
+    void updateStateMatch(
+            @Param("id") Long id,
+            @Param("stateNew") DeliveryProductState stateNew,
+            @Param("state") DeliveryProductState state);
 }

@@ -9,10 +9,7 @@ import com.rojas.dev.XCampo.service.Interface.MatchmakingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 
 @Service
 public class MatchmakingServiceImp implements MatchmakingService {
@@ -112,22 +109,50 @@ public class MatchmakingServiceImp implements MatchmakingService {
      * @return lista de tokens de reoartidores adecuados
      */
     private Queue<TokenNotificationID> matchDeliveryManAndDelivery(List<DeliveryManMatchDto> deliveryManList, List<DeliveryMatchDto> deliveryList){
+        // Se utiliza una cola para almacenar los tokens de notificación
         Queue<TokenNotificationID> tokensList = new LinkedList<>();
 
-        for (DeliveryMatchDto delivery:deliveryList){
-             for(DeliveryManMatchDto deliveryMan:deliveryManList){
-                 List<String> locations = deliveryMan.getLocationsList();
-                 int indice = locations.indexOf(delivery.getLocation());
+        // Conjunto para evitar coincidencias duplicadas entre un mismo pedido y repartidor
+        Set<String> matchedPairs = new HashSet<>();
 
-                 if(indice != -1){
-                     tokensList.offer(new TokenNotificationID(delivery.getId(), deliveryMan.getToken()));
-                     System.out.println("✅ MATCH IN "+ locations.get(indice));
-                 }else{
-                     System.out.println("NO MATCH");
-                 }
-             }
-         }
+        // Mapa para asegurarnos de que un pedido solo sea asignado una vez
+        Set<Long> assignedDeliveries = new HashSet<>();
 
+        // Recorremos la lista de pedidos
+        for (DeliveryMatchDto delivery : deliveryList) {
+            Long deliveryIdStr = delivery.getId(); // Convertimos el ID a String para evitar inconsistencias
+
+            // Si el pedido ya fue asignado, pasamos al siguiente
+            if (assignedDeliveries.contains(deliveryIdStr)) {
+                continue;
+            }
+
+            // Recorremos la lista de repartidores
+            for (DeliveryManMatchDto deliveryMan : deliveryManList) {
+                // Recorremos la lista de ubicaciones del repartidor directamente
+                for (String location : deliveryMan.getLocationsList()) {
+                    // Verificamos si la ubicación del repartidor coincide con la del pedido
+                    if (location.equals(delivery.getLocation())) {
+                        String key = deliveryIdStr + "-" + deliveryMan.getToken(); // Clave única para pedido-repartidor
+
+                        if (!matchedPairs.contains(key)) { // Verificamos que no se haya agregado antes para el mismo pedido
+                            System.out.println("MATCH IN " + delivery.getLocation());
+                            tokensList.offer(new TokenNotificationID(delivery.getId(), deliveryMan.getToken()));
+                            matchedPairs.add(key); // Guardamos la coincidencia para evitar duplicados del mismo pedido
+                            assignedDeliveries.add(deliveryIdStr); // Marcamos el pedido como asignado
+                            break; // Salimos del bucle de ubicaciones al encontrar la primera coincidencia
+                        }
+                    }
+                }
+
+                // Si el pedido ya fue asignado, salimos del bucle de repartidores
+                if (assignedDeliveries.contains(deliveryIdStr)) {
+                    break;
+                }
+            }
+        }
+
+        // Si hay al menos dos coincidencias, se retorna la cola; de lo contrario, se retorna null
         return (tokensList.size() >= 2) ? tokensList : null;
     }
 

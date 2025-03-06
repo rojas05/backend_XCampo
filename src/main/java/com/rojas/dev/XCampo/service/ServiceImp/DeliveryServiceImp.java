@@ -193,6 +193,19 @@ public class DeliveryServiceImp implements DeliveryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void updateStateDeliverYMatch(Long id) {
+        try {
+            deliveryRepository.updateStateMatch(
+                    id,
+                    DeliveryProductState.TOMADO,
+                    DeliveryProductState.EN_COLA
+                    );
+        } catch (Exception e){
+            System.err.println(e);
+        }
+    }
+
     void onDeliveryUpdate(Long deliveryId){
         try{
             DeliveryProduct deliveryProduct = deliveryRepository.findById(deliveryId)

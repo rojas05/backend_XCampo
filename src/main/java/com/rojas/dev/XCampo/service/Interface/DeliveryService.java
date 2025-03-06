@@ -33,4 +33,6 @@ public interface DeliveryService {
     List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMen(String state);
 
     List<DeliveryGroupedBySellerDTO> getGroupedDeliveries(String state);
+
+    void updateStateDeliverYMatch(Long id);
 }
