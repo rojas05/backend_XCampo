@@ -32,6 +32,11 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "WHERE d.state = :state")
     List<DeliveryProduct> getDeliveryState(@Param("state") DeliveryProductState state);
 
+    @Transactional
+    @Query("SELECT  COUNT(d) > 0 FROM DeliveryProduct d " +
+            "WHERE d.state != TOMADO AND d.id = :IdDelivery")
+    boolean verificateStateById(@Param("IdDelivery") Long IdDelivery);
+
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
             "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
