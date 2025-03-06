@@ -1,9 +1,12 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.dto.Notifications;
+import com.rojas.dev.XCampo.dto.TokenNotificationID;
 import com.rojas.dev.XCampo.enumClass.UserRole;
+import com.rojas.dev.XCampo.repository.DeliveryRepository;
 import com.rojas.dev.XCampo.repository.NotificationService;
 import com.rojas.dev.XCampo.service.Interface.MatchmakingService;
 import com.rojas.dev.XCampo.service.Interface.OrderService;
@@ -11,12 +14,13 @@ import com.rojas.dev.XCampo.service.Interface.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.io.DataInput;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class NotificationServiceImp implements NotificationService {
@@ -33,25 +37,26 @@ public class NotificationServiceImp implements NotificationService {
     @Autowired
     MatchmakingService matchmakingService;
 
+    @Autowired
+    DeliveryRepository deliveryRepository;
+
     private final Queue<Notifications> pendingNotifications = new LinkedList<>();
 
     @Transactional
     @Override
-    public void sendNotification(Notifications notifications ){
-        if(notifications.getRole().equals(UserRole.CLIENT)){
-            sendNotificationClient(notifications);
-        } else if (notifications.getRole().equals(UserRole.SELLER)){
-            sendNotificationSeller(notifications);
-        } else if (notifications.getRole().equals(UserRole.DELIVERYMAN)){
-            sendNotificationDelivery(notifications);
+    public void sendNotification(Notifications notifications) {
+        switch (notifications.getRole()) {
+            case CLIENT -> sendNotificationClient(notifications);
+            case SELLER -> sendNotificationSeller(notifications);
+            case DELIVERYMAN -> sendNotificationDelivery(notifications);
         }
     }
 
-    private void sendNotificationDelivery(Notifications notifications) {
+    void sendNotificationDelivery(Notifications notifications) {
         try {
             System.out.println("📩 Procesando notificación para el rol: " + notifications.getRole());
-            var fcmTokens = matchmakingService.match(notifications.getId());
-            if ( fcmTokens == null || fcmTokens.isEmpty()) {
+            Queue<TokenNotificationID> fcmTokens = matchmakingService.match(notifications.getId());
+            if (fcmTokens == null || fcmTokens.isEmpty()) {
                 System.out.println("❌ No hay usuarios con el rol " + notifications.getRole());
                 return;
             }
@@ -60,15 +65,26 @@ public class NotificationServiceImp implements NotificationService {
              * peek() retorna el primer valor sin eliminar
              * poll() retorna el primer valor y lo elimina
              */
-            System.out.println("📌 Obteniendo lista: " + fcmTokens);
-            addNotification(notifications);
+            System.out.println("📌 Obteniendo lista de delivery: " + fcmTokens);
+
+            List<Notifications> notificationList = fcmTokens.stream()
+                    .map(tokenObj -> new Notifications(
+                            notifications.getRole(),
+                            notifications.getTitle(),
+                            notifications.getMessage(),
+                            Collections.singletonList(tokenObj.getToken()),
+                            tokenObj.getIdDelivery()
+                    ))
+                    .toList();
+
+            pendingNotifications.addAll(notificationList);
         } catch (Exception e) {
             System.err.println("ERROR NOTIFICATION ====>" + e);
         }
     }
 
-    void sendNotificationClient(Notifications notifications){
-        try{
+    void sendNotificationClient(Notifications notifications) {
+        try {
             System.out.println("📩 Procesando notificación para el rol: " + notifications.getRole());
             List<String> fcmTokens = userService.findFcmTokensByRole(notifications.getRole());
             if (fcmTokens.isEmpty()) {
@@ -101,8 +117,8 @@ public class NotificationServiceImp implements NotificationService {
         }
     }
 
-    void sendNotificationSeller(Notifications notifications){
-        try{
+    void sendNotificationSeller(Notifications notifications) {
+        try {
             System.out.println("📩 Procesando notificación para el rol: " + notifications.getRole());
             List<String> fcmTokens = orderService.getNfsSellersByOrderId(notifications.getId());
             if (fcmTokens.isEmpty()) {
@@ -164,28 +180,42 @@ public class NotificationServiceImp implements NotificationService {
         }
     }
 
-    @Scheduled(fixedRate = 900000) // 15 minutos
+    @Scheduled(fixedRate = 2000) // 15 minutos 900000
     void processPendingNotifications() {
+        System.out.println("🔄 Procesando notificaciones pendientes...");
+
         while (!pendingNotifications.isEmpty()) {
             Notifications notification = pendingNotifications.poll();
             if (notification != null) {
-                try {
-                    sendToFirebase(notification);
-                } catch (Exception e) {
-                    System.err.println("❌ Error al enviar notificación: " + e.getMessage());
-                    pendingNotifications.offer(notification);
+
+                boolean isNotTake = deliveryRepository.verificateStateById(notification.getId());
+                if (isNotTake) {
+                    sendNotificationToKafka(notification)
+                            .exceptionally(e -> {
+                                System.err.println("❌ Error al enviar a Kafka: " + e.getMessage());
+                                pendingNotifications.offer(notification);
+                                return null;
+                            });
                 }
             }
         }
     }
 
-    void addNotification(Notifications notifications) {
-        pendingNotifications.offer(notifications);
-    }
+    @Async("taskExecutor")
+    CompletableFuture<Void> sendNotificationToKafka(Notifications notifications) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                System.out.println("🚀 Enviando notificación: " + notifications);
 
-    // Logic para mandar la notification cada cierto tiempo
-    private void sendToFirebase(Notifications notifications) {
-        System.out.println("🚀 Enviando notificación: " + notifications);
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                String notificationJson = mapper.writeValueAsString(notifications);
+                kafkaTemplate.send("delivery-notifications", notificationJson);
+            } catch (Exception e) {
+                System.err.println("❌ Error al enviar notificación: " + e.getMessage());
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

@@ -121,7 +121,7 @@ public class MatchmakingServiceImp implements MatchmakingService {
 
                  if(indice != -1){
                      tokensList.offer(new TokenNotificationID(delivery.getId(), deliveryMan.getToken()));
-                     System.out.println("MATCH IN "+ locations.get(indice));
+                     System.out.println("✅ MATCH IN "+ locations.get(indice));
                  }else{
                      System.out.println("NO MATCH");
                  }
