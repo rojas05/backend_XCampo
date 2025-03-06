@@ -4,13 +4,13 @@ import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.threeten.bp.LocalDate;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetDeliveryProductDTO {
-    private Long id;
+    private Long idDelivery;
     private LocalDate date;
     private Boolean available;
     private DeliveryProductState state;

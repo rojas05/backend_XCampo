@@ -5,6 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface DistanceService {
 
-    ResponseEntity<?> CalcularTarifa(RequestCoordinatesDTO request, Long idCart);
+    int CalcularTarifa(RequestCoordinatesDTO request, Long idCart);
 
 }

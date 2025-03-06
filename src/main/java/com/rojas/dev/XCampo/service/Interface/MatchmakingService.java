@@ -1,7 +1,9 @@
 package com.rojas.dev.XCampo.service.Interface;
 
-import java.util.List;
+import com.rojas.dev.XCampo.dto.TokenNotificationID;
+
+import java.util.Queue;
 
 public interface MatchmakingService {
-    List<String> match(Long id);
+    Queue<TokenNotificationID> match(Long id);
 }

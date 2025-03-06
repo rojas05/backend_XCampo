@@ -15,6 +15,7 @@ public class TarifaController {
 
     @PostMapping("{id}")
     public ResponseEntity<?> tarifa(@RequestBody RequestCoordinatesDTO request, @PathVariable Long id){
-        return distanceService.CalcularTarifa(request,id);
+        int tarifa =  distanceService.CalcularTarifa(request,id);
+        return ResponseEntity.ok(tarifa);
     }
 }

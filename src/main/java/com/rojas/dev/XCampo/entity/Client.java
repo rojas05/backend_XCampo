@@ -21,6 +21,8 @@ public class Client {
 
     private String location_description;
 
+    private String locationDestiny;
+
     @OneToOne
     @JsonIgnore
     @ToString.Exclude

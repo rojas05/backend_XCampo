@@ -18,6 +18,12 @@ public interface OrderService {
 
     List<OrderDTO> getOrdersBySellerID(Long sellerId, String state);
 
+    List<OrderDTO> getOrdersState(String state);
+
+    Long getOrderCount(Long sellerId, String state);
+
+    Long countSellersInOrders(Long orderId, String state);
+
     OrderDTO updateOrderState(Long idOrder, String state);
 
     Double calculateEarningsOrder(Long Id);

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class DeliveryProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ID;
+    private Long id;
 
     @Temporal(TemporalType.DATE)
     private LocalDate date;

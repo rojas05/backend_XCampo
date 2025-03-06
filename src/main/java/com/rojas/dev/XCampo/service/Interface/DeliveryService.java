@@ -1,10 +1,12 @@
 package com.rojas.dev.XCampo.service.Interface;
 
-import com.rojas.dev.XCampo.dto.DeliveryClientDTO;
-import com.rojas.dev.XCampo.dto.DeliveryRuteDTO;
-import com.rojas.dev.XCampo.dto.GetDeliveryProductDTO;
+import com.rojas.dev.XCampo.dto.*;
 import com.rojas.dev.XCampo.entity.DeliveryProduct;
+import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+import java.util.Set;
 
 public interface DeliveryService {
 
@@ -20,5 +22,15 @@ public interface DeliveryService {
 
     ResponseEntity<?> getDeliveryById(Long id_delivery);
 
+    GetDeliveryPdtForDlvManDTO getDeliveryByIdOrder(Long id_order);
+
     ResponseEntity<?> getDeliveryByRuteAndState(DeliveryRuteDTO request);
+
+    Long countDeliveryAvailable(String state);
+
+    List<GetDeliveryProductDTO> getAllDeliveryAvailable(String state);
+
+    List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMen(String state);
+
+    List<DeliveryGroupedBySellerDTO> getGroupedDeliveries(String state);
 }

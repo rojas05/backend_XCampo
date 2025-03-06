@@ -16,6 +16,8 @@ public interface ProductService {
 
     ResponseEntity<?> updateProductImg(String img, Long Id, Long idSeller);
 
+    Long updateProductStock(Long stock, Long Id, Long idSeller);
+
     void deleteProductId(Long Id, Long idSeller);
 
     Product findId(Long Id);

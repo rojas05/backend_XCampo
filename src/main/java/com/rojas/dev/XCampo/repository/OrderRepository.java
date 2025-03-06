@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -33,6 +31,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findOrdersBySeller(@Param("state") OrderState state, @Param("sellerId") Long sellerId);
 
     @Transactional
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "WHERE o.state = :state")
+    List<Order> findOrdersByState(@Param("state") OrderState state);
+
+    @Transactional
     @Query("SELECT o FROM Order o " +
             "WHERE o.state = :state AND o.shoppingCart.client.id_client = :clientId")
     Order findOrdersBySellerId(@Param("state") OrderState state, @Param("clientId") Long clientId);
@@ -47,6 +50,25 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN r.user u " +
             "WHERE o.id_order = :id")
     List<String> getNfsSellersByOrderId(@Param("id") Long id);
+
+    @Transactional
+    @Query("SELECT COUNT(DISTINCT o.id_order) FROM Order o " +
+            "JOIN o.shoppingCart sc " +
+            "JOIN sc.items ci " +
+            "JOIN ci.product p " +
+            "WHERE p.seller.id_seller = :sellerId " +
+            "AND o.state = :state")
+    Long countOrdersBySellerAndStatus(@Param("state") OrderState state, @Param("sellerId") Long sellerId);
+
+    @Transactional
+    @Query("SELECT COUNT(DISTINCT s.id_seller) FROM Order o " +
+            "JOIN o.shoppingCart sc " +
+            "JOIN sc.items ci " +
+            "JOIN ci.product p " +
+            "JOIN p.seller s " +
+            "WHERE o.state = :state " +
+            "AND o.id_order = :orderId")
+    Long countSellersInOrders(@Param("state") OrderState state, @Param("orderId") Long orderId);
 
 
 }

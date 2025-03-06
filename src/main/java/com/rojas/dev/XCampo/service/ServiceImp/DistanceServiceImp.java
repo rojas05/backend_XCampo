@@ -2,6 +2,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 
 
 import com.rojas.dev.XCampo.dto.RequestCoordinatesDTO;
+import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.CartItemRepository;
 import com.rojas.dev.XCampo.repository.ShoppingCartRepository;
 import com.rojas.dev.XCampo.service.Interface.DistanceService;
@@ -34,40 +35,37 @@ public class DistanceServiceImp implements DistanceService {
     private String API_KEY;
 
     @Override
-    public ResponseEntity<?> CalcularTarifa(RequestCoordinatesDTO request, Long idCart) {
-        try {
-            Optional<List<String>> result = shoppingCartRepository.findStoreCoordinatesByCartId(idCart);
-            if(result.isEmpty())
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id cart failed" + result);
-            System.out.println(result.get());
-            String origen = getDestini(result.get());
-            String waypoints = getWayPoints(result.get());
+    public int CalcularTarifa(RequestCoordinatesDTO request, Long idCart) {
+        List<String> storeCoordinates = shoppingCartRepository.findStoreCoordinatesByCartId(idCart)
+                .orElseThrow(() -> new EntityNotFoundException("id cart failed" + idCart));
 
-            double distanceKm = getDistanceKm(request,origen,waypoints);
-            if(distanceKm == 0.0)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("api maps failed");
-            Double tarifa = (distanceKm <= 2.5) ? 1000 : distanceKm * 400;
-            return ResponseEntity.ok(redondear(tarifa.intValue()));
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
-        }
+        System.out.println(storeCoordinates);
+        String origen = getDestini(storeCoordinates);
+        String waypoints = getWayPoints(storeCoordinates);
+
+        double distanceKm = getDistanceKm(request, origen, waypoints);
+        if (distanceKm == 0.0)
+            throw new IllegalStateException("Error en la API de mapas: distancia calculada es 0");
+
+        double tarifa = (distanceKm <= 2.5) ? 1000 : distanceKm * 400;
+        return redondear((int) tarifa);
     }
 
-    private Double getDistanceKm(RequestCoordinatesDTO destination, String origin, String waypoints){
+    private Double getDistanceKm(RequestCoordinatesDTO destination, String origin, String waypoints) {
         try {
-
             String url;
-            if (waypoints == null){
+            var destiny = destination.getDestination().replace(" ", "").trim();
+            if (waypoints == null) {
                 url = UriComponentsBuilder.fromHttpUrl(GOOGLE_MAPS_API_URL)
                         .queryParam("origin", origin)
-                        .queryParam("destination", destination.getDestination())
+                        .queryParam("destination", destiny)
                         .queryParam("key", API_KEY)
                         .build()
                         .toString();
-            }else {
-                 url = UriComponentsBuilder.fromHttpUrl(GOOGLE_MAPS_API_URL)
-                        .queryParam("origin", destination.getDestination())
-                        .queryParam("destination", destination.getDestination())
+            } else {
+                url = UriComponentsBuilder.fromHttpUrl(GOOGLE_MAPS_API_URL)
+                        .queryParam("origin", destiny)
+                        .queryParam("destination", destiny)
                         .queryParam("waypoints", waypoints)
                         .queryParam("key", API_KEY)
                         .build()
@@ -79,7 +77,7 @@ public class DistanceServiceImp implements DistanceService {
             String response = restTemplate.getForObject(url, String.class);
 
             JSONObject json = new JSONObject(response);
-            if(!json.getJSONArray("routes").isEmpty()){
+            if (!json.getJSONArray("routes").isEmpty()) {
                 JSONObject route = json.getJSONArray("routes").getJSONObject(0);
                 JSONObject leg = route.getJSONArray("legs").getJSONObject(0);
                 int distanceMeters = leg.getJSONObject("distance").getInt("value");
@@ -88,7 +86,7 @@ public class DistanceServiceImp implements DistanceService {
             }
 
             return 0.0;
-        } catch (Exception e){
+        } catch (Exception e) {
             return 0.0;
         }
     }
@@ -102,17 +100,18 @@ public class DistanceServiceImp implements DistanceService {
         }
     }
 
-    private static String getDestini(List<String> coordinates){
-        return coordinates.get(0);
+    private static String getDestini(List<String> coordinates) {
+        return coordinates.get(0).replace("\"", "").trim();
     }
 
-    private static String getWayPoints(List<String> coordinates){
+    private static String getWayPoints(List<String> coordinates) {
         if (coordinates == null || coordinates.size() <= 1) {
             return null; // Retorna vacío si no hay suficientes coordenadas
         }
 
         return coordinates.stream()
                 .skip(1) // Omitir la primera coordenada
+                .map(coord -> coord.replace("\"", "").trim()) // Eliminar comillas y espacios extra
                 .collect(Collectors.joining("|")); // Unir con '|'
     }
 }
