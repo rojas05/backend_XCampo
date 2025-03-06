@@ -46,6 +46,12 @@ public class ProductsController {
         return productService.updateProductImg(img, IdProduct, idSeller);
     }
 
+    @PatchMapping("/{IdProduct}/stock/{idSeller}")
+    public ResponseEntity<?> updateProductStock(@RequestParam("stock") Long stock, @PathVariable Long IdProduct, @PathVariable Long idSeller) {
+        productService.updateProductStock(stock, IdProduct, idSeller);
+        return ResponseEntity.status(HttpStatus.OK).body("Stock Update");
+    }
+
     @DeleteMapping("/{idProduct}/{idSeller}")
     public ResponseEntity<?> deleteProductId(@PathVariable Long idProduct, @PathVariable Long idSeller) {
         productService.deleteProductId(idProduct, idSeller);

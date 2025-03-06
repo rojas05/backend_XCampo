@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rojas.dev.XCampo.enumClass.MeasurementUnit;
 import com.rojas.dev.XCampo.listeners.ProductEntityListener;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.HashSet;

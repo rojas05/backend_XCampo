@@ -1,13 +1,17 @@
 package com.rojas.dev.XCampo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class DeliveryMamMatchDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class DeliveryManMatchDto {
     private Long id;
     private String locations;
     private String token;
@@ -20,6 +24,7 @@ public class DeliveryMamMatchDto {
         if(locations == null || locations.isEmpty()){
             return List.of();
         }
+
         return Arrays.stream(locations.split(","))
                 .collect(Collectors.toList());
     }

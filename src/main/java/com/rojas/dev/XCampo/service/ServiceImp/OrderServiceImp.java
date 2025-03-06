@@ -1,12 +1,9 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
-import com.rojas.dev.XCampo.dto.GetShoppingCartDTO;
 import com.rojas.dev.XCampo.dto.OrderDTO;
-import com.rojas.dev.XCampo.entity.CartItem;
 import com.rojas.dev.XCampo.entity.Order;
 import com.rojas.dev.XCampo.enumClass.OrderState;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
-import com.rojas.dev.XCampo.exception.InvalidDataException;
 import com.rojas.dev.XCampo.repository.OrderRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.service.Interface.OrderService;
@@ -17,7 +14,6 @@ import java.lang.reflect.Executable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,6 +85,39 @@ public class OrderServiceImp implements OrderService {
         return orderRepository.findOrdersBySeller(orderState, sellerId).stream()
                 .map(this::convertToOrder)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDTO> getOrdersState(String state) {
+
+        OrderState orderState = OrderState.fromString(state)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
+
+        return orderRepository.findOrdersByState(orderState).stream()
+                .map(this::convertToOrder)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getOrderCount(Long sellerId, String state) {
+        if (!sellerRepository.existsById(sellerId))
+            throw new EntityNotFoundException("Seller not exist whit ID: " + sellerId);
+
+        OrderState orderState = OrderState.fromString(state)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
+
+        return orderRepository.countOrdersBySellerAndStatus(orderState, sellerId);
+    }
+
+    @Override
+    public Long countSellersInOrders(Long orderId, String state) {
+        if (!orderRepository.existsById(orderId))
+            throw new EntityNotFoundException("Order not exist whit ID: " + orderId);
+
+        OrderState orderState = OrderState.fromString(state)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
+
+        return orderRepository.countSellersInOrders(orderState, orderId);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(orderDTO);
     }
 
-    @GetMapping()
+    @GetMapping("/list")
     public ResponseEntity<?> getAllOrder(){
         var order = orderService.getAllOrders();
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
@@ -44,6 +44,18 @@ public class OrderController {
     public ResponseEntity<?> getOrderBySeller(@PathVariable Long sellerId, @PathVariable String state ){
         var order = orderService.getOrdersBySellerID(sellerId, state);
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
+    }
+
+    @GetMapping("/state/{state}")
+    public ResponseEntity<?> getOrderByState(@PathVariable String state ){
+        var order = orderService.getOrdersState(state);
+        return ResponseEntity.status(HttpStatus.FOUND).body(order);
+    }
+
+    @GetMapping("/count/getSeller/{sellerId}/state/{state}")
+    public ResponseEntity<?> getOrderCountBySeller(@PathVariable Long sellerId, @PathVariable String state ){
+        Long order = orderService.getOrderCount(sellerId, state);
+        return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
     @PatchMapping("{idOrder}/{state}")

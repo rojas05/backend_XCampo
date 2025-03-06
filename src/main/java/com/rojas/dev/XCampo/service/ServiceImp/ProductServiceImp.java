@@ -4,6 +4,7 @@ import com.rojas.dev.XCampo.dto.GetProductDTO;
 import com.rojas.dev.XCampo.entity.Category;
 import com.rojas.dev.XCampo.entity.Product;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
+import com.rojas.dev.XCampo.exception.InvalidDataException;
 import com.rojas.dev.XCampo.repository.ProductRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.service.Interface.ProductService;
@@ -87,6 +88,22 @@ public class ProductServiceImp implements ProductService {
                 .buildAndExpand(Id)
                 .toUri();
         return ResponseEntity.created(location).body("Product updated successfully");
+    }
+
+    @Override
+    public Long updateProductStock(Long stock, Long Id, Long idSeller) {
+        productVerification(Id, idSeller);
+        Product existingProduct = findId(Id);
+
+        var stockAvailable = existingProduct.getStock();
+        if (stock > stockAvailable) throw new InvalidDataException("Quantity not available");
+
+        Long newStock = stockAvailable - stock;
+        existingProduct.setStock(newStock);
+
+        productRepository.save(existingProduct);
+
+        return newStock;
     }
 
     @Override

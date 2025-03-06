@@ -44,6 +44,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
                     .addAllTokens(tokens)
                     .setNotification(notification)
                     .build();
+
             System.out.println(message);
             BatchResponse response = firebaseMessaging.sendEachForMulticast(message);
             System.out.println("✅ Notificación enviada: " + response.getSuccessCount() + " exitosas, " +
@@ -67,6 +68,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
                             .setBody(notifications.getMessage())
                             .build())
                     .build();
+
             System.err.println(message);
             String response = firebaseMessaging.send(message);
             System.out.println("Notificación enviada: " + response);

@@ -15,7 +15,7 @@ public class DeliveryNotificationConsumer {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             DeliveryProduct delivery  = mapper.readValue(message,DeliveryProduct.class);
-            System.out.println("notificacion enviada desde kafka nuevo pedido en " + delivery.getDestiny());
+            System.out.println("Notificacion enviada desde kafka nuevo pedido en " + delivery.getDestiny());
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -27,7 +27,7 @@ public class DeliveryNotificationConsumer {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             DeliveryProduct delivery  = mapper.readValue(message,DeliveryProduct.class);
-            System.out.println("notificacion enviada desde kafka pedido " + delivery.getID() + " " + delivery.getState());
+            System.out.println("notificacion enviada desde kafka pedido " + delivery.getId() + " " + delivery.getState());
         } catch (Exception e) {
             System.err.println(e);
         }

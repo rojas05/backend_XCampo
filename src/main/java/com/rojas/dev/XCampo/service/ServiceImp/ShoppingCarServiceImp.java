@@ -55,20 +55,6 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         return response(newShoppingCart);
     }
 
-    public Shopping_cart addItemToCart(Long cartIds, Long itemId) {
-        Shopping_cart cart = findByIdShoppingCard(cartIds);
-        CartItem item = cartItemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
-
-        cart.setItems((Set<CartItem>) item);
-        item.setCart(cart);
-        cart.getItems().add(item);
-
-        updateCartTotal(cart);
-
-        return shoppingCarRepository.save(cart);
-    }
-
     @Override
     public void deleteProduct(Long idShoppingCar) {
         Shopping_cart entity = findByIdShoppingCard(idShoppingCar);
@@ -82,13 +68,6 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         entity.setStatus(state);
         entity.setTotalEarnings(totalEarnings(idShoppingCar));
         shoppingCarRepository.save(entity);
-    }
-
-    private void updateCartTotal(Shopping_cart cart) {
-        double total = cart.getItems().stream()
-                .mapToDouble(item -> item.getQuantity() * item.getUnitPrice())
-                .sum();
-        cart.setTotalEarnings((long) total);
     }
 
     @Override
@@ -116,11 +95,37 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
         }
     }
 
+    public Shopping_cart addItemToCart(Long cartIds, Long itemId) {
+        Shopping_cart cart = findByIdShoppingCard(cartIds);
+        CartItem item = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
+
+        cart.setItems((Set<CartItem>) item);
+        item.setCart(cart);
+        cart.getItems().add(item);
+
+        updateCartTotal(cart);
+
+        return shoppingCarRepository.save(cart);
+    }
+
+    private void updateCartTotal(Shopping_cart cart) {
+        double total = cart.getItems().stream()
+                .mapToDouble(item -> item.getQuantity() * item.getUnitPrice())
+                .sum();
+        cart.setTotalEarnings((long) total);
+    }
+
     // Convertir en un dto el carrito
     public GetShoppingCartDTO convertToShoppingCartDTO(Shopping_cart shoppingCart) {
         var cartItemDTOList = cartItemRepository.findByIdShoppingCart(shoppingCart.getId_cart()).stream()
                 .map(this::convertToCartItemDTO)
                 .collect(Collectors.toSet());
+
+        double totalEarnings = shoppingCart.getTotalEarnings() + cartItemDTOList.stream()
+                .mapToDouble(CartItemDTO::getUnitPrice) // Solo sumamos los unitPrice de todos los items
+                .sum();
+
 
         return new GetShoppingCartDTO(
                 shoppingCart.getId_cart(),
@@ -128,7 +133,7 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
                 shoppingCart.getClient().getName(),
                 shoppingCart.isStatus(),
                 shoppingCart.getDateAdded(),
-                shoppingCart.getTotalEarnings(),
+                totalEarnings,
                 cartItemDTOList
         );
     }
@@ -147,28 +152,10 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
                 ;
     }
 
-    /*public GetShoppingCartDTO convertToShoppingCartDTOFilter(Shopping_cart shoppingCart, Set<CartItem> filteredItems) {
-        var itemsDTO = filteredItems.stream()
-                .map(this::convertToCartItemDTO)
-                .collect(Collectors.toSet());
-
-        var client = shoppingCart.getClient();
-
-        return new GetShoppingCartDTO(
-                shoppingCart.getId_cart(),
-                client.getId_client(),
-                client.getName(),
-                shoppingCart.isStatus(),
-                shoppingCart.getDateAdded(),
-                shoppingCart.getTotalEarnings(),
-                itemsDTO
-        );
-    }*/
-
-    // Convertir en un DTO los items del carrito
+    // Convertir en un dto los items del carrito
     private CartItemDTO convertToCartItemDTO(CartItem cartItem) {
         return new CartItemDTO(
-                cartItem.getId_cart_item(),
+                cartItem.getCart().getId_cart(),
                 cartItem.getProduct().getId_product(),
                 cartItem.getQuantity(),
                 cartItem.getUnitPrice()
