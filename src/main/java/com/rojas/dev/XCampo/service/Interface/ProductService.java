@@ -24,4 +24,6 @@ public interface ProductService {
 
     void productVerification(Long Id, Long idSeller);
 
+    ResponseEntity<?> search(String letter, String city);
+
 }

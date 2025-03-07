@@ -86,6 +86,10 @@ public class NotificationServiceImp implements NotificationService {
                     .toList();
 
             pendingNotifications.addAll(notificationList);
+
+            taskService.scheduleTasksSequentially(fcmTokens, token->{
+                System.out.println("notification +++++ " + token.getToken());
+            });
         } catch (Exception e) {
             System.err.println("ERROR NOTIFICATION ====>" + e);
         }
@@ -188,26 +192,28 @@ public class NotificationServiceImp implements NotificationService {
         }
     }
 
-    @Scheduled(fixedRate = 900000) // 15 minutos
-    void processPendingNotifications() {
-        System.out.println("🔄 Procesando notificaciones pendientes...");
-
-        while (!pendingNotifications.isEmpty()) {
-            Notifications notification = pendingNotifications.poll();
-            if (notification != null) {
-
-                boolean isNotTake = deliveryRepository.verificateStateById(notification.getId());
-                if (isNotTake) {
-                    sendNotificationToKafka(notification)
-                            .exceptionally(e -> {
-                                System.err.println("❌ Error al enviar a Kafka: " + e.getMessage());
-                                pendingNotifications.offer(notification);
-                                return null;
-                            });
-                }
-            }
-        }
-    }
+    /**
+     * @Scheduled(fixedRate = 900000) // 15 minutos
+     *     void processPendingNotifications() {
+     *         System.out.println("🔄 Procesando notificaciones pendientes...");
+     *
+     *         while (!pendingNotifications.isEmpty()) {
+     *             Notifications notification = pendingNotifications.poll();
+     *             if (notification != null) {
+     *
+     *                 boolean isNotTake = deliveryRepository.verificateStateById(notification.getId());
+     *                 if (isNotTake) {
+     *                     sendNotificationToKafka(notification)
+     *                             .exceptionally(e -> {
+     *                                 System.err.println("❌ Error al enviar a Kafka: " + e.getMessage());
+     *                                 pendingNotifications.offer(notification);
+     *                                 return null;
+     *                             });
+     *                 }
+     *             }
+     *         }
+     *     }
+     */
 
     @Async("taskExecutor")
     CompletableFuture<Void> sendNotificationToKafka(Notifications notifications) {

@@ -9,7 +9,10 @@ import com.rojas.dev.XCampo.repository.ProductRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.service.Interface.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -127,6 +130,17 @@ public class ProductServiceImp implements ProductService {
             );
         }
     }
+
+    @Override
+    public ResponseEntity<?> search(String letter, String city) {
+        try {
+            List<Product> result = productRepository.search(letter,city);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+    }
+
 
     public GetProductDTO convertProductsDTO(Product product) {
         return new GetProductDTO(
