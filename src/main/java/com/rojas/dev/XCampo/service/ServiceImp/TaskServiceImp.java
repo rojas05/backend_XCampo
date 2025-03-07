@@ -1,6 +1,8 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.dto.TokenNotificationID;
+import com.rojas.dev.XCampo.enumClass.DeliveryProductState;
+import com.rojas.dev.XCampo.repository.DeliveryRepository;
 import com.rojas.dev.XCampo.service.Interface.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
@@ -16,12 +18,17 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImp implements TaskService {
 
     @Autowired
     private final TaskScheduler taskScheduler;
+
+    @Autowired
+    DeliveryRepository deliveryRepository;
 
     public TaskServiceImp() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
@@ -42,7 +49,8 @@ public class TaskServiceImp implements TaskService {
 
     /**
      * Programa una lista de tareas con un intervalo de 15 minutos entre cada una.
-     * @param items Lista de elementos a procesar.
+     *
+     * @param items        Lista de elementos a procesar.
      * @param taskFunction Función que recibe cada elemento y ejecuta una tarea.
      */
 
@@ -53,17 +61,36 @@ public class TaskServiceImp implements TaskService {
             return;
         }
 
-        for (int i = 0; i < items.size(); i++) {
-            TokenNotificationID item = items.poll();
-            long delay = TimeUnit.MINUTES.toSeconds(15) * i; // Escalonar cada tarea
+        int totalItems = items.size();
+        AtomicInteger counter = new AtomicInteger(0);
 
-            int finalI = i;
+        while (!items.isEmpty()) {
+            TokenNotificationID item = items.poll();
+            if (item == null) continue;
+            long delay = TimeUnit.MINUTES.toSeconds(15) * counter.getAndIncrement();
+
             taskScheduler.schedule(() -> {
-                taskFunction.accept(item); // Ejecuta la función pasada desde la clase que lo llama
-                if (finalI == items.size() - 1) {
-                    System.out.println("✅ Última tarea ejecutada. Notificando en 15 minutos...");
-                    taskScheduler.schedule(() -> System.out.println("⏳ Han pasado 15 minutos después del último procesamiento."),
-                            Instant.now().plusSeconds(9));
+                try {
+                    List<Long> pendingDeliveries = item.getDelivery().stream()
+                            .filter(deliveryId -> !deliveryRepository.verificateStateById(deliveryId, DeliveryProductState.EN_COLA))
+                            .collect(Collectors.toList());
+
+                    if (pendingDeliveries.isEmpty()) {
+                        System.out.println("✅ Todos los envios ya han sido tomados. Deteniendo las notification...");
+                        return;
+                    }
+
+                    TokenNotificationID updatedItem = new TokenNotificationID(pendingDeliveries, item.getToken());
+                    taskFunction.accept(updatedItem);
+
+                    if (counter.get() == totalItems) {
+                        taskScheduler.schedule(() -> {
+                            System.out.println("⏳ Nadie aceptó el pedido en 15 minutos.");
+                            // Agregar a espera de una 1h
+                            }, Instant.now().plusSeconds(900)); // 15 minutos
+                    }
+                } catch (Exception e) {
+                    System.err.println("❌ Error en la tarea para los envíos " + item.getDelivery() + ": " + e.getMessage());
                 }
             }, Instant.now().plusSeconds(delay));
         }

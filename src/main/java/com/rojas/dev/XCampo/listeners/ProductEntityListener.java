@@ -11,25 +11,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProductEntityListener {
-        private static ApplicationEventPublisher eventPublisher;
+    private static ApplicationEventPublisher eventPublisher;
 
-        @Autowired
-        public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
-            ProductEntityListener.eventPublisher = eventPublisher;
-        }
+    @Autowired
+    public void setEventPublisher(ApplicationEventPublisher eventPublisher) {
+        ProductEntityListener.eventPublisher = eventPublisher;
+    }
 
-        @PostPersist
-        public void onProductCreated(Product product) {
-            System.out.println("📩 Disparando evento de notificación para producto...");
-            Notifications notification = new Notifications(
-                    UserRole.CLIENT,
-                    "Nuevo producto",
-                    product.getName(),
-                    null,
-                    product.getId_product(),
-                    "DetailProduct");
-            eventPublisher.publishEvent(new PersistCreatedEvent(notification));
-        }
+    @PostPersist
+    public void onProductCreated(Product product) {
+        System.out.println("📩 Disparando evento de notificación para producto...");
+        Notifications notification = new Notifications(
+                UserRole.CLIENT,
+                "Nuevo producto",
+                product.getName(),
+                null,
+                product.getId_product(),
+                "DetailProduct");
+
+        eventPublisher.publishEvent(new PersistCreatedEvent(notification));
+    }
 }
 
 

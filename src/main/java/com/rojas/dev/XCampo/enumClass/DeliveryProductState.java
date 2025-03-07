@@ -8,10 +8,10 @@ import java.util.Optional;
  */
 public enum DeliveryProductState {
     DISPONIBLE,
+    EN_COLA,
     TOMADO,
     RECOGIDO,
     EN_CAMINO,
-    EN_COLA,
     ENTREGADO;
 
     public static Optional<DeliveryProductState> fromStringDeliveryState(String value) {

@@ -1,23 +1,17 @@
 package com.rojas.dev.XCampo.service.ServiceImp;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.dto.Notifications;
 import com.rojas.dev.XCampo.dto.NotificationsDeliveryDto;
 import com.rojas.dev.XCampo.dto.TokenNotificationID;
-import com.rojas.dev.XCampo.repository.DeliveryRepository;
 import com.rojas.dev.XCampo.repository.NotificationService;
 import com.rojas.dev.XCampo.service.Interface.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
@@ -25,29 +19,22 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class NotificationServiceImp implements NotificationService {
 
-    @Autowired
-    KafkaTemplate<String, String> kafkaTemplate;
+    private final UserService userService;
+    private final OrderService orderService;
+    private final DeliveryService deliveryService;
+    private final MatchmakingService matchmakingService;
+    private final TaskService taskService;
+    private final FirebaseNotificationService firebaseNotificationService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    OrderService orderService;
-
-    @Autowired
-    DeliveryService deliveryService;
-
-    @Autowired
-    MatchmakingService matchmakingService;
-
-    @Autowired
-    DeliveryRepository deliveryRepository;
-
-    @Autowired
-    TaskService taskService;
-
-    //NO considero necesario el uso de una constante global
-    //private final Queue<Notifications> pendingNotifications = new LinkedList<>();
+    public NotificationServiceImp(UserService userService, OrderService orderService, DeliveryService deliveryService, MatchmakingService matchmakingService, TaskService taskService, FirebaseNotificationService firebaseNotificationService) {
+        this.userService = userService;
+        this.orderService = orderService;
+        this.deliveryService = deliveryService;
+        this.matchmakingService = matchmakingService;
+        this.taskService = taskService;
+        this.firebaseNotificationService = firebaseNotificationService;
+    }
 
     @Transactional
     @Override
@@ -66,36 +53,32 @@ public class NotificationServiceImp implements NotificationService {
             LocalDateTime now = LocalDateTime.now();
 
             if (fcmTokens == null || fcmTokens.isEmpty()) {
-                System.out.println("❌ No hay usuarios con el rol " + notifications.getRole());
-                taskService.scheduleTask( now, () -> deliveryService.updateStateDeliverYMatch(notifications.getId()));
+                System.out.println("⚠ No hay usuarios con el rol " + notifications.getRole());
+                taskService.scheduleTask(now, () -> deliveryService.updateStateDeliverYMatch(notifications.getId()));
                 return;
             }
-            /*
-             * Para obtener el primer valor se puede usar estos dos valores:
-             * peek() retorna el primer valor sin eliminar
-             * poll() retorna el primer valor y lo elimina
-             */
+
             System.out.println("📌 Obteniendo lista de delivery: " + fcmTokens);
 
+            taskService.scheduleTasksSequentially(fcmTokens, token -> {
+                try {
+                    System.out.println("🔄 Intentando enviar notificación a: " + token.getToken());
 
-            /**
-             * IMPORTANTE cree un nuevo dto para transferir de manera correcta el repartidor y los domicilios emparejados con el mismo.
-             * NUEVO DTO NotificationsDeliveryDto
-             */
-            List<NotificationsDeliveryDto> notificationList = fcmTokens.stream()
-                    .map(tokenObj -> new NotificationsDeliveryDto(
+                    NotificationsDeliveryDto notificationToFirebase = new NotificationsDeliveryDto(
                             notifications.getRole(),
                             notifications.getTitle(),
                             notifications.getMessage(),
-                            Collections.singletonList(tokenObj.getToken()),
-                            tokenObj.getDelivery()
-                    ))
-                    .toList();
+                            Collections.singletonList(token.getToken()),
+                            token.getDelivery()
+                    );
 
-            //pendingNotifications.addAll(notificationList);
+                    sendNotificationToFirebase(notificationToFirebase)
+                            .thenRun(() -> System.out.println("🚀 Notificación enviada con éxito de la tarea: " + token.getToken()))
+                            .join();
 
-            taskService.scheduleTasksSequentially(fcmTokens, token->{
-                System.out.println("notification +++++ " + token.getToken());
+                } catch (Exception e) {
+                    System.err.println("❌ Error al enviar a Kafka: " + e.getMessage());
+                }
             });
         } catch (Exception e) {
             System.err.println("ERROR NOTIFICATION ====>" + e);
@@ -112,25 +95,6 @@ public class NotificationServiceImp implements NotificationService {
             }
             createNotification(fcmTokens, notifications, false);
 
-            /* Dividir tokens en lotes de 500
-            final int batchSize = 500;
-            for (int i = 0; i < fcmTokens.size(); i += batchSize) {
-                List<String> batchTokens = fcmTokens.subList(i, Math.min(i + batchSize, fcmTokens.size()));
-
-                Notifications notification = new Notifications(
-                        notifications.getRole(),
-                        notifications.getTitle(),
-                        notifications.getMessage(),
-                        batchTokens,
-                        null
-                );
-                // Enviar el evento a Kafka
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.registerModule(new JavaTimeModule());
-                String notificationJson = mapper.writeValueAsString(notification);
-                kafkaTemplate.send("product-notifications", notificationJson);
-                System.out.println("evento enviado a Kafka");
-            }*/
         } catch (Exception e) {
             System.err.println("ERROR NOTIFICATION CLIENTS ====>" + e);
         }
@@ -147,25 +111,6 @@ public class NotificationServiceImp implements NotificationService {
             }
             createNotification(fcmTokens, notifications, true);
 
-            /* Dividir tokens en lotes de 500
-            final int batchSize = 500;
-            for (int i = 0; i < fcmTokens.size(); i += batchSize) {
-                List<String> batchTokens = fcmTokens.subList(i, Math.min(i + batchSize, fcmTokens.size()));
-
-                Notifications notification = new Notifications(
-                        notifications.getRole(),
-                        notifications.getTitle(),
-                        notifications.getMessage(),
-                        batchTokens,
-                        notifications.getId()
-                );
-                // Enviar el evento a Kafka
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.registerModule(new JavaTimeModule());
-                String notificationJson = mapper.writeValueAsString(notification);
-                kafkaTemplate.send("product-notifications", notificationJson);
-                System.out.println("evento enviado a Kafka");
-            }*/
         } catch (Exception e) {
             System.err.println("ERROR NOTIFICATION SELLER ====>" + e);
         }
@@ -187,52 +132,26 @@ public class NotificationServiceImp implements NotificationService {
                         notifications.getScreen()
                 );
 
-                // Enviar el evento a Kafka
+                /* Enviar el evento a Kafka
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.registerModule(new JavaTimeModule());
                 String notificationJson = mapper.writeValueAsString(notification);
-                kafkaTemplate.send("product-notifications", notificationJson);
+                kafkaTemplate.send("product-notifications", notificationJson);*/
+                firebaseNotificationService.sendNotifications(notification);
 
-                System.out.println("Evento enviado a Kafka");
+                System.out.println("Evento enviado a Firebase");
             }
         } catch (Exception e) {
             System.err.println("ERROR CREATE NOTIFICATION ====>" + e);
         }
     }
 
-    /**
-     * @Scheduled(fixedRate = 900000) // 15 minutos
-     *     void processPendingNotifications() {
-     *         System.out.println("🔄 Procesando notificaciones pendientes...");
-     *
-     *         while (!pendingNotifications.isEmpty()) {
-     *             Notifications notification = pendingNotifications.poll();
-     *             if (notification != null) {
-     *
-     *                 boolean isNotTake = deliveryRepository.verificateStateById(notification.getId());
-     *                 if (isNotTake) {
-     *                     sendNotificationToKafka(notification)
-     *                             .exceptionally(e -> {
-     *                                 System.err.println("❌ Error al enviar a Kafka: " + e.getMessage());
-     *                                 pendingNotifications.offer(notification);
-     *                                 return null;
-     *                             });
-     *                 }
-     *             }
-     *         }
-     *     }
-     */
-
     @Async("taskExecutor")
-    CompletableFuture<Void> sendNotificationToKafka(Notifications notifications) {
+    CompletableFuture<Void> sendNotificationToFirebase(NotificationsDeliveryDto notifications) {
         return CompletableFuture.runAsync(() -> {
             try {
-                System.out.println("🚀 Enviando notificación: " + notifications);
-
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.registerModule(new JavaTimeModule());
-                String notificationJson = mapper.writeValueAsString(notifications);
-                kafkaTemplate.send("delivery-notifications", notificationJson);
+                System.out.println("🚀 Enviando notificación a Firebase: " + notifications);
+                firebaseNotificationService.sendNotification(notifications);
             } catch (Exception e) {
                 System.err.println("❌ Error al enviar notificación: " + e.getMessage());
                 throw new RuntimeException(e);

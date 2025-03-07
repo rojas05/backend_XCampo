@@ -3,6 +3,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.google.firebase.messaging.*;
 
 import com.rojas.dev.XCampo.dto.Notifications;
+import com.rojas.dev.XCampo.dto.NotificationsDeliveryDto;
 import com.rojas.dev.XCampo.service.Interface.FirebaseNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,8 +68,10 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
     }
 
     @Override
-    public void sendNotification(Notifications notifications) {
+    public void sendNotification(NotificationsDeliveryDto notifications) {
         try {
+            System.out.println("📨 Enviando notificación a Firebase para el token: " + notifications.getFirstToken());
+
             Message message = Message.builder()
                     .setToken(notifications.getFirstToken())
                     .setNotification(Notification.builder()
@@ -77,9 +80,8 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
                             .build())
                     .build();
 
-            System.err.println(message);
             String response = firebaseMessaging.send(message);
-            System.out.println("Notificación enviada: " + response);
+            System.out.println("-- Notificación enviada: " + response);
         } catch (FirebaseMessagingException e) {
             if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
                 System.err.println("❌ Token inválido: ");
@@ -89,7 +91,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
         }
     }
 
-    List<String> verifyTokens(List<String> tokens){
+    List<String> verifyTokens(List<String> tokens) {
         List<String> listCheck = new ArrayList<>();
         for (String token : tokens) {
             try {
