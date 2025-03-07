@@ -2,7 +2,10 @@ package com.rojas.dev.XCampo.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rojas.dev.XCampo.enumClass.UserRole;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -10,13 +13,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notifications {
+public class NotificationsDeliveryDto {
     private UserRole role;
     private String title;
     private String message;
     private List<String> tokens;
-    private Long id;
-    private String screen;
+    private List<Long> id;
 
     @JsonIgnore
     public String getFirstToken() {

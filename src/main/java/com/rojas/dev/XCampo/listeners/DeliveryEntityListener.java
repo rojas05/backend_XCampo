@@ -22,7 +22,7 @@ public class DeliveryEntityListener {
     @PostPersist
     public void onProductCreated(DeliveryProduct delivery) {
         System.out.println("📩 Disparando evento de notificación para delivery...");
-        Notifications notification = new Notifications(UserRole.DELIVERYMAN, "Nuevo delivery", delivery.getDate().toString(), null, delivery.getId());
+        Notifications notification = new Notifications(UserRole.DELIVERYMAN, "Nuevo delivery", delivery.getDate().toString(), null, delivery.getId(),"delivery");
         eventPublisher.publishEvent(new PersistCreatedEvent(notification));
     }
 

@@ -5,17 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class TokenNotificationID {
 
-    private Long IdDelivery;
+    private List<Long> Delivery;
     private String token;
 
     @Override
     public String toString() {
-        return "{IdDelivery=" + IdDelivery + ", token='" + token + "'}";
+        return "{IdDelivery=" + Delivery + ", token='" + token + "'}";
     }
 }

@@ -3,6 +3,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.dto.Notifications;
+import com.rojas.dev.XCampo.dto.NotificationsDeliveryDto;
 import com.rojas.dev.XCampo.dto.TokenNotificationID;
 import com.rojas.dev.XCampo.repository.DeliveryRepository;
 import com.rojas.dev.XCampo.repository.NotificationService;
@@ -45,7 +46,8 @@ public class NotificationServiceImp implements NotificationService {
     @Autowired
     TaskService taskService;
 
-    private final Queue<Notifications> pendingNotifications = new LinkedList<>();
+    //NO considero necesario el uso de una constante global
+    //private final Queue<Notifications> pendingNotifications = new LinkedList<>();
 
     @Transactional
     @Override
@@ -75,17 +77,22 @@ public class NotificationServiceImp implements NotificationService {
              */
             System.out.println("📌 Obteniendo lista de delivery: " + fcmTokens);
 
-            List<Notifications> notificationList = fcmTokens.stream()
-                    .map(tokenObj -> new Notifications(
+
+            /**
+             * IMPORTANTE cree un nuevo dto para transferir de manera correcta el repartidor y los domicilios emparejados con el mismo.
+             * NUEVO DTO NotificationsDeliveryDto
+             */
+            List<NotificationsDeliveryDto> notificationList = fcmTokens.stream()
+                    .map(tokenObj -> new NotificationsDeliveryDto(
                             notifications.getRole(),
                             notifications.getTitle(),
                             notifications.getMessage(),
                             Collections.singletonList(tokenObj.getToken()),
-                            tokenObj.getIdDelivery()
+                            tokenObj.getDelivery()
                     ))
                     .toList();
 
-            pendingNotifications.addAll(notificationList);
+            //pendingNotifications.addAll(notificationList);
 
             taskService.scheduleTasksSequentially(fcmTokens, token->{
                 System.out.println("notification +++++ " + token.getToken());
@@ -176,7 +183,8 @@ public class NotificationServiceImp implements NotificationService {
                         notifications.getTitle(),
                         notifications.getMessage(),
                         batchTokens,
-                        isID ? notifications.getId() : null
+                        isID ? notifications.getId() : null,
+                        notifications.getScreen()
                 );
 
                 // Enviar el evento a Kafka

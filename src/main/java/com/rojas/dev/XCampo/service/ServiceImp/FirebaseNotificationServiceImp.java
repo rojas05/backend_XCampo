@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FirebaseNotificationServiceImp implements FirebaseNotificationService {
@@ -23,7 +25,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
     @Override
     public void sendNotifications(Notifications notifications) {
         try {
-            // Construir la notificación
+            // Construir la notificación visible
             Notification notification = Notification.builder()
                     .setTitle(notifications.getTitle())
                     .setBody(notifications.getMessage())
@@ -37,12 +39,18 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
             }
 
             System.out.println(verifyTokens(tokens));
-
             System.out.println(notification);
-            // Crear mensaje multicast
+
+            // Agregar datos personalizados para la navegación en la app
+            Map<String, String> data = new HashMap<>();
+            data.put("screen", notifications.getScreen()); // Nombre de la pantalla
+            data.put("orderId", String.valueOf(notifications.getId())); // Ejemplo de parámetro adicional
+
+            // Crear mensaje multicast con datos adicionales
             MulticastMessage message = MulticastMessage.builder()
                     .addAllTokens(tokens)
-                    .setNotification(notification)
+                    .setNotification(notification) //Notificación visible
+                    .putAllData(data) //Datos personalizados
                     .build();
 
             System.out.println(message);
