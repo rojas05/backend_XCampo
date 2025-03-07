@@ -3,7 +3,6 @@ package com.rojas.dev.XCampo.service.Interface;
 import com.rojas.dev.XCampo.dto.TokenNotificationID;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ScheduledFuture;
 
