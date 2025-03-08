@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findByUserId(@PathVariable Long id) {
         Optional<User> userId = userService.findByIdUser(id);
-        return ResponseEntity.status(HttpStatus.OK).body(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userId.get());
     }
 
     @DeleteMapping("/{userId}")

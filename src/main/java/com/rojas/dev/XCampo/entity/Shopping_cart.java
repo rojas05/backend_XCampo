@@ -3,14 +3,17 @@ package com.rojas.dev.XCampo.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "shoppingCart")
 public class Shopping_cart {
@@ -35,6 +38,7 @@ public class Shopping_cart {
     @Column(nullable = false)
     private Long totalEarnings;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "shoppingCart")
     private Order order;
 }

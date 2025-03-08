@@ -60,7 +60,10 @@ public class NotificationServiceImp implements NotificationService {
 
             System.out.println("📌 Obteniendo lista de delivery: " + fcmTokens);
 
-            taskService.scheduleTasksSequentially(fcmTokens, token -> {
+            taskService.scheduleTasksSequentially(
+                    fcmTokens,
+                    () -> deliveryService.updateStateDeliverYMatch(notifications.getId()),
+                    token -> {
                 try {
                     System.out.println("🔄 Intentando enviar notificación a: " + token.getToken());
 

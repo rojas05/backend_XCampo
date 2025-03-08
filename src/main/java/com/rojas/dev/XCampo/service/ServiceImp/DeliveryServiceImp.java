@@ -104,7 +104,7 @@ public class DeliveryServiceImp implements DeliveryService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("no dates");
         }
 
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(result.get());
     }
 
     @Override
@@ -112,7 +112,7 @@ public class DeliveryServiceImp implements DeliveryService {
         System.out.println(request);
         Optional<List<DeliveryProduct>> result = deliveryRepository.getDeliveryByDeliveryManAndState(request.getDeliveryMan(),request.getState());
         if(result.isPresent()){
-            return ResponseEntity.ok().body(result);
+            return ResponseEntity.ok().body(result.get());
         }else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("no dates");
@@ -123,7 +123,7 @@ public class DeliveryServiceImp implements DeliveryService {
     public ResponseEntity<?> getDeliveryById(Long id_delivery) {
         Optional<DeliveryProduct> result = deliveryRepository.findById(id_delivery);
         if(result.isPresent()){
-            return ResponseEntity.ok().body(result);
+            return ResponseEntity.ok().body(result.get());
         }else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("no dates");
@@ -142,7 +142,7 @@ public class DeliveryServiceImp implements DeliveryService {
                 request.getLocations(),
                 request.getState());
         if(result.isPresent()){
-            return ResponseEntity.ok().body(result);
+            return ResponseEntity.ok().body(result.get());
         }else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("no dates by rute" + request.getLocations());

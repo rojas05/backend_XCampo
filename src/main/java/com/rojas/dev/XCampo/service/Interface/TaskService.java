@@ -9,5 +9,5 @@ import java.util.concurrent.ScheduledFuture;
 public interface TaskService {
     ScheduledFuture<?> scheduleTask(LocalDateTime targetTime, Runnable task);
 
-    void scheduleTasksSequentially(Queue<TokenNotificationID> items, java.util.function.Consumer<TokenNotificationID> taskFunction);
+    void scheduleTasksSequentially(Queue<TokenNotificationID> items,Runnable task, java.util.function.Consumer<TokenNotificationID> taskFunction);
 }
