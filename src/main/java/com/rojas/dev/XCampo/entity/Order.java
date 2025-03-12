@@ -1,16 +1,20 @@
 package com.rojas.dev.XCampo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rojas.dev.XCampo.enumClass.OrderState;
 import com.rojas.dev.XCampo.listeners.OrderEntityListener;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "orderProducts")
 @EntityListeners(OrderEntityListener.class)
@@ -37,6 +41,7 @@ public class Order {
 
     private Boolean delivery;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DeliveryProduct> deliveryProduct = new HashSet<>();
 

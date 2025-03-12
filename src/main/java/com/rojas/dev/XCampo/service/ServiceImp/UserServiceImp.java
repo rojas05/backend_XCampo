@@ -74,7 +74,7 @@ public class UserServiceImp implements UserService {
 
         }
 
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(result.get());
     }
 
     @Override

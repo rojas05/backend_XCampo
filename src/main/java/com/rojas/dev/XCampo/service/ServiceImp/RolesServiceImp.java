@@ -45,7 +45,7 @@ public class RolesServiceImp implements RolesService {
 
         if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user with id " + userService + " not found.");
 
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(result.get());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RolesServiceImp implements RolesService {
         Optional<Roles> role = rolesRepository.findById(id);
         if(role.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + id + " not found.");
 
-        return ResponseEntity.ok().body(role);
+        return ResponseEntity.ok().body(role.get());
     }
 
     @Override

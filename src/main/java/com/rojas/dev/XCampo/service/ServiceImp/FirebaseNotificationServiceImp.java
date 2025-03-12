@@ -45,7 +45,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
             // Agregar datos personalizados para la navegación en la app
             Map<String, String> data = new HashMap<>();
             data.put("screen", notifications.getScreen()); // Nombre de la pantalla
-            data.put("orderId", String.valueOf(notifications.getId())); // Ejemplo de parámetro adicional
+            data.put("Id", String.valueOf(notifications.getId())); // Ejemplo de parámetro adicional
 
             // Crear mensaje multicast con datos adicionales
             MulticastMessage message = MulticastMessage.builder()

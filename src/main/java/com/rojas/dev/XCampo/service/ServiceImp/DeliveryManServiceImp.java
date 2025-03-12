@@ -63,7 +63,7 @@ public class DeliveryManServiceImp implements DeliveryManService {
         Optional<Long> result = deliveryManRepository.getIdClientByIdUser(user.get());
         if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
 
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(result.get());
     }
 
     @Override
@@ -84,7 +84,7 @@ public class DeliveryManServiceImp implements DeliveryManService {
         Optional<DeliveryMan> deliveryMan = deliveryManRepository.findById(deliveryMan_id);
         if(deliveryMan.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("deliveryMan with id " + deliveryMan_id + " not found.");
 
-        return ResponseEntity.ok().body(deliveryMan);
+        return ResponseEntity.ok().body(deliveryMan.get());
     }
 
     @Override

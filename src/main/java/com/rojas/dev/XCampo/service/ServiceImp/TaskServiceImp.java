@@ -55,7 +55,7 @@ public class TaskServiceImp implements TaskService {
      */
 
     @Override
-    public void scheduleTasksSequentially(Queue<TokenNotificationID> items, java.util.function.Consumer<TokenNotificationID> taskFunction) {
+    public void scheduleTasksSequentially(Queue<TokenNotificationID> items,  Runnable task, java.util.function.Consumer<TokenNotificationID> taskFunction) {
         if (items == null || items.isEmpty()) {
             System.out.println("No hay elementos para programar.");
             return;
@@ -86,7 +86,8 @@ public class TaskServiceImp implements TaskService {
                     if (counter.get() == totalItems) {
                         taskScheduler.schedule(() -> {
                             System.out.println("⏳ Nadie aceptó el pedido en 15 minutos.");
-                            // Agregar a espera de una 1h
+                            LocalDateTime now = LocalDateTime.now();
+                            this.scheduleTask(now,task);
                             }, Instant.now().plusSeconds(900)); // 15 minutos
                     }
                 } catch (Exception e) {

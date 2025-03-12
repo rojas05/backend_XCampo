@@ -89,7 +89,7 @@ public class SellerServiceImp implements SellerService {
         Optional<Seller> seller = sellerRepository.findById(seller_id);
         if(seller.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + seller_id + " not found.");
 
-        return ResponseEntity.ok().body(seller);
+        return ResponseEntity.ok().body(seller.get());
     }
 
     @Override
@@ -97,7 +97,7 @@ public class SellerServiceImp implements SellerService {
         Optional<Long> result = sellerRepository.getIdSellerByIdUser(user_id);
         if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found. -");
 
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(result.get());
     }
 
     @Override
@@ -129,7 +129,7 @@ public class SellerServiceImp implements SellerService {
         try {
             Optional<List<Seller>> result = sellerRepository.getSellerByCity(city);
             if(result.isPresent())
-                return ResponseEntity.ok((result));
+                return ResponseEntity.ok((result.get()));
             else
                 return ResponseEntity.status(HttpStatus.NO_CONTENT)
                         .body("Na data");
@@ -144,7 +144,7 @@ public class SellerServiceImp implements SellerService {
         try {
             Optional<List<Seller>> result = sellerRepository.getSellerByLocation(location);
             if(result.isPresent())
-                return ResponseEntity.ok((result));
+                return ResponseEntity.ok((result.get()));
             else
                 return ResponseEntity.status(HttpStatus.NO_CONTENT)
                         .body("No data");
