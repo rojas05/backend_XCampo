@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * controlador para cliente
+ */
 @RestController
 @RequestMapping("/client")
 public class ClientController {

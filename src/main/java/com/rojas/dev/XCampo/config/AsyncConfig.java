@@ -8,7 +8,10 @@ import java.util.concurrent.Executor;
 
 @Configuration
 public class AsyncConfig {
-
+    /**
+     * configuracion para metodos asincronos
+     * @return
+     */
     @Bean(name = "taskExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

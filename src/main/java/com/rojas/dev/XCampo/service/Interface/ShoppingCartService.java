@@ -25,4 +25,5 @@ public interface ShoppingCartService {
 
     ResponseEntity<?> getIdCartByIdUser(Long idUser);
 
+    void updateStateCart(Long id);
 }

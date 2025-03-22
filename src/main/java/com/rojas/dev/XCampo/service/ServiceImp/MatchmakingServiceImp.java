@@ -54,6 +54,7 @@ public class MatchmakingServiceImp implements MatchmakingService {
      */
     private Optional<String> getLocationDelivery(Long id){
         try {
+            System.out.println(id);
             return deliveryRepository.getDeliveryLocation(id)
                     .filter(location -> !location.isBlank()) // Evita devolver strings vacíos
                     .or(() -> {
@@ -91,11 +92,11 @@ public class MatchmakingServiceImp implements MatchmakingService {
      */
     private  List<DeliveryManMatchDto> getDeliveryMan(String location){
         try {
-            Optional<List<DeliveryManMatchDto>> result = deliveryManRepository.getLocationsDeliveryMan(location);
+            List<DeliveryManMatchDto> result = deliveryManRepository.getLocationsDeliveryMan(location);
             if(result.isEmpty()){
                 System.err.println("|xx|====> Consulta vacia");
             }
-            return result.get();
+            return result;
         } catch (Exception e){
             System.err.println("|xx|====> Error en consulta al obtener el repartidor: " + e);
             return null;
@@ -103,14 +104,14 @@ public class MatchmakingServiceImp implements MatchmakingService {
     }
 
     /**
-     * funcion que recorre las listas para encontrar los repartidores adecuados
-     * @param deliveryManList
-     * @param deliveryList
-     * @return lista de tokens de reoartidores adecuados
+     * Función que recorre las listas para encontrar los repartidores adecuados.
+     * @param deliveryManList Lista de repartidores.
+     * @param deliveryList Lista de pedidos.
+     * @return Lista de tokens de repartidores adecuados.
      */
     private Queue<TokenNotificationID> matchDeliveryManAndDelivery(List<DeliveryManMatchDto> deliveryManList, List<DeliveryMatchDto> deliveryList) {
-        System.out.println("repartidores= " + deliveryManList );
-        System.out.println("domicilios= " + deliveryList );
+        System.out.println("Repartidores= " + deliveryManList);
+        System.out.println("Domicilios= " + deliveryList);
         Queue<TokenNotificationID> tokensList = new LinkedList<>();
         Set<String> matchedPairs = new HashSet<>();
 
@@ -129,7 +130,11 @@ public class MatchmakingServiceImp implements MatchmakingService {
 
                 // Recorremos las ubicaciones del repartidor
                 for (String location : deliveryMan.getLocationsList()) {
-                    if (location.equals(delivery.getLocation())) {
+                    // Ignorar espacios en la comparación
+                    String normalizedLocation = location.replaceAll("\\s+", "").trim();
+                    String normalizedDeliveryLocation = delivery.getLocation().replaceAll("\\s+", "").trim();
+
+                    if (normalizedLocation.equalsIgnoreCase(normalizedDeliveryLocation)) {
                         System.out.println("✅ MATCH IN " + delivery.getLocation());
                         matchDeliveryList.add(delivery.getId());
                         matchedPairs.add(key); // Se guarda para evitar duplicados
@@ -146,5 +151,6 @@ public class MatchmakingServiceImp implements MatchmakingService {
 
         return tokensList;
     }
+
 
 }

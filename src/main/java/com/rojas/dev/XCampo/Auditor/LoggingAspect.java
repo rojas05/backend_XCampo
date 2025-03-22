@@ -16,6 +16,10 @@ public class LoggingAspect {
     @Pointcut("within(com.rojas.dev.XCampo.controller..*)")
     public void controllerPointcut(){}
 
+    /**
+     * registra la llamada de los controladores
+     * @param joinPoint
+     */
     @Before("controllerPointcut()")
     public void logBefore(JoinPoint joinPoint) {
         aspectLogger.info("Llamada al método: {} con argumentos: {}",
@@ -24,6 +28,11 @@ public class LoggingAspect {
                 );
     }
 
+    /**
+     * registra el retorno de los controladores
+     * @param joinPoint
+     * @param result
+     */
     @AfterReturning(pointcut = "controllerPointcut()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result){
 
@@ -42,6 +51,12 @@ public class LoggingAspect {
                 );
     }
 
+
+    /**
+     * registra los errores que puedan ocurrir
+     * @param joinPoint
+     * @param error
+     */
     @AfterThrowing(pointcut = "controllerPointcut()", throwing = "error")
     public void logError(JoinPoint joinPoint, Throwable error){
         aspectLogger.error("Excepción en método: {}, Mensaje: {}",

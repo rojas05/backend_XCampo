@@ -32,5 +32,5 @@ public interface DeliveryManRepository extends JpaRepository<DeliveryMan,Long> {
             "INNER JOIN d.rol r " +
             "INNER JOIN r.user u " +
             "WHERE d.rute LIKE %:location%")
-    Optional<List<DeliveryManMatchDto>> getLocationsDeliveryMan(@Param("location") String location);
+    List<DeliveryManMatchDto> getLocationsDeliveryMan(@Param("location") String location);
 }

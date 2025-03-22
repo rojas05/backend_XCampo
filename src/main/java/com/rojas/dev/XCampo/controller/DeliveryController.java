@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * controlador para envios
+ */
 @Controller
 @RequestMapping("/delivery")
 public class DeliveryController {
@@ -21,65 +24,125 @@ public class DeliveryController {
     @Autowired
     DeliveryService deliveryService;
 
+    /**
+     * insertar un nuevo envio
+     * @param delivery
+     * @return estado y envio insertado
+     */
     @PostMapping
     ResponseEntity<?> insertDelivery(@RequestBody GetDeliveryProductDTO delivery){
         return deliveryService.insertDelivery(delivery);
     }
 
+    /**
+     * actualizar el estdo del envio
+     * @param delivery
+     * @return estado http
+     */
     @PatchMapping("updateState")
     ResponseEntity<?> updateStateDelivery(@RequestBody DeliveryProduct delivery){
         return deliveryService.updateStateDelivery(delivery);
     }
 
+    /**
+     * endPoint para actualizar un envio
+     * @param delivery
+     * @return
+     */
     @PatchMapping("updateDeliveryMan")
     ResponseEntity<?> updateDeliveryMan(@RequestBody  DeliveryProduct delivery){
         return deliveryService.updateDeliveryMan(delivery);
     }
 
+    /**
+     * enPoint para listar un envio por el cliente
+     * @param delivery
+     * @return envio
+     */
     @GetMapping("getByClient")
     ResponseEntity<?> getDeliveryByClientAndState(@RequestBody DeliveryClientDTO delivery){
         return  deliveryService.getDeliveryByClientAndState(delivery);
     }
 
+    /**
+     * endPint para retornar los envios filtrando por estado y repartidor
+     * @param delivery
+     * @return lista de envios
+     */
     @GetMapping("getByDeliveryMan")
     ResponseEntity<?> getDeliveryByDeliveryManAndState(@RequestBody DeliveryProduct delivery){
         return deliveryService.getDeliveryByDeliveryManAndState(delivery);
     }
 
+    /**
+     * obtener el envio por su id
+     * @param id_delivery
+     * @return envio
+     */
     @GetMapping("{id_delivery}")
     ResponseEntity<?> getDeliveryById(@PathVariable Long id_delivery){
         return deliveryService.getDeliveryById(id_delivery);
     }
 
+    /**
+     * obtener el envio segun el id de la orden
+     * @param id_delivery
+     * @return envio
+     */
     @GetMapping("/idOrder/{id_delivery}")
     ResponseEntity<?> getDeliveryOrderById(@PathVariable Long id_delivery){
         var getOrder = deliveryService.getDeliveryByIdOrder(id_delivery);
         return ResponseEntity.status(HttpStatus.OK).body(getOrder);
     }
 
+    /**
+     * rettorna los envios correspondientes a una ruta
+     * @param locations
+     * @return lista de envios
+     */
     @GetMapping("rute")
     ResponseEntity<?> getDeliveryByRuteAndState(@RequestBody DeliveryRuteDTO locations){
         return deliveryService.getDeliveryByRuteAndState(locations);
     }
 
+    /**
+     * obtiene los envios segun su estado
+     * @param state
+     * @return lista de envios
+     */
     @GetMapping("/getList/{state}")
     ResponseEntity<?> getAllDeliverState(@PathVariable String state){
         List<GetDeliveryProductDTO> allDelivery = deliveryService.getAllDeliveryAvailable(state);
         return ResponseEntity.status(HttpStatus.FOUND).body(allDelivery);
     }
 
+    /**
+     * retorna la cantidad de envios segun su estado
+     * @param state
+     * @return cantidad de envios con el estado
+     */
     @GetMapping("/getTotalAvailable/{state}")
     ResponseEntity<?> countDeliveryAvalible(@PathVariable String state){
         Long allDelivery = deliveryService.countDeliveryAvailable(state);
         return ResponseEntity.status(HttpStatus.OK).body(allDelivery);
     }
 
+    /**
+     * obtiene los envios segun su estado
+     * @param state
+     * @return lista de envios
+     */
     @GetMapping("/getAll/{state}")
     ResponseEntity<?> getAllDeliverDTOState(@PathVariable String state){
         List<GetDeliveryPdtForDlvManDTO> allDelivery = deliveryService.getDeliveryForDlvMen(state);
         return ResponseEntity.status(HttpStatus.FOUND).body(allDelivery);
     }
 
+    /**
+     * obtiene los envios segun su estado
+     * @param state
+     * @return lista de envios
+     */
     @GetMapping("/getListGroup/{state}")
     ResponseEntity<?> getGroupedDeliveries(@PathVariable String state){
         var allDelivery = deliveryService.getGroupedDeliveries(state);

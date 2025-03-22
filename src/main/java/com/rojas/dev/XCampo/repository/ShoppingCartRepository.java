@@ -17,7 +17,7 @@ public interface ShoppingCartRepository extends JpaRepository<Shopping_cart, Lon
     @Transactional
     @Query("SELECT s " +
             "FROM Shopping_cart s " +
-            "WHERE s.client.id_client = :clientId")
+            "WHERE s.client.id_client = :clientId AND s.status = false")
     List<Shopping_cart> findByClientId(@Param("clientId") Long clientId);
 
     @Transactional
@@ -45,6 +45,7 @@ public interface ShoppingCartRepository extends JpaRepository<Shopping_cart, Lon
             "WHERE s.client.rol.user.user_id = :idUser AND s.status = false")
     Long getIdCartByIdUser(@Param("idUser") Long idUser);
 
+    @Transactional
     @Modifying
     @Query("UPDATE Shopping_cart c SET c.status = true WHERE c.id_cart = :cartId")
     void updateCartStatusToTrue(@Param("cartId") Long cartId);

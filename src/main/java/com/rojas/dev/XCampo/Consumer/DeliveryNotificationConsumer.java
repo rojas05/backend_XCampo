@@ -19,6 +19,10 @@ public class DeliveryNotificationConsumer {
     @Autowired
     ObjectMapper objectMapper;
 
+    /**
+     * consumer de kafka para notificaciones de repartidores
+     * @param message
+     */
     @KafkaListener(topics = "delivery-notifications", groupId = "delivery-group") // concurrency = "1": para que un solo consumidor la procese
     public void consumerDeliveryEvent(String message){
         try {

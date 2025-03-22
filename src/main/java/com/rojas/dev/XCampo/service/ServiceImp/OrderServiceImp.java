@@ -33,6 +33,8 @@ public class OrderServiceImp implements OrderService {
         var shoppingCart = shoppingCarServiceImp
                 .findByIdShoppingCard(orderDTO.getShoppingCartId().getIdCart());
 
+        shoppingCarServiceImp.updateStateCart(orderDTO.getShoppingCartId().getIdCart());
+
         Order order = new Order();
         order.setDate(LocalDate.now());
         order.setHour(LocalTime.now());

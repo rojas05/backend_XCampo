@@ -20,6 +20,10 @@ public class ProductsNotificationConsumer {
     @Autowired
     ObjectMapper objectMapper;
 
+    /**
+     * consumer de kafka para notificaciones de productos nuevos
+     * @param message
+     */
     @KafkaListener(topics = "product-notifications", groupId = "delivery-group")
     public void consumerOrderEvent(String message){
         try {

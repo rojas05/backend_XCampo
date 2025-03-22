@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * controlador para el ingreso de imagenes
+ */
 @RestController
 @RequestMapping("/storage")
 public class StorageController {
@@ -15,6 +18,13 @@ public class StorageController {
     @Autowired
     FirebaseStorageService firebaseStorageService;
 
+    /**
+     * sube imagenes a storage
+     * @param images
+     * @param context
+     * @param id
+     * @return estdo http
+     */
     @PostMapping("{id}")
     public ResponseEntity<?> upload(
             @RequestParam("images") List<MultipartFile> images,

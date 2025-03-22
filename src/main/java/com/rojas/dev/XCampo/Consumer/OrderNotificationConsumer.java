@@ -20,6 +20,10 @@ public class OrderNotificationConsumer {
     @Autowired
     ObjectMapper objectMapper;
 
+    /**
+     * consumer de kafka para notificaciones de ordenes
+     * @param message
+     */
     @KafkaListener(topics = "order-notifications", groupId = "delivery-group")
     public void consumerOrderEvent(String message){
         try {
