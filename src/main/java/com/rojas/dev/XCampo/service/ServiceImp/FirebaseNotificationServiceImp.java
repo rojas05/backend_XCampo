@@ -62,7 +62,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
             if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
                 System.err.println("❌ Token inválido: ");
             } else {
-                System.err.println("❌ Error al enviar notificación: " + e.getMessage());
+                System.err.println("[FireBaseService] ❌ Error al enviar las notificaciones: " + e.getMessage());
             }
         }
     }
@@ -84,7 +84,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
             if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
                 System.err.println("❌ Token inválido: ");
             } else {
-                System.err.println("❌ Error al enviar notificación: " + e.getMessage());
+                System.err.println("[FireBaseService] ❌ Error al enviar notificación: " + e.getMessage() + " Error: " + e);
             }
         }
     }

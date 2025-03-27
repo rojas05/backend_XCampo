@@ -22,6 +22,8 @@ public interface DeliveryService {
 
     ResponseEntity<?> getDeliveryById(Long id_delivery);
 
+    GetDeliveryPdtForDlvManDTO getDeliveryByIdForDlvMan(Long idDelivery);
+
     GetDeliveryPdtForDlvManDTO getDeliveryByIdOrder(Long id_order);
 
     ResponseEntity<?> getDeliveryByRuteAndState(DeliveryRuteDTO request);

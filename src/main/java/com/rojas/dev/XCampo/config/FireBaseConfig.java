@@ -7,6 +7,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,9 @@ public class FireBaseConfig {
     @Value("${firebase.storage.bucket}")
     private String storageBucket;
 
+    @Value("${firebase.database.url}")
+    private String databaseUrl;
+
     @Bean
     public FirebaseApp initializeFirebase() {
         try {
@@ -34,6 +38,7 @@ public class FireBaseConfig {
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                         .setStorageBucket(storageBucket)
+                        .setDatabaseUrl(databaseUrl)
                         .build();
 
                 FirebaseApp firebaseApp = FirebaseApp.initializeApp(options);
@@ -77,5 +82,11 @@ public class FireBaseConfig {
 
         System.out.println("Firebase Storage inicializado correctamente.");
         return options.getService();
+    }
+
+    @Bean
+    public FirebaseDatabase firebaseDatabase(FirebaseApp firebaseApp) {
+        System.out.println("Firebase Realtime Database inicializado correctamente.");
+        return FirebaseDatabase.getInstance(firebaseApp);
     }
 }

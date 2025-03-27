@@ -170,23 +170,20 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
-    /*public OrderDTO convertToOrderFilter(Order order, Long sellerId) {
+    @Override
+    public Long getIdClientByOrderId(Long idOrder) {
+        existsOrderId(idOrder);
+        return orderRepository.getIdClientByIdOrder(idOrder);
+    }
 
-        Set<CartItem> filteredItems = order.getShoppingCart().getItems().stream()
-                .filter(ci -> ci.getProduct().getSeller().getId_seller().equals(sellerId))
-                .collect(Collectors.toSet());
+    public String getDestinyClient(Long idOrder) {
+        existsOrderId(idOrder);
+        return orderRepository.getDestinyClient(idOrder);
+    }
 
-        var shoppingCartDTO = shoppingCarServiceImp.convertToShoppingCartDTOFilter(order.getShoppingCart(), filteredItems);
-
-
-        return new OrderDTO(
-                order.getId_order(),
-                order.getState(),
-                order.getMessage(),
-                order.getDelivery(),
-                order.getPrice_delivery(),
-                shoppingCartDTO
-        );
-    }*/
+    public void existsOrderId(Long idOrder) {
+        if (!orderRepository.existsById(idOrder))
+            throw new EntityNotFoundException("Order not exist whit ID: " + idOrder);
+    }
 
 }

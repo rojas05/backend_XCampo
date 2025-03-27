@@ -32,7 +32,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(findCategory);
     }
 
-    @GetMapping("/{findName}")
+    @GetMapping("/search/{findName}")
     public ResponseEntity<?> findNameCategory(@PathVariable String findName) {
         var category = categoryService.findByNameCategory(findName);
         return ResponseEntity.status(HttpStatus.FOUND).body(category);

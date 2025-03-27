@@ -26,4 +26,8 @@ public interface UserService {
     ResponseEntity<?> updateNfs(User user);
 
     List<String> findFcmTokensByRole(UserRole role);
+
+    String findFcmTokensByIdClient(Long id);
+
+    String findFcmTokensByIdSeller(Long id);
 }

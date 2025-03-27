@@ -34,7 +34,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
 
     @Transactional
     @Query("SELECT COUNT(d) > 0 FROM DeliveryProduct d " +
-            "WHERE d.state <> :state AND d.id = :idDelivery")
+            "WHERE d.state = :state AND d.id = :idDelivery")
     boolean verificateStateById(@Param("idDelivery") Long idDelivery, @Param("state") DeliveryProductState state);
 
 
@@ -63,6 +63,19 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "INNER JOIN p.seller s " +
             "WHERE o.id_order = :orderId ")
     GetDeliveryPdtForDlvManDTO getDeliveryOrderIdDTO(@Param("orderId") Long orderId);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
+            "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
+            "FROM DeliveryProduct d " +
+            "INNER JOIN d.order o " +
+            "INNER JOIN o.shoppingCart c " +
+            "INNER JOIN c.client cl " +
+            "INNER JOIN c.items i " +
+            "INNER JOIN i.product p " +
+            "INNER JOIN p.seller s " +
+            "WHERE d.id = :idDelivery ")
+    GetDeliveryPdtForDlvManDTO getDeliveryByIdForDlvMan(@Param("idDelivery") Long idDelivery);
 
     @Transactional(readOnly = true)
     @Query("SELECT new com.rojas.dev.XCampo.dto.DeliveryGroupedBySellerDTO(" +

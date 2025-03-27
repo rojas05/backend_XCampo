@@ -14,4 +14,6 @@ public interface ClientService {
     ResponseEntity<?> getSellerById(Long id);
 
     ResponseEntity<?> delete(Long id_client);
+
+    ResponseEntity<?> getNameClient(Long idClient);
 }

@@ -64,10 +64,16 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
-    @GetMapping("/getGanacias/{idSeller}")
+    @GetMapping("/getGanancias/{idSeller}")
     public ResponseEntity<?> getGanacias(@PathVariable Long idSeller){
         var order = orderService.calculateEarningsOrder(idSeller);
         return ResponseEntity.status(HttpStatus.OK).body(order);
+    }
+
+    @GetMapping("/getClient/{idOrder}")
+    public ResponseEntity<?> getIdClientByOrderId(@PathVariable Long idOrder){
+        var order = orderService.getIdClientByOrderId(idOrder);
+        return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
 
 }

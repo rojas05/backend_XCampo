@@ -49,7 +49,6 @@ public class TaskServiceImp implements TaskService {
 
     /**
      * Programa una lista de tareas con un intervalo de 15 minutos entre cada una.
-     *
      * @param items        Lista de elementos a procesar.
      * @param taskFunction Función que recibe cada elemento y ejecuta una tarea.
      */
@@ -72,8 +71,10 @@ public class TaskServiceImp implements TaskService {
             taskScheduler.schedule(() -> {
                 try {
                     List<Long> pendingDeliveries = item.getDelivery().stream()
-                            .filter(deliveryId -> !deliveryRepository.verificateStateById(deliveryId, DeliveryProductState.EN_COLA))
+                            .filter(deliveryId -> deliveryRepository.verificateStateById(deliveryId, DeliveryProductState.DISPONIBLE))
                             .collect(Collectors.toList());
+
+                    System.out.println("[Task notification] ===> " + pendingDeliveries);
 
                     if (pendingDeliveries.isEmpty()) {
                         System.out.println("✅ Todos los envios ya han sido tomados. Deteniendo las notification...");

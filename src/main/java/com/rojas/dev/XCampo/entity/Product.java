@@ -34,8 +34,7 @@ public class Product {
     private MeasurementUnit measurementUnit;
 
     @Column(length = 1000)
-    private String UrlImage;
-
+    private String urlImage;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)

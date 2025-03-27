@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -85,6 +87,17 @@ public class ClientServiceImp implements ClientService {
         clientRepository.deleteById(id_client);
 
         return ResponseEntity.status(HttpStatus.OK).body("client deleted successfully.");
+    }
+
+    @Override
+    public ResponseEntity<?> getNameClient(Long idClient) {
+        existsClient(idClient);
+        String nameClient = clientRepository.getNameClient(idClient);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", nameClient);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     public Client findClientById(Long clientId) {

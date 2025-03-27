@@ -59,6 +59,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
+    @ExceptionHandler(value = {RefreshTokenException.class})
+    public ResponseEntity<ErrorDTO> RefreshTokenException(RefreshTokenException e) {
+        ErrorDTO error = createErrorDTO(HttpStatus.NOT_FOUND, "Token refresh not found", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
     // No es capturada por que spring security o jwt no deja como tal
     @ExceptionHandler(value = {InvalidTokenException.class})
     public ResponseEntity<ErrorDTO> handleInvalidTokenException(InvalidTokenException e) {

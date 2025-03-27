@@ -116,7 +116,6 @@ public class JwtServiceImp implements JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-
     private Claims getAllClaims (String token) {
         try {
             return Jwts

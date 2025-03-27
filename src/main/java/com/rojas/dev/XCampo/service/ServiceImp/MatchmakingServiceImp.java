@@ -75,7 +75,7 @@ public class MatchmakingServiceImp implements MatchmakingService {
         try {
             Optional<List<DeliveryMatchDto>> result = deliveryRepository.getLocationsDelivery(location); // filtrar por municipio
             if(result.isEmpty()){
-                System.err.println("|xx|====> Consulta vacia: ");
+                System.err.println("|xx|====> Consulta vacia al obtener la localization del envió: ");
             }
             return result.get();
         } catch (Exception e){
@@ -91,11 +91,11 @@ public class MatchmakingServiceImp implements MatchmakingService {
      */
     private  List<DeliveryManMatchDto> getDeliveryMan(String location){
         try {
-            Optional<List<DeliveryManMatchDto>> result = deliveryManRepository.getLocationsDeliveryMan(location);
+            List<DeliveryManMatchDto> result = deliveryManRepository.getLocationsDeliveryMan(location);
             if(result.isEmpty()){
-                System.err.println("|xx|====> Consulta vacia");
+                System.err.println("|xx|====> Consulta vaciá al encontrar la vereda del repartidor.");
             }
-            return result.get();
+            return result;
         } catch (Exception e){
             System.err.println("|xx|====> Error en consulta al obtener el repartidor: " + e);
             return null;
@@ -109,8 +109,8 @@ public class MatchmakingServiceImp implements MatchmakingService {
      * @return lista de tokens de reoartidores adecuados
      */
     private Queue<TokenNotificationID> matchDeliveryManAndDelivery(List<DeliveryManMatchDto> deliveryManList, List<DeliveryMatchDto> deliveryList) {
-        System.out.println("repartidores= " + deliveryManList );
-        System.out.println("domicilios= " + deliveryList );
+        System.out.println("[repartidores] ===> " + deliveryManList );
+        System.out.println("[domicilios] ===> " + deliveryList );
         Queue<TokenNotificationID> tokensList = new LinkedList<>();
         Set<String> matchedPairs = new HashSet<>();
 
@@ -129,7 +129,7 @@ public class MatchmakingServiceImp implements MatchmakingService {
 
                 // Recorremos las ubicaciones del repartidor
                 for (String location : deliveryMan.getLocationsList()) {
-                    if (location.equals(delivery.getLocation())) {
+                    if (location.trim().equalsIgnoreCase(delivery.getLocation().trim())) {
                         System.out.println("✅ MATCH IN " + delivery.getLocation());
                         matchDeliveryList.add(delivery.getId());
                         matchedPairs.add(key); // Se guarda para evitar duplicados

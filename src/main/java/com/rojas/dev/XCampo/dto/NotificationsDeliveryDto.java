@@ -19,6 +19,7 @@ public class NotificationsDeliveryDto {
     private String message;
     private List<String> tokens;
     private List<Long> id;
+    private String screen;
 
     @JsonIgnore
     public String getFirstToken() {
