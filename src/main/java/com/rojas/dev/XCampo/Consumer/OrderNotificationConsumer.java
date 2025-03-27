@@ -1,14 +1,10 @@
 package com.rojas.dev.XCampo.Consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.dto.Notifications;
-import com.rojas.dev.XCampo.entity.Order;
-import com.rojas.dev.XCampo.repository.NotificationService;
-import com.rojas.dev.XCampo.service.Interface.FirebaseNotificationService;
+import com.rojas.dev.XCampo.service.Interface.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

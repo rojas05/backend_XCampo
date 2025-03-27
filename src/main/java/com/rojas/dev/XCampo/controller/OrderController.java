@@ -118,4 +118,9 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
+
+    @GetMapping("/favorite/{id}")
+    public ResponseEntity<?> getSellersFavorite(@PathVariable Long id){
+        return orderService.getSellersFavorite(id);
+    }
 }

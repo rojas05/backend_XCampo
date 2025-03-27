@@ -16,10 +16,20 @@ import java.util.Optional;
 @Repository
 public interface DeliveryManRepository extends JpaRepository<DeliveryMan,Long> {
 
+    /**
+     * consulta de id de repartidor
+     * @param user
+     * @return id repartidor
+     */
     @Transactional
     @Query("SELECT d.id_deliveryMan FROM DeliveryMan d INNER JOIN d.rol r WHERE r.user = :user")
     Optional<Long> getIdClientByIdUser(@Param("user") User user);
 
+    /**
+     * actualiza la ruta del repartidor
+     * @param idClient
+     * @param rute
+     */
     @Transactional
     @Modifying
     @Query("UPDATE DeliveryMan d SET "
@@ -27,6 +37,11 @@ public interface DeliveryManRepository extends JpaRepository<DeliveryMan,Long> {
     void updateClient(@Param("id_deliveryMan") Long idClient,
                       @Param("rute") String rute);
 
+    /**
+     * consulta la ruta del repartidor
+     * @param location
+     * @return
+     */
     @Transactional
     @Query("SELECT new com.rojas.dev.XCampo.dto.DeliveryManMatchDto( d.id_deliveryMan, d.rute, u.nfs ) FROM DeliveryMan d " +
             "INNER JOIN d.rol r " +

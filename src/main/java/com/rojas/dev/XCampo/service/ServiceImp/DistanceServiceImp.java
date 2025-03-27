@@ -34,6 +34,13 @@ public class DistanceServiceImp implements DistanceService {
     @Value("${maps.api_key}")
     private String API_KEY;
 
+    /**
+     * calcula la tarifa a pagar por un envio
+     * esta funcion realiza un peticion a google maps
+     * @param request
+     * @param idCart
+     * @return
+     */
     @Override
     public int CalcularTarifa(RequestCoordinatesDTO request, Long idCart) {
         List<String> storeCoordinates = shoppingCartRepository.findStoreCoordinatesByCartId(idCart)
@@ -51,6 +58,13 @@ public class DistanceServiceImp implements DistanceService {
         return redondear((int) tarifa);
     }
 
+    /**
+     * funcion para optener la distancia en kilometros de la ruta
+     * @param destination
+     * @param origin
+     * @param waypoints
+     * @return
+     */
     private Double getDistanceKm(RequestCoordinatesDTO destination, String origin, String waypoints) {
         try {
             String url;
@@ -91,6 +105,11 @@ public class DistanceServiceImp implements DistanceService {
         }
     }
 
+    /**
+     * con esta funcion evitamos retornar costos no validos
+     * @param numero
+     * @return numero
+     */
     private static int redondear(Integer numero) {
         int residuo = numero % 100;
         if (residuo >= 50) {
@@ -100,10 +119,20 @@ public class DistanceServiceImp implements DistanceService {
         }
     }
 
+    /**
+     * extrae el destino del request
+     * @param coordinates
+     * @return Destini
+     */
     private static String getDestini(List<String> coordinates) {
         return coordinates.get(0).replace("\"", "").trim();
     }
 
+    /**
+     * extrae los puntos de parada y los convierte en una cadena lejible para el api de google maps
+     * @param coordinates
+     * @return WayPoints
+     */
     private static String getWayPoints(List<String> coordinates) {
         if (coordinates == null || coordinates.size() <= 1) {
             return null; // Retorna vacío si no hay suficientes coordenadas

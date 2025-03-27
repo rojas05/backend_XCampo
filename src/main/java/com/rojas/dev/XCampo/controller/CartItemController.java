@@ -28,7 +28,7 @@ public class CartItemController {
     @PostMapping()
     public ResponseEntity<?> InsertItemCart(@RequestBody CartItemDTO cartItem) {
         cartItemService.addProductToCart(cartItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cartItem);
+        return ResponseEntity.ok(cartItem);
     }
 
     /**

@@ -25,9 +25,12 @@ public class AuditoriaAspect {
      */
     @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.insert*(..))", returning = "result")
     public void auditarInsert(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            log.error("El resultado de la operación es null, no se puede auditar.");
+            return;
+        }
         String usuario = getUserNameAuthenticate();
         String entidad = result.getClass().getSimpleName();
-        Long id = getIdEntity(result);
 
         auditoriaArchivoService.registerAudit(
                 usuario,
@@ -44,9 +47,12 @@ public class AuditoriaAspect {
      */
     @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.create*(..))", returning = "result")
     public void auditarCreate(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            log.error("El resultado de la operación es null, no se puede auditar.");
+            return;
+        }
         String usuario = getUserNameAuthenticate();
         String entidad = result.getClass().getSimpleName();
-        Long id = getIdEntity(result);
 
         auditoriaArchivoService.registerAudit(
                 usuario,
@@ -63,9 +69,12 @@ public class AuditoriaAspect {
      */
     @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.add*(..))", returning = "result")
     public void auditarAdd(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            log.error("El resultado de la operación es null, no se puede auditar.");
+            return;
+        }
         String usuario = getUserNameAuthenticate();
         String entidad = result.getClass().getSimpleName();
-        Long id = getIdEntity(result);
 
         auditoriaArchivoService.registerAudit(
                 usuario,

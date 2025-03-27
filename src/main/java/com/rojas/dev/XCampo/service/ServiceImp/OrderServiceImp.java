@@ -2,12 +2,16 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 
 import com.rojas.dev.XCampo.dto.OrderDTO;
 import com.rojas.dev.XCampo.entity.Order;
+import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.enumClass.OrderState;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.OrderRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.service.Interface.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Executable;
@@ -169,6 +173,23 @@ public class OrderServiceImp implements OrderService {
         }catch (Exception e){
             System.err.println("ERROR EN CONSULTA =====> "+e);
             return null;
+        }
+    }
+
+    /**
+     * funcion para exponer las tiendas en las que un cliente a comprado
+     * @param id
+     * @return lista de tiendas
+     */
+    @Override
+    public ResponseEntity<?> getSellersFavorite(Long id) {
+        try {
+            List<Seller> result = orderRepository.getSellerByOrder(id);
+            if(!result.isEmpty())
+                return ResponseEntity.ok(result);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No seller"+result);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
         }
     }
 

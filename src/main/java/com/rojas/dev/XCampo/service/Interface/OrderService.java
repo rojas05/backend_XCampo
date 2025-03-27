@@ -3,6 +3,7 @@ package com.rojas.dev.XCampo.service.Interface;
 import com.rojas.dev.XCampo.dto.OrderDTO;
 import com.rojas.dev.XCampo.entity.Order;
 import com.rojas.dev.XCampo.enumClass.OrderState;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -32,4 +33,5 @@ public interface OrderService {
 
     List<String> getNfsSellersByOrderId(Long id);
 
+    ResponseEntity<?> getSellersFavorite(Long id);
 }

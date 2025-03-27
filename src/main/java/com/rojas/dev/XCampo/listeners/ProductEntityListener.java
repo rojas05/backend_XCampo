@@ -18,6 +18,10 @@ public class ProductEntityListener {
         ProductEntityListener.eventPublisher = eventPublisher;
     }
 
+    /**
+     * evento de persistencia para producto
+     * @param product
+     */
     @PostPersist
     public void onProductCreated(Product product) {
         System.out.println("📩 Disparando evento de notificación para producto...");

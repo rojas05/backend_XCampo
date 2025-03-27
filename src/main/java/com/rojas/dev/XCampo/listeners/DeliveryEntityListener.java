@@ -19,6 +19,10 @@ public class DeliveryEntityListener {
         DeliveryEntityListener.eventPublisher = eventPublisher;
     }
 
+    /**
+     * evento de persistencia para delivery
+     * @param delivery
+     */
     @PostPersist
     public void onProductCreated(DeliveryProduct delivery) {
         System.out.println("📩 Disparando evento de notificación para delivery...");

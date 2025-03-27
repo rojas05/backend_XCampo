@@ -21,23 +21,45 @@ import java.util.Optional;
 @Repository
 public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> {
 
+    /**
+     * consulta de deliery
+     * @param delivery
+     * @param state
+     * @return lista de envios
+     */
     @Transactional
     @Query("SELECT d FROM DeliveryProduct d WHERE d.deliveryMan = :delivery AND d.state = :state")
     Optional<List<DeliveryProduct>> getDeliveryByDeliveryManAndState(
             @Param("delivery") DeliveryMan delivery,
             @Param("state") DeliveryProductState state);
 
+    /**
+     * consulta de deliery
+     * @param state
+     * @return lista de envios
+     */
     @Transactional
     @Query("SELECT DISTINCT d FROM DeliveryProduct d " +
             "WHERE d.state = :state")
     List<DeliveryProduct> getDeliveryState(@Param("state") DeliveryProductState state);
 
+    /**
+     * verifica el estado
+     * @param idDelivery
+     * @param state
+     * @return estado
+     */
     @Transactional
     @Query("SELECT COUNT(d) > 0 FROM DeliveryProduct d " +
             "WHERE d.state <> :state AND d.id = :idDelivery")
     boolean verificateStateById(@Param("idDelivery") Long idDelivery, @Param("state") DeliveryProductState state);
 
 
+    /**
+     * consulta de envio
+     * @param state
+     * @return dto de delivery
+     */
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
             "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
@@ -51,6 +73,11 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "WHERE d.state = :state ")
     List<GetDeliveryPdtForDlvManDTO> getDeliveryStateDTO(@Param("state") DeliveryProductState state);
 
+    /**
+     * consulta de delivery y orden
+     * @param orderId
+     * @return dto
+     */
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
             "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
@@ -64,6 +91,10 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "WHERE o.id_order = :orderId ")
     GetDeliveryPdtForDlvManDTO getDeliveryOrderIdDTO(@Param("orderId") Long orderId);
 
+    /**
+     * consulta de envios agrupados por tiendas
+     * @return envios
+     */
     @Transactional(readOnly = true)
     @Query("SELECT new com.rojas.dev.XCampo.dto.DeliveryGroupedBySellerDTO(" +
             "s.id, s.name_store, s.coordinates, COUNT(DISTINCT o.id_order)) " +
@@ -78,6 +109,12 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "GROUP BY s.id, s.name_store, s.coordinates")
     List<DeliveryGroupedBySellerDTO> getGroupedDeliveries();
 
+    /**
+     * consulta de envios
+     * @param location
+     * @param state
+     * @return lista de envios
+     */
     @Transactional
     @Query("SELECT d FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
@@ -90,6 +127,12 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             @Param("location") List<String> location,
             @Param("state") DeliveryProductState state);
 
+    /**
+     * consulta de envios
+     * @param client
+     * @param state
+     * @return lista de envios
+     */
     @Transactional
     @Query("SELECT d FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
@@ -99,11 +142,21 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             @Param("client") Client client,
             @Param("state") DeliveryProductState state);
 
+    /**
+     * cantidad de envios disponibles
+     * @param state
+     * @return
+     */
     @Transactional
     @Query("SELECT COUNT(DISTINCT d.id) FROM DeliveryProduct d " +
             "WHERE d.state = :state ")
     Long countDeliveryAvailable(@Param("state") DeliveryProductState state);
 
+    /**
+     * Actualiza estado de envio
+     * @param id
+     * @param state
+     */
     @Transactional
     @Modifying
     @Query("UPDATE DeliveryProduct d SET d.state = :state " +
@@ -112,6 +165,11 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             @Param("id") Long id,
             @Param("state") DeliveryProductState state);
 
+    /**
+     * Actualiza el repartidor de un envio
+     * @param id
+     * @param deliveryMan
+     */
     @Transactional
     @Modifying
     @Query("UPDATE DeliveryProduct d SET d.deliveryMan = :deliveryMan " +
@@ -120,6 +178,11 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             @Param("id") Long id,
             @Param("deliveryMan") DeliveryMan deliveryMan);
 
+    /**
+     * consulta de envio para su localization
+     * @param id
+     * @return localization
+     */
     @Transactional
     @Query("SELECT DISTINCT s.location FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
@@ -131,6 +194,11 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
     Optional<String> getDeliveryLocation(
             @Param("id") Long id);
 
+    /**
+     * consulta de envio para emparejamiento
+     * @param location
+     * @return dto
+     */
     @jakarta.transaction.Transactional
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.DeliveryMatchDto(d.id, s.location) FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
@@ -141,6 +209,12 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "WHERE s.location = :location ")
     Optional<List<DeliveryMatchDto>> getLocationsDelivery(@Param("location") String location);
 
+    /**
+     * Actualiza el estado de un envío
+     * @param id
+     * @param stateNew
+     * @param state
+     */
     @Transactional
     @Modifying
     @Query("UPDATE DeliveryProduct d SET d.state = :stateNew " +

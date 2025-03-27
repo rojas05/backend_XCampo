@@ -15,10 +15,23 @@ import java.util.Optional;
 @Repository
 public interface SellerRepository extends JpaRepository  <Seller, Long> {
 
+    /**
+     * consulta un vendedor
+     * @param user
+     * @return vendedor
+     */
     @Transactional
     @Query("SELECT s.id_seller FROM Seller s INNER JOIN s.rol r INNER JOIN r.user u WHERE u.user_id = :user")
     Optional<Long> getIdSellerByIdUser(@Param("user") Long user);
 
+    /**
+     * Acrualiza la informacion de vendedor
+     * @param idSeller
+     * @param coordinates
+     * @param location
+     * @param locationDescription
+     * @param nameStore
+     */
     @Transactional
     @Modifying
     @Query("UPDATE Seller s SET s.coordinates = :coordinates, s.location = :location, "
@@ -29,12 +42,22 @@ public interface SellerRepository extends JpaRepository  <Seller, Long> {
                      @Param("locationDescription") String locationDescription,
                      @Param("nameStore") String nameStore);
 
+    /**
+     * Actualiza las imagenes de un vendedor
+     * @param idSeller
+     * @param img
+     */
     @Transactional
     @Modifying
     @Query("UPDATE Seller s SET s.img = :img WHERE s.id_seller = :id_seller")
     void updateSellerImg(@Param("id_seller") Long idSeller,
                       @Param("img") String img);
 
+    /**
+     * consulta de vendedores
+     * @param city
+     * @return lista de vendedores
+     */
     @Query("SELECT s FROM Seller s " +
             "INNER JOIN s.rol r " +
             "INNER JOIN r.user u WHERE u.city = :city")
@@ -42,6 +65,11 @@ public interface SellerRepository extends JpaRepository  <Seller, Long> {
             @Param("city") String city
     );
 
+    /**
+     * consulta de vendedores
+     * @param location
+     * @return lista de vendedores
+     */
     @Query("SELECT s FROM Seller s WHERE s.location = :location")
     Optional<List<Seller>> getSellerByLocation(
             @Param("location") String location

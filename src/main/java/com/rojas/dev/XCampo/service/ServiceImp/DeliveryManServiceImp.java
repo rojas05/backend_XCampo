@@ -29,7 +29,12 @@ public class DeliveryManServiceImp implements DeliveryManService {
     @Autowired
     UserRepository userRepository;
 
-
+    /**
+     * agrega un nuevo repartidor
+     * @param deliveryMan
+     * @param idRol
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> insertDeliveryMan(DeliveryMan deliveryMan, Long idRol) {
         Optional<Roles> result = rolesRepository.findById(idRol);
@@ -55,6 +60,11 @@ public class DeliveryManServiceImp implements DeliveryManService {
         }
     }
 
+    /**
+     * expone el id del repartidor
+     * @param user_id
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> getIdDeliveryManByUser(Long user_id) {
         Optional<User> user = userRepository.findById(user_id);
@@ -66,6 +76,11 @@ public class DeliveryManServiceImp implements DeliveryManService {
         return ResponseEntity.ok().body(result.get());
     }
 
+    /**
+     * actualiza los datos de un repartidor
+     * @param deliveryMan
+     * @return estadi http
+     */
     @Override
     public ResponseEntity<?> updateDeliveryMan(DeliveryMan deliveryMan) {
         if(!deliveryManRepository.existsById(deliveryMan.getId_deliveryMan())){
@@ -79,6 +94,11 @@ public class DeliveryManServiceImp implements DeliveryManService {
         return ResponseEntity.status(HttpStatus.OK).body("deliveryMan update successfully.");
     }
 
+    /**
+     * busca el repartidor
+     * @param deliveryMan_id
+     * @return repartidor
+     */
     @Override
     public ResponseEntity<?> getDeliveryManById(Long deliveryMan_id) {
         Optional<DeliveryMan> deliveryMan = deliveryManRepository.findById(deliveryMan_id);
@@ -87,6 +107,11 @@ public class DeliveryManServiceImp implements DeliveryManService {
         return ResponseEntity.ok().body(deliveryMan.get());
     }
 
+    /**
+     * elimina un repartidor
+     * @param deliveryMan_id
+     * @return
+     */
     @Override
     public ResponseEntity<?> delete(Long deliveryMan_id) {
         if (!deliveryManRepository.existsById(deliveryMan_id)) {

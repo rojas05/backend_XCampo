@@ -1,10 +1,8 @@
 package com.rojas.dev.XCampo.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.dto.Notifications;
 import com.rojas.dev.XCampo.event.PersistCreatedEvent;
-import com.rojas.dev.XCampo.repository.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -27,17 +25,26 @@ public class PersistNotificationsEventListener {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * evento de persistencia para cambiar el contexto transaccional
+     * @param event
+     */
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleProductCreatedEvent(PersistCreatedEvent event) {
         System.out.println("📩 Procesando notificación en un nuevo contexto transaccional...");
-
         switch ( event.getNotification().getRole() ) {
             case CLIENT, SELLER -> addKafkaEvent("product-notifications", event.getNotification());
             case DELIVERYMAN -> addKafkaEvent("delivery-notifications", event.getNotification());
         }
     }
 
+    /**
+     * creacion de evento para kafka
+     * @param topic
+     * @param notification
+     * @return
+     */
     @Async("taskExecutor")
     CompletableFuture<Void> addKafkaEvent(String topic, Notifications notification) {
         return CompletableFuture.runAsync(() -> {
