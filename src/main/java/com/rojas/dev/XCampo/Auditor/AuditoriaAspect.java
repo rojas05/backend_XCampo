@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import static org.apache.kafka.common.requests.DeleteAclsResponse.log;
+
 @Aspect
 @Component
 public class AuditoriaAspect {
@@ -23,9 +25,12 @@ public class AuditoriaAspect {
      */
     @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.insert*(..))", returning = "result")
     public void auditarInsert(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            log.error("El resultado de la operación es null, no se puede auditar.");
+            return;
+        }
         String usuario = getUserNameAuthenticate();
         String entidad = result.getClass().getSimpleName();
-        Long id = getIdEntity(result);
 
         auditoriaArchivoService.registerAudit(
                 usuario,
@@ -42,9 +47,34 @@ public class AuditoriaAspect {
      */
     @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.create*(..))", returning = "result")
     public void auditarCreate(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            log.error("El resultado de la operación es null, no se puede auditar.");
+            return;
+        }
         String usuario = getUserNameAuthenticate();
         String entidad = result.getClass().getSimpleName();
-        Long id = getIdEntity(result);
+
+        auditoriaArchivoService.registerAudit(
+                usuario,
+                "CREADO",
+                entidad,
+                result.toString()
+        );
+    }
+
+    /**
+     * Audita INSERT en la base de datos
+     * @param joinPoint punto de union
+     * @param result resultado del INSERT
+     */
+    @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.add*(..))", returning = "result")
+    public void auditarAdd(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            log.error("El resultado de la operación es null, no se puede auditar.");
+            return;
+        }
+        String usuario = getUserNameAuthenticate();
+        String entidad = result.getClass().getSimpleName();
 
         auditoriaArchivoService.registerAudit(
                 usuario,
@@ -61,6 +91,10 @@ public class AuditoriaAspect {
      */
     @AfterReturning(value = "execution(* com.rojas.dev.XCampo.service.ServiceImp.*.update*(..))", returning = "result")
     public void auditarUpdate(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            log.error("El resultado de la operación es null, no se puede auditar.");
+            return;
+        }
         String usuario = getUserNameAuthenticate();
         String entidad = result.getClass().getSimpleName();
         Long id = getIdEntity(result);

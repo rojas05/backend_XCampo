@@ -17,16 +17,31 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String mail);
 
+    /**
+     * consulta de usuario
+     * @param id_user
+     * @return
+     */
     @Transactional
     @Query("SELECT u.nfs FROM User u WHERE u.user_id = :id_user")
     Optional<String> getNFSidByIdUser(@Param("id_user") Long id_user);
 
+    /**
+     * Actualizar infomacion de usuario
+     * @param idUser
+     * @param nfs
+     */
     @Transactional
     @Modifying
     @Query("UPDATE User u SET u.nfs = :nfs WHERE u.user_id = :idUser")
     void updateNfs(@Param("idUser") Long idUser,
                           @Param("nfs") String nfs);
 
+    /**
+     * consulta de roles
+     * @param role
+     * @return lista de roles
+     */
     @Transactional
     @Query("SELECT u.nfs FROM User u " +
             "JOIN u.roles r WHERE r.nameRole = :role")

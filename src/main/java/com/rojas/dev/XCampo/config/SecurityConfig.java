@@ -23,6 +23,12 @@ public class SecurityConfig {
     @Autowired
     AuthenticationProvider authenticationProvider;
 
+    /**
+     * configuracion de reglas de segurirdad y rutas protegidas
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http

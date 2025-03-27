@@ -42,11 +42,20 @@ public class DeliveryServiceImp implements DeliveryService {
 
     private static KafkaTemplate<String,String> kafkaTemplate;
 
+    /**
+     * iniciando kafka
+     * @param kafkaTemplate
+     */
     @Autowired
     public void init(KafkaTemplate<String,String> kafkaTemplate){
         DeliveryServiceImp.kafkaTemplate = kafkaTemplate;
     }
 
+    /**
+     * crear un nuevo envio
+     * @param delivery
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> insertDelivery(GetDeliveryProductDTO delivery) {
         try {
@@ -84,6 +93,11 @@ public class DeliveryServiceImp implements DeliveryService {
         }
     }
 
+    /**
+     * actualizar el estado del delivery
+     * @param delivery
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> updateStateDelivery(DeliveryProduct delivery) {
             deliveryRepository.updateState(delivery.getId(), delivery.getState());
@@ -91,6 +105,11 @@ public class DeliveryServiceImp implements DeliveryService {
         return ResponseEntity.ok().body("delivery update");
     }
 
+    /**
+     * actualizar el repartidor de un envio
+     * @param delivery
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> updateDeliveryMan(DeliveryProduct delivery) {
         deliveryRepository.updateDeliveryMan(delivery.getId(), delivery.getDeliveryMan());
@@ -98,6 +117,11 @@ public class DeliveryServiceImp implements DeliveryService {
         return ResponseEntity.ok().body("delivery update");
     }
 
+    /**
+     * buscar envios por cliente y estado
+     * @param request
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> getDeliveryByClientAndState(DeliveryClientDTO request) {
         System.out.println(request);
@@ -110,6 +134,11 @@ public class DeliveryServiceImp implements DeliveryService {
         return ResponseEntity.ok().body(result.get());
     }
 
+    /**
+     * guscar envios por repartidor y estado
+     * @param request
+     * @return estadi http
+     */
     @Override
     public ResponseEntity<?> getDeliveryByDeliveryManAndState(DeliveryProduct request) {
         System.out.println(request);
@@ -122,6 +151,11 @@ public class DeliveryServiceImp implements DeliveryService {
         }
     }
 
+    /**
+     * buscar un envio por id
+     * @param id_delivery
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> getDeliveryById(Long id_delivery) {
         Optional<DeliveryProduct> result = deliveryRepository.findById(id_delivery);
@@ -133,6 +167,11 @@ public class DeliveryServiceImp implements DeliveryService {
         }
     }
 
+    /**
+     * busca los envios por la orden
+     * @param id_order
+     * @return dto
+     */
     @Override
     public GetDeliveryPdtForDlvManDTO getDeliveryByIdForDlvMan(Long idDelivery) {
         GetDeliveryPdtForDlvManDTO getDelivery = deliveryRepository.getDeliveryByIdForDlvMan(idDelivery);
@@ -145,6 +184,11 @@ public class DeliveryServiceImp implements DeliveryService {
         return convertDeliveryPdtForDeliveryMan(getOrder);
     }
 
+    /**
+     * busca los envios por la ruta
+     * @param request
+     * @return estadi http
+     */
     @Override
     public ResponseEntity<?> getDeliveryByRuteAndState(DeliveryRuteDTO request) {
         Optional<List<DeliveryProduct>> result = deliveryRepository.getDeliveryByRuteAndState(
@@ -158,6 +202,11 @@ public class DeliveryServiceImp implements DeliveryService {
         }
     }
 
+    /**
+     * cuenta los emvios disponibles
+     * @param state
+     * @return cantidad
+     */
     @Override
     public Long countDeliveryAvailable(String state) {
         DeliveryProductState deliveryState = DeliveryProductState.fromStringDeliveryState(state)
@@ -166,6 +215,11 @@ public class DeliveryServiceImp implements DeliveryService {
         return deliveryRepository.countDeliveryAvailable(deliveryState);
     }
 
+    /**
+     * busca todos los envios disponibles
+     * @param state
+     * @return lista dto
+     */
     @Override
     public List<GetDeliveryProductDTO> getAllDeliveryAvailable(String state) {
         DeliveryProductState deliveryState = DeliveryProductState.fromStringDeliveryState(state)
@@ -176,6 +230,11 @@ public class DeliveryServiceImp implements DeliveryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * busca los envios por el repartidor
+     * @param state
+     * @return lista dto
+     */
     @Override
     public List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMen(String state) {
         DeliveryProductState deliveryState = DeliveryProductState.fromStringDeliveryState(state)
@@ -186,6 +245,11 @@ public class DeliveryServiceImp implements DeliveryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * agrupa los envios por repartidor
+     * @param state
+     * @return lista dto
+     */
     @Override
     public List<DeliveryGroupedBySellerDTO> getGroupedDeliveries(String state) {
 
@@ -202,6 +266,10 @@ public class DeliveryServiceImp implements DeliveryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * actualiza el esatdo para el servicio de match
+     * @param id
+     */
     @Override
     public void updateStateDeliverYMatch(Long id) {
         try {
@@ -215,6 +283,10 @@ public class DeliveryServiceImp implements DeliveryService {
         }
     }
 
+    /**
+     * dispara el evento a kafka
+     * @param deliveryId
+     */
     void onDeliveryUpdate(Long deliveryId){
         try{
             DeliveryProduct deliveryProduct = deliveryRepository.findById(deliveryId)
@@ -229,6 +301,11 @@ public class DeliveryServiceImp implements DeliveryService {
         }
     }
 
+    /**
+     * convierte los datos a un dto
+     * @param delivery
+     * @return dto
+     */
     public GetDeliveryProductDTO convertDeliveryProductsDTO(DeliveryProduct delivery) {
         return new GetDeliveryProductDTO(
                 delivery.getId(),
@@ -242,6 +319,11 @@ public class DeliveryServiceImp implements DeliveryService {
         );
     }
 
+    /**
+     * convierte los datos a un dto
+     * @param deliveryProduct
+     * @return dto
+     */
     public GetDeliveryPdtForDlvManDTO convertDeliveryPdtForDeliveryMan(GetDeliveryPdtForDlvManDTO deliveryProduct) {
         Long idOrder = deliveryProduct.getIdOrder();
         Long idShoppingCart = deliveryProduct.getIdShoppingCard();

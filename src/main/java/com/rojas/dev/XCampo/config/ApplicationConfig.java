@@ -26,6 +26,10 @@ public class ApplicationConfig {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * provider para autenticacion y encoding de las contraseñas (SpringSecurity)
+     * @return
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -34,17 +38,29 @@ public class ApplicationConfig {
         return provider;
     }
 
+    /**
+     * instancia de la herramienta para encriptado
+     * @return
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * busqueda del usuario via gmail para la utenticacion con JWT
+     * @return
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> userRepository.findByEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException("USER MAIL ERROR (xx|======>"));
     }
 
+    /**
+     * Bean de serializado con jackson
+     * @return
+     */
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();

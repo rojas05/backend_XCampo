@@ -14,6 +14,11 @@ import java.util.Optional;
 @Repository
 public interface RolesRepository extends JpaRepository<Roles, Long> {
 
+    /**
+     * consulta de roles
+     * @param user
+     * @return lista de roles
+     */
     @Transactional
     @Query("SELECT r.nameRole FROM Roles r WHERE r.user = :id_user")
     Optional<List<String>> getRolesByUser(@Param("id_user") User user);

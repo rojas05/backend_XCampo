@@ -71,6 +71,15 @@ public class ShoppingCarServiceImp implements ShoppingCartService {
     }
 
     @Override
+    public void updateStateCart(Long idShoppingCar) {
+        try {
+             shoppingCarRepository.updateCartStatusToTrue(idShoppingCar);
+        } catch (Exception e) {
+             System.err.println(e);
+        }
+    }
+
+    @Override
     public Shopping_cart findByIdShoppingCard(Long id) {
         return shoppingCarRepository.findById(id).
                 orElseThrow(() -> new EntityNotFoundException("Shopping cart not found with ID: " + id));

@@ -32,6 +32,12 @@ public class ClientServiceImp implements ClientService {
     @Autowired
     UserRepository userRepository;
 
+    /**
+     *
+     * @param client
+     * @param idRol
+     * @return
+     */
     @Override
     public ResponseEntity<?> insertClient(Client client, Long idRol) {
         Roles result = rolesServiceImp.findRoleById(idRol);

@@ -19,6 +19,10 @@ public class OrderEntityListener {
         OrderEntityListener.eventPublisher = eventPublisher;
     }
 
+    /**
+     * evento de persistencia para orden
+     * @param order
+     */
     @PostPersist
     public void onOrderCreated(Order order) {
         System.out.println("📩 Disparando evento de notificación para orden...");

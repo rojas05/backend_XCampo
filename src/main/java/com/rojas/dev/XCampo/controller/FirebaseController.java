@@ -20,7 +20,7 @@ public class FirebaseController {
     @Autowired
     private FirebaseService firebaseService;
 
-    // 📌 Guardar un país
+    // 📌 Guardar un departamento
     @PostMapping("/departamentos")
     public ResponseEntity<String> guardarDepartamento(@RequestBody Departamento departamento) throws ExecutionException, InterruptedException {
         String id = firebaseService.guardarPais(departamento);
@@ -41,7 +41,7 @@ public class FirebaseController {
         return ResponseEntity.ok("Vereda guardada con ID: " + id);
     }
 
-    // 📌 Listar municipios por país
+    // 📌 Listar municipios por departamento
     @GetMapping("/municipios/{departamentoId}")
     public ResponseEntity<List<Municipio>> listarMunicipios(@PathVariable String departamentoId) throws ExecutionException, InterruptedException {
         return ResponseEntity.ok(firebaseService.listarMunicipiosPorPais(departamentoId));
@@ -58,7 +58,7 @@ public class FirebaseController {
         return firebaseService.agregarVeredasAMunicipio(municipioId, veredas);
     }
 
-    // 📌 Endpoint para obtener el ID de un país por su nombre
+    // 📌 Endpoint para obtener el ID de un departamento por su nombre
     @GetMapping("/departamentos/id")
     public ResponseEntity<?> obtenerIdPais(@RequestParam String nombre) {
         String paisId = firebaseService.obtenerIdDepartamentoPorNombre(nombre);
@@ -69,7 +69,7 @@ public class FirebaseController {
         }
     }
 
-    // 📌 Nuevo Endpoint para obtener todos los países
+    // 📌 Nuevo Endpoint para obtener todos los departamentos
     @GetMapping("/departamentos")
     public ResponseEntity<List<Departamento>> allDepartamentos() {
         try {
@@ -97,7 +97,7 @@ public class FirebaseController {
         }
     }
 
-    // 🔹 Endpoint para obtener los municipios de un país dado su nombre
+    // 🔹 Endpoint para obtener los municipios de un departamento dado su nombre
     @GetMapping("/municipios/get/{departamento}")
     public ResponseEntity<List<Municipio>> obtenerMunicipiosPorPais(@PathVariable String departamento) {
         try {

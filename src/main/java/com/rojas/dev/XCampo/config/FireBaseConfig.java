@@ -26,9 +26,14 @@ public class FireBaseConfig {
     @Value("${firebase.storage.bucket}")
     private String storageBucket;
 
+
     @Value("${firebase.database.url}")
     private String databaseUrl;
 
+    /**
+     * inicializacion de firebase e ingreso de credenciales
+     * @return instancia de firebase
+     */
     @Bean
     public FirebaseApp initializeFirebase() {
         try {
@@ -52,6 +57,11 @@ public class FireBaseConfig {
         }
     }
 
+    /**
+     * inicializacion de firebase
+     * @return instancia de firebase database
+     * @throws IOException
+     */
     @Bean
     public Firestore firestore() throws IOException {
         InputStream serviceAccount = new ClassPathResource(credentialsPath).getInputStream();
@@ -64,6 +74,11 @@ public class FireBaseConfig {
         return options.getService();
     }
 
+    /**
+     * inicio de firebase messagin
+     * @param firebaseApp
+     * @return instancia de firebase messagin
+     */
     @Bean
     public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
         FirebaseMessaging messaging = FirebaseMessaging.getInstance(firebaseApp);
@@ -71,6 +86,11 @@ public class FireBaseConfig {
         return messaging;
     }
 
+    /**
+     * inicio de fire storage y credenciales
+     * @return instancia de fire storage
+     * @throws IOException
+     */
     @Bean
     public Storage firebaseStorage() throws IOException {
         InputStream serviceAccount = new ClassPathResource(credentialsPath).getInputStream();

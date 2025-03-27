@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * controlador para registro y seguridad
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -32,16 +35,31 @@ public class AuthController {
     @Autowired
     JwtService jwtService;
 
+    /**
+     * endPoint de login
+     * @param request
+     * @return token de aseso y de refresco
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    /**
+     * endPoint de registro
+     * @param request
+     * @return token de aseso y de refresco
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(authService.register(request));
     }
 
+    /**
+     * endPoint de refresco de aseso
+     * @param request
+     * @return token de aseso y de refresco
+     */
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
         try {

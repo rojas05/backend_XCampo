@@ -28,6 +28,12 @@ public class ShoppingCartController {
     @Autowired
     private CartItemRepository cartItemRepository;
 
+    /**
+     * agregar productos al carrito
+     * @param shoppingCart
+     * @return estado http
+     * @throws JsonProcessingException
+     */
     @PostMapping("/add")
     public ResponseEntity<?> addProductShoppingCart(@RequestBody ShoppingCartDTO shoppingCart) throws JsonProcessingException {
         ResponseCartItemDTO newProductsAdd = shoppingCartService.createShoppingCart(shoppingCart);
@@ -35,6 +41,11 @@ public class ShoppingCartController {
                 .body(newProductsAdd);
     }
 
+    /**
+     * elimina el carrito
+     * @param idProduct
+     * @return
+     */
     @DeleteMapping("/{idProduct}")
     public ResponseEntity<?> deleteProductShoppingCart(@PathVariable Long idProduct) {
         shoppingCartService.deleteProduct(idProduct);
@@ -42,6 +53,12 @@ public class ShoppingCartController {
                 .body("removed product shopping cart");
     }
 
+    /**
+     * actualizar el estado de un carrito
+     * @param idShoppingCart
+     * @param state
+     * @return
+     */
     @PutMapping("/{idShoppingCart}/{state}")
     public ResponseEntity<?> updateState(@PathVariable Long idShoppingCart, @PathVariable boolean state) {
         shoppingCartService.updateState(idShoppingCart, state);
@@ -50,6 +67,12 @@ public class ShoppingCartController {
                 .body("Update state product");
     }
 
+    /**
+     * actualiza un producto de un carrito
+     * @param cartId
+     * @param itemId
+     * @return
+     */
     @PatchMapping("/cart/{cartId}/items/{itemId}")
     public ResponseEntity<Shopping_cart> addItemToCart(@PathVariable Long cartId, @PathVariable Long itemId) {
         Shopping_cart cart = shoppingCartService.addItemToCart(cartId, itemId);
@@ -57,12 +80,22 @@ public class ShoppingCartController {
                 .body(cart);
     }
 
+    /**
+     * lista de productos en carrito por id del cliente
+     * @param idClient
+     * @return lista de productos
+     */
     @GetMapping("/{idClient}")
     public ResponseEntity<?> listAllProductsShoppingCart(@PathVariable Long idClient) {
         List<GetShoppingCartDTO> products = shoppingCartService.listAllProductsShoppingCart(idClient);
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
+    /**
+     * lista de carritos
+     * @param idUser
+     * @return lista de carritos
+     */
     @GetMapping("/id/{idUser}")
     public ResponseEntity<?> getIdCartByIdUser(@PathVariable Long idUser) {
         return shoppingCartService.getIdCartByIdUser(idUser);

@@ -3,7 +3,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.rojas.dev.XCampo.dto.Notifications;
 import com.rojas.dev.XCampo.dto.NotificationsDeliveryDto;
 import com.rojas.dev.XCampo.dto.TokenNotificationID;
-import com.rojas.dev.XCampo.repository.NotificationService;
+import com.rojas.dev.XCampo.service.Interface.NotificationService;
 import com.rojas.dev.XCampo.service.Interface.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

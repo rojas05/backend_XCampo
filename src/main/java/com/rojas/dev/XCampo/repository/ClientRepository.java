@@ -14,10 +14,21 @@ import java.util.Optional;
 @Repository
 public interface ClientRepository extends JpaRepository<Client,Long> {
 
+    /**
+     * consulta de usuario
+     * @param user
+     * @return usuario
+     */
     @Transactional
     @Query("SELECT s.id_client FROM Client s INNER JOIN s.rol r WHERE r.user = :user")
     Optional<Long> getIdClientByIdUser(@Param("user") User user);
 
+    /**
+     * actualiza la informacion del usuario
+      * @param idClient
+     * @param locationDescription
+     * @param name
+     */
     @Transactional
     @Modifying
     @Query("UPDATE Client s SET "

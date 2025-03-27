@@ -19,6 +19,11 @@ public class ProductsController {
     @Autowired
     private ProductService productService;
 
+    /**
+     * crear nuevo producto
+     * @param product
+     * @return producto
+     */
     @PostMapping
     public ResponseEntity<?> insertProduct(@RequestBody Product product) {
         var idSeller = product.getSeller().getId_seller();
@@ -28,6 +33,12 @@ public class ProductsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
+    /**
+     * actualizar producto
+     * @param IdProduct
+     * @param product
+     * @return estado http
+     */
     @PutMapping("/{IdProduct}")
     public ResponseEntity<?> updateProduct(@PathVariable Long IdProduct, @RequestBody Product product) {
         var idSeller = product.getSeller().getId_seller();
@@ -41,17 +52,37 @@ public class ProductsController {
                 .body(response);
     }
 
+    /**
+     * actualizar la imagen del producto
+     * @param img
+     * @param IdProduct
+     * @param idSeller
+     * @return estado http
+     */
     @PatchMapping("/{IdProduct}/imgUpdate/{idSeller}")
     public ResponseEntity<?> updateProductImg(@RequestParam("images") String img, @PathVariable Long IdProduct, @PathVariable Long idSeller) {
         return productService.updateProductImg(img, IdProduct, idSeller);
     }
 
+    /**
+     * actualizar stock
+     * @param stock
+     * @param IdProduct
+     * @param idSeller
+     * @return estado http
+     */
     @PatchMapping("/{IdProduct}/stock/{idSeller}")
     public ResponseEntity<?> updateProductStock(@RequestParam("stock") Long stock, @PathVariable Long IdProduct, @PathVariable Long idSeller) {
         productService.updateProductStock(stock, IdProduct, idSeller);
         return ResponseEntity.status(HttpStatus.OK).body("Stock Update");
     }
 
+    /**
+     * eliminar producto
+     * @param idProduct
+     * @param idSeller
+     * @return
+     */
     @DeleteMapping("/{idProduct}/{idSeller}")
     public ResponseEntity<?> deleteProductId(@PathVariable Long idProduct, @PathVariable Long idSeller) {
         productService.deleteProductId(idProduct, idSeller);
@@ -59,6 +90,11 @@ public class ProductsController {
                 .body("removed product");
     }
 
+    /**
+     * obtener producto
+     * @param Id
+     * @return producto
+     */
     @GetMapping("/{Id}")
     public ResponseEntity<?> getIdProduct(@PathVariable Long Id) {
         Product findProduct = productService.findId(Id);
@@ -66,6 +102,11 @@ public class ProductsController {
                 .body(findProduct);
     }
 
+    /**
+     * listar productos por el vendedor
+     * @param idSeller
+     * @return
+     */
     @GetMapping("/listAll/{idSeller}")
     public ResponseEntity<?> listProductIsSeller(@PathVariable Long idSeller) {
         List<GetProductDTO> products = productService.listProductIsSeller(idSeller);
@@ -73,6 +114,12 @@ public class ProductsController {
                 .body(products);
     }
 
+    /**
+     * busqueda de peoductos
+     * @param city
+     * @param letter
+     * @return productos
+     */
     @GetMapping("search")
     public ResponseEntity<?> search(@RequestParam String city, @RequestParam String letter) {
         return productService.search(letter,city);

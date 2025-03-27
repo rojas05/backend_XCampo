@@ -14,20 +14,42 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    /**
+     * Consulta de producto
+     * @param idSeller
+     * @return
+     */
     @Transactional
     @Query("SELECT product FROM Product product WHERE product.seller.id_seller = :idSeller")
     List<Product> findAllByIdSeller(@Param("idSeller") Long idSeller);
 
+    /**
+     * consulta para verificar que existe un vendedor
+     * @param idProduct
+     * @param idSelle
+     * @return
+     */
     @Transactional
     @Query("SELECT COUNT(p) > 0 FROM Product p WHERE p.id_product = :idProduct AND p.seller.id_seller = :idSeller")
     boolean existsByIdAndSellerId(@Param("idProduct") Long idProduct, @Param("idSeller") Long idSelle);
 
+    /**
+     * Actualiza la imagen del producto
+     * @param idSeller
+     * @param img
+     */
     @Transactional
     @Modifying
     @Query("UPDATE Product p SET p.urlImage = :img WHERE p.id_product = :id_product")
     void updateProductImg(@Param("id_product") Long idSeller,
                          @Param("img") String img);
 
+    /**
+     * busqueda de productos
+     * @param letter
+     * @param city
+     * @return
+     */
     @Transactional
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%',:letter,'%')) " +
             "OR LOWER(p.description) LIKE LOWER(CONCAT('%',:letter,'%')) " +

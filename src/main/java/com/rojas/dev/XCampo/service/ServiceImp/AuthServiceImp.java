@@ -35,6 +35,11 @@ public class AuthServiceImp implements AuthService {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    /**
+     * login de usuarios
+     * @param request
+     * @return estado http
+     */
     @Override
     public ResponseEntity<?> login(LoginRequest request) {
         try {
@@ -48,6 +53,11 @@ public class AuthServiceImp implements AuthService {
         }
     }
 
+    /**
+     * registro de usuario
+     * @param request
+     * @return estdo http
+     */
     @Override
     public ResponseEntity<?> register(RegisterRequest request) {
         try {

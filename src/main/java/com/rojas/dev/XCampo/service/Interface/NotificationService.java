@@ -1,4 +1,4 @@
-package com.rojas.dev.XCampo.repository;
+package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.dto.Notifications;
 
