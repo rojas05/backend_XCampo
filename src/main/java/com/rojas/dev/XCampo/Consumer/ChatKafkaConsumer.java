@@ -3,7 +3,7 @@ package com.rojas.dev.XCampo.Consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rojas.dev.XCampo.dto.KafkaObjectChat;
-import com.rojas.dev.XCampo.repository.NotificationService;
+import com.rojas.dev.XCampo.service.Interface.NotificationService;
 import com.rojas.dev.XCampo.service.ServiceImp.FirebaseChatServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;

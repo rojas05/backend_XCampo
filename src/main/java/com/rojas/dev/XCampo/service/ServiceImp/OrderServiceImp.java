@@ -199,15 +199,6 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
-    /*public OrderDTO convertToOrderFilter(Order order, Long sellerId) {
-
-        Set<CartItem> filteredItems = order.getShoppingCart().getItems().stream()
-                .filter(ci -> ci.getProduct().getSeller().getId_seller().equals(sellerId))
-                .collect(Collectors.toSet());
-
-        var shoppingCartDTO = shoppingCarServiceImp.convertToShoppingCartDTOFilter(order.getShoppingCart(), filteredItems);
-
-
     public String getDestinyClient(Long idOrder) {
         existsOrderId(idOrder);
         return orderRepository.getDestinyClient(idOrder);
