@@ -191,22 +191,15 @@ public class OrderServiceImp implements OrderService {
     public ResponseEntity<?> getSellersFavorite(Long id) {
         try {
             List<Seller> result = orderRepository.getSellerByOrder(id);
+
             if(!result.isEmpty())
                 return ResponseEntity.ok(result);
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No seller"+result);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
         }
     }
-
-    /*public OrderDTO convertToOrderFilter(Order order, Long sellerId) {
-
-        Set<CartItem> filteredItems = order.getShoppingCart().getItems().stream()
-                .filter(ci -> ci.getProduct().getSeller().getId_seller().equals(sellerId))
-                .collect(Collectors.toSet());
-
-        var shoppingCartDTO = shoppingCarServiceImp.convertToShoppingCartDTOFilter(order.getShoppingCart(), filteredItems);
-
 
     public String getDestinyClient(Long idOrder) {
         existsOrderId(idOrder);

@@ -39,7 +39,6 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body("Delete category with ID: " + idCategory);
     }
 
-
     @PatchMapping("/update")
     public ResponseEntity<?> updateNameCategory(@RequestBody Category category) {
         var findCategory = categoryService.updateCategoryId(category);
@@ -50,7 +49,7 @@ public class CategoryController {
     public ResponseEntity<?> findNameCategory(@PathVariable String findName) {
         var category = categoryService.findByNameCategory(findName);
         return ResponseEntity.status(HttpStatus.FOUND).body(category);
-
+    }
 
     /**
      * listar las categorias

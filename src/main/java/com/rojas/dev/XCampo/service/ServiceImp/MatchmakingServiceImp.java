@@ -131,8 +131,6 @@ public class MatchmakingServiceImp implements MatchmakingService {
 
                 // Recorremos las ubicaciones del repartidor
                 for (String location : deliveryMan.getLocationsList()) {
-
-                    if (location.trim().equalsIgnoreCase(delivery.getLocation().trim())) {
                     // Ignorar espacios en la comparación
                     String normalizedLocation = location.replaceAll("\\s+", "").trim();
                     String normalizedDeliveryLocation = delivery.getLocation().replaceAll("\\s+", "").trim();
@@ -155,6 +153,5 @@ public class MatchmakingServiceImp implements MatchmakingService {
 
         return tokensList;
     }
-
 
 }
