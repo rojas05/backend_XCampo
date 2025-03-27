@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.service.Interface;
 
 import com.rojas.dev.XCampo.entity.Category;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public interface CategoryService {
 
     List<Category> listAllCategory();
 
-    Category updateCategoryId(Long categoryId, String name);
+    Category updateCategoryId(Category category);
+
+    List<Category> findByNameCategory(String name);
 
 }

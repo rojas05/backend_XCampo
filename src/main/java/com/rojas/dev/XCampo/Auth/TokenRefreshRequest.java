@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor // Constructor vacío necesario para Jackson
-@AllArgsConstructor // Constructor con todos los argumentos (opcional)
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenRefreshRequest {
     private String refreshToken;
 

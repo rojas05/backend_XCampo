@@ -45,6 +45,7 @@ public class DeliveryManServiceImp implements DeliveryManService {
 
             deliveryMan.setRol(result.get());
             deliveryManRepository.save(deliveryMan);
+
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id_deliveryMan}")

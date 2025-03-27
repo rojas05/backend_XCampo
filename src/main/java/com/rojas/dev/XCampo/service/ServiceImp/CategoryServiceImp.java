@@ -22,7 +22,7 @@ public class CategoryServiceImp implements CategoryService {
      */
     @Override
     public Category createNewCategory(Category category) {
-        return categoryRepository.save(category);
+       return categoryRepository.save(category);
     }
 
     /**
@@ -51,10 +51,15 @@ public class CategoryServiceImp implements CategoryService {
      * @return
      */
     @Override
-    public Category updateCategoryId(Long categoryId, String name) {
-        Category category = findIdCategory(categoryId);
-        category.setName(name);
-        return categoryRepository.save(category);
+    public Category updateCategoryId(Category category) {
+        Category findCategoryId = findIdCategory(category.getId_category());
+        findCategoryId.setName(category.getName());
+        return categoryRepository.save(findCategoryId);
+    }
+
+    @Override
+    public List<Category> findByNameCategory(String name) {
+        return categoryRepository.findByNameCategory(name);
     }
 
     /**

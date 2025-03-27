@@ -84,11 +84,20 @@ public class DeliveryController {
         return deliveryService.getDeliveryById(id_delivery);
     }
 
+
+    @GetMapping("/found/{id_delivery}")
+    ResponseEntity<?> getDeliveryByIdForDlvMan(@PathVariable Long id_delivery){
+        var getDelivery = deliveryService.getDeliveryByIdForDlvMan(id_delivery);
+        return ResponseEntity.status(HttpStatus.FOUND).body(getDelivery);
+    }
+
+
     /**
      * obtener el envio segun el id de la orden
      * @param id_delivery
      * @return envio
      */
+
     @GetMapping("/idOrder/{id_delivery}")
     ResponseEntity<?> getDeliveryOrderById(@PathVariable Long id_delivery){
         var getOrder = deliveryService.getDeliveryByIdOrder(id_delivery);

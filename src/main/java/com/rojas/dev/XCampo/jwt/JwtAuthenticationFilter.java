@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String mail;
 
         if (token == null){
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
             return;
         }
 

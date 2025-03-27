@@ -37,15 +37,16 @@ public interface DeliveryManRepository extends JpaRepository<DeliveryMan,Long> {
     void updateClient(@Param("id_deliveryMan") Long idClient,
                       @Param("rute") String rute);
 
-    /**
+ /**
      * consulta la ruta del repartidor
      * @param location
      * @return
      */
-    @Transactional
-    @Query("SELECT new com.rojas.dev.XCampo.dto.DeliveryManMatchDto( d.id_deliveryMan, d.rute, u.nfs ) FROM DeliveryMan d " +
-            "INNER JOIN d.rol r " +
-            "INNER JOIN r.user u " +
-            "WHERE d.rute LIKE %:location%")
+    @org.springframework.transaction.annotation.Transactional
+    @Query("SELECT new com.rojas.dev.XCampo.dto.DeliveryManMatchDto( d.id_deliveryMan, d.rute, u.nfs ) " +
+            "FROM DeliveryMan d " +
+            "JOIN d.rol r " +
+            "JOIN r.user u " +
+            "WHERE LOWER(TRIM(d.rute)) LIKE LOWER(CONCAT('%', TRIM(:location), '%'))")
     List<DeliveryManMatchDto> getLocationsDeliveryMan(@Param("location") String location);
 }

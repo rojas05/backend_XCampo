@@ -62,6 +62,9 @@ public class DeliveryServiceImp implements DeliveryService {
             var idOrder = delivery.getOrderId();
             var order = orderRepository.getOrderById(idOrder);
 
+            var idShoppingCart = order.getShoppingCart().getId_cart();
+            delivery.setDestiny(orderRepository.getDestinyClient(idShoppingCart));
+
            /*
             var deliveryMan = deliveryManRepository.findById(delivery.getDeliveryManId())
                     .orElseThrow(() -> new EntityNotFoundException("Delivery man not found with ID: " + delivery.getDeliveryManId()));
@@ -169,6 +172,12 @@ public class DeliveryServiceImp implements DeliveryService {
      * @param id_order
      * @return dto
      */
+    @Override
+    public GetDeliveryPdtForDlvManDTO getDeliveryByIdForDlvMan(Long idDelivery) {
+        GetDeliveryPdtForDlvManDTO getDelivery = deliveryRepository.getDeliveryByIdForDlvMan(idDelivery);
+        return convertDeliveryPdtForDeliveryMan(getDelivery);
+    }
+
     @Override
     public GetDeliveryPdtForDlvManDTO getDeliveryByIdOrder(Long id_order) {
         GetDeliveryPdtForDlvManDTO getOrder = deliveryRepository.getDeliveryOrderIdDTO(id_order);

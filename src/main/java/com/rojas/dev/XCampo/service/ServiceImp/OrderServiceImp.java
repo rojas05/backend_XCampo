@@ -176,6 +176,12 @@ public class OrderServiceImp implements OrderService {
         }
     }
 
+    @Override
+    public Long getIdClientByOrderId(Long idOrder) {
+        existsOrderId(idOrder);
+        return orderRepository.getIdClientByIdOrder(idOrder);
+    }
+
     /**
      * funcion para exponer las tiendas en las que un cliente a comprado
      * @param id
@@ -202,14 +208,14 @@ public class OrderServiceImp implements OrderService {
         var shoppingCartDTO = shoppingCarServiceImp.convertToShoppingCartDTOFilter(order.getShoppingCart(), filteredItems);
 
 
-        return new OrderDTO(
-                order.getId_order(),
-                order.getState(),
-                order.getMessage(),
-                order.getDelivery(),
-                order.getPrice_delivery(),
-                shoppingCartDTO
-        );
-    }*/
+    public String getDestinyClient(Long idOrder) {
+        existsOrderId(idOrder);
+        return orderRepository.getDestinyClient(idOrder);
+    }
+
+    public void existsOrderId(Long idOrder) {
+        if (!orderRepository.existsById(idOrder))
+            throw new EntityNotFoundException("Order not exist whit ID: " + idOrder);
+    }
 
 }

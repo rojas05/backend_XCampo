@@ -107,15 +107,23 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
+
     /**
      * listar las ganancias
      * @param idSeller
      * @return ganancias
      */
     @GetMapping("/getGanacias/{idSeller}")
+
     public ResponseEntity<?> getGanacias(@PathVariable Long idSeller){
         var order = orderService.calculateEarningsOrder(idSeller);
         return ResponseEntity.status(HttpStatus.OK).body(order);
+    }
+
+    @GetMapping("/getClient/{idOrder}")
+    public ResponseEntity<?> getIdClientByOrderId(@PathVariable Long idOrder){
+        var order = orderService.getIdClientByOrderId(idOrder);
+        return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
 
 
@@ -123,4 +131,5 @@ public class OrderController {
     public ResponseEntity<?> getSellersFavorite(@PathVariable Long id){
         return orderService.getSellersFavorite(id);
     }
+
 }

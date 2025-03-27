@@ -39,16 +39,18 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body("Delete category with ID: " + idCategory);
     }
 
-    /**
-     * actualiza el nombre de la categoria
-     * @param id
-     * @param name
-     * @return estado http
-     */
-    public ResponseEntity<?> updateNameCategory(Long id, String name) {
-        var category = categoryService.updateCategoryId(id, name);
-        return ResponseEntity.status(HttpStatus.OK).body(category);
+
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateNameCategory(@RequestBody Category category) {
+        var findCategory = categoryService.updateCategoryId(category);
+        return ResponseEntity.status(HttpStatus.OK).body(findCategory);
     }
+
+    @GetMapping("/search/{findName}")
+    public ResponseEntity<?> findNameCategory(@PathVariable String findName) {
+        var category = categoryService.findByNameCategory(findName);
+        return ResponseEntity.status(HttpStatus.FOUND).body(category);
+
 
     /**
      * listar las categorias

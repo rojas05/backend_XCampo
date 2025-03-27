@@ -47,4 +47,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "JOIN u.roles r WHERE r.nameRole = :role")
     List<String> findFcmTokensByRole(UserRole role);
 
+    @Transactional
+    @Query("SELECT u.nfs FROM User u " +
+            "JOIN u.roles r " +
+            "JOIN r.client c " +
+            "WHERE c.id_client = :id")
+    String findFcmTokensByIdClient(Long id);
+
+    @Transactional
+    @Query("SELECT u.nfs FROM User u " +
+            "JOIN u.roles r " +
+            "JOIN r.seller s " +
+            "WHERE s.id_seller = :id")
+    String findFcmTokensByIdSeller(Long id);
+
+
 }

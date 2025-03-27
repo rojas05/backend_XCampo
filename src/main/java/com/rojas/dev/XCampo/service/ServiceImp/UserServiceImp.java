@@ -80,13 +80,14 @@ public class UserServiceImp implements UserService {
     @Override
     public ResponseEntity<?> updateNfs(User user) {
         try {
-            if (user.getUser_id()==null){
+            if (user.getUser_id() == null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no id");
             }
+
             System.out.println(user.getUser_id() + user.getNfs() + user.getEmail());
             userRepository.updateNfs(user.getUser_id(), user.getNfs());
             return ResponseEntity.ok().build();
-        }catch (Exception e){
+        } catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
         }
     }
@@ -101,6 +102,25 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Override
+    public String findFcmTokensByIdClient(Long id) {
+        try {
+            return userRepository.findFcmTokensByIdClient(id);
+        } catch (Exception e){
+            System.err.println("ERROR EN CONSULTA =====> " + e);
+            return null;
+        }
+    }
+
+    @Override
+    public String findFcmTokensByIdSeller(Long id) {
+        try {
+            return userRepository.findFcmTokensByIdSeller(id);
+        } catch (Exception e){
+            System.err.println("ERROR EN CONSULTA =====> " + e);
+            return null;
+        }
+    }
 
 
 }

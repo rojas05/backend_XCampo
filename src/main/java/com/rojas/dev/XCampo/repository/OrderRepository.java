@@ -117,6 +117,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "AND o.id_order = :orderId")
     Long countSellersInOrders(@Param("state") OrderState state, @Param("orderId") Long orderId);
 
+    @Transactional
+    @Query("SELECT c.locationDestiny " +
+            "FROM Order o " +
+            "JOIN o.shoppingCart s " +
+            "JOIN s.client c " +
+            "WHERE o.id_order = :orderId")
+    String getDestinyClient(@Param("orderId") Long orderId);
+
+    @Transactional
+    @Query("SELECT c.id_client " +
+            "FROM Order o " +
+            "JOIN o.shoppingCart s " +
+            "JOIN s.client c " +
+            "WHERE o.id_order = :orderId")
+    Long getIdClientByIdOrder(@Param("orderId") Long orderId);
 
     /**
      * consulta para buscar las tiendas de las ordenes

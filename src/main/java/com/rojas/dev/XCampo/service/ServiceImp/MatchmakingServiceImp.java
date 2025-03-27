@@ -76,7 +76,7 @@ public class MatchmakingServiceImp implements MatchmakingService {
         try {
             Optional<List<DeliveryMatchDto>> result = deliveryRepository.getLocationsDelivery(location); // filtrar por municipio
             if(result.isEmpty()){
-                System.err.println("|xx|====> Consulta vacia: ");
+                System.err.println("|xx|====> Consulta vacia al obtener la localization del envió: ");
             }
             return result.get();
         } catch (Exception e){
@@ -94,7 +94,7 @@ public class MatchmakingServiceImp implements MatchmakingService {
         try {
             List<DeliveryManMatchDto> result = deliveryManRepository.getLocationsDeliveryMan(location);
             if(result.isEmpty()){
-                System.err.println("|xx|====> Consulta vacia");
+                System.err.println("|xx|====> Consulta vaciá al encontrar la vereda del repartidor.");
             }
             return result;
         } catch (Exception e){
@@ -110,8 +110,9 @@ public class MatchmakingServiceImp implements MatchmakingService {
      * @return Lista de tokens de repartidores adecuados.
      */
     private Queue<TokenNotificationID> matchDeliveryManAndDelivery(List<DeliveryManMatchDto> deliveryManList, List<DeliveryMatchDto> deliveryList) {
-        System.out.println("Repartidores= " + deliveryManList);
-        System.out.println("Domicilios= " + deliveryList);
+        System.out.println("[repartidores] ===> " + deliveryManList );
+        System.out.println("[domicilios] ===> " + deliveryList );
+
         Queue<TokenNotificationID> tokensList = new LinkedList<>();
         Set<String> matchedPairs = new HashSet<>();
 
@@ -130,11 +131,14 @@ public class MatchmakingServiceImp implements MatchmakingService {
 
                 // Recorremos las ubicaciones del repartidor
                 for (String location : deliveryMan.getLocationsList()) {
+
+                    if (location.trim().equalsIgnoreCase(delivery.getLocation().trim())) {
                     // Ignorar espacios en la comparación
                     String normalizedLocation = location.replaceAll("\\s+", "").trim();
                     String normalizedDeliveryLocation = delivery.getLocation().replaceAll("\\s+", "").trim();
 
                     if (normalizedLocation.equalsIgnoreCase(normalizedDeliveryLocation)) {
+
                         System.out.println("✅ MATCH IN " + delivery.getLocation());
                         matchDeliveryList.add(delivery.getId());
                         matchedPairs.add(key); // Se guarda para evitar duplicados

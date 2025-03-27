@@ -38,4 +38,8 @@ public interface ClientRepository extends JpaRepository<Client,Long> {
                       @Param("name") String name
     );
 
+    @Transactional
+    @Query("SELECT s.name FROM Client s WHERE s.id_client = :idClient")
+    String getNameClient(@Param("idClient") Long idClient);
+
 }

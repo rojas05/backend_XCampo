@@ -25,6 +25,7 @@ public class NotificationServiceImp implements NotificationService {
     private final MatchmakingService matchmakingService;
     private final TaskService taskService;
     private final FirebaseNotificationService firebaseNotificationService;
+    public static final String CHAT_SCREEN = "ChatScreen";
 
     @Autowired
     public NotificationServiceImp(UserService userService, OrderService orderService, DeliveryService deliveryService, MatchmakingService matchmakingService, TaskService taskService, FirebaseNotificationService firebaseNotificationService) {
@@ -53,7 +54,7 @@ public class NotificationServiceImp implements NotificationService {
             LocalDateTime now = LocalDateTime.now();
 
             if (fcmTokens == null || fcmTokens.isEmpty()) {
-                System.out.println("⚠ No hay usuarios con el rol " + notifications.getRole());
+                System.out.println("⚠ No hay usuarios para match con el rol: " + notifications.getRole());
                 taskService.scheduleTask(now, () -> deliveryService.updateStateDeliverYMatch(notifications.getId()));
                 return;
             }
@@ -72,7 +73,8 @@ public class NotificationServiceImp implements NotificationService {
                             notifications.getTitle(),
                             notifications.getMessage(),
                             Collections.singletonList(token.getToken()),
-                            token.getDelivery()
+                            token.getDelivery(),
+                            "MapScreen"
                     );
 
                     sendNotificationToFirebase(notificationToFirebase)
@@ -91,12 +93,24 @@ public class NotificationServiceImp implements NotificationService {
     void sendNotificationClient(Notifications notifications) {
         try {
             System.out.println("📩 Procesando notificación para el rol: " + notifications.getRole());
-            List<String> fcmTokens = userService.findFcmTokensByRole(notifications.getRole());
-            if (fcmTokens.isEmpty()) {
-                System.out.println("❌ No hay usuarios con el rol " + notifications.getRole());
-                return;
+
+            if (notifications.getScreen().equals(CHAT_SCREEN)) {
+                var fcmToken = userService.findFcmTokensByIdClient(notifications.getId()); // Para enviar una sola notification
+                if (fcmToken == null || fcmToken.isEmpty()) {
+                    System.out.println("❌ No hay token FCM para el cliente.");
+                    return;
+                }
+
+                createNotification(fcmToken, notifications, false);
+            } else {
+                List<String> fcmTokens = userService.findFcmTokensByRole(notifications.getRole());
+                if (fcmTokens.isEmpty()) {
+                    System.out.println("❌ No hay usuarios con el rol " + notifications.getRole());
+                    return;
+                }
+
+                createNotifications(fcmTokens, notifications, false);
             }
-            createNotification(fcmTokens, notifications, false);
 
         } catch (Exception e) {
             System.err.println("ERROR NOTIFICATION CLIENTS ====>" + e);
@@ -106,20 +120,34 @@ public class NotificationServiceImp implements NotificationService {
     void sendNotificationSeller(Notifications notifications) {
         try {
             System.out.println("📩 Procesando notificación para el rol: " + notifications.getRole());
-            List<String> fcmTokens = orderService.getNfsSellersByOrderId(notifications.getId());
-            if (fcmTokens.isEmpty()) {
-                System.out.println("❌ No hay usuarios con el rol " + notifications.getRole());
-                System.out.println(fcmTokens);
-                return;
+
+            // Se podría optimizar para no repetir código lo está dentro del if
+            if (notifications.getScreen().equals(CHAT_SCREEN)) {
+                var fcmToken = userService.findFcmTokensByIdSeller(notifications.getId()); // Para enviar una sola notification
+                if (fcmToken == null || fcmToken.isEmpty()) {
+                    System.out.println("❌ No hay token FCM para el vendedor.");
+                    return;
+                }
+
+                createNotification(fcmToken, notifications, true);
+            } else {
+                List<String> fcmTokens = orderService.getNfsSellersByOrderId(notifications.getId());
+
+                if (fcmTokens.isEmpty()) {
+                    System.out.println("❌ No hay usuarios con el rol " + notifications.getRole());
+                    System.out.println(fcmTokens);
+                    return;
+                }
+
+                createNotifications(fcmTokens, notifications, true);
             }
-            createNotification(fcmTokens, notifications, true);
 
         } catch (Exception e) {
             System.err.println("ERROR NOTIFICATION SELLER ====>" + e);
         }
     }
 
-    void createNotification(List<String> fcmTokens, Notifications notifications, boolean isID) {
+    void createNotifications(List<String> fcmTokens, Notifications notifications, boolean isID) {
         try {
             // Dividir tokens en lotes de 500
             final int batchSize = 500;
@@ -149,6 +177,26 @@ public class NotificationServiceImp implements NotificationService {
         }
     }
 
+    void createNotification(String fcmToken, Notifications notifications, boolean isID) {
+        try {
+                Notifications notification = new Notifications(
+                        notifications.getRole(),
+                        notifications.getTitle(),
+                        notifications.getMessage(),
+                        Collections.singletonList(fcmToken),
+                        isID ? notifications.getId() : null,
+                        notifications.getScreen()
+                );
+
+                firebaseNotificationService.sendNotifications(notification);
+
+                System.out.println("Evento enviado a Firebase");
+
+        } catch (Exception e) {
+            System.err.println("ERROR CREATE NOTIFICATION ====>" + e);
+        }
+    }
+
     @Async("taskExecutor")
     CompletableFuture<Void> sendNotificationToFirebase(NotificationsDeliveryDto notifications) {
         return CompletableFuture.runAsync(() -> {
@@ -156,7 +204,7 @@ public class NotificationServiceImp implements NotificationService {
                 System.out.println("🚀 Enviando notificación a Firebase: " + notifications);
                 firebaseNotificationService.sendNotification(notifications);
             } catch (Exception e) {
-                System.err.println("❌ Error al enviar notificación: " + e.getMessage());
+                System.err.println("[TaskExecutor] ❌ Error al enviar notificación: " + e.getMessage());
                 throw new RuntimeException(e);
             }
         });

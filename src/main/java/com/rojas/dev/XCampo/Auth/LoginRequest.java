@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor // Constructor vacío necesario para Jackson
-@AllArgsConstructor // Constructor con todos los argumentos (opcional)
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
     String mail;
     String password;

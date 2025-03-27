@@ -16,9 +16,10 @@ public class ClientController {
     ClientService clientService;
 
     @PostMapping("{idRol}")
-    ResponseEntity<?> insertClient(@RequestBody Client client,@PathVariable Long idRol){
+    ResponseEntity<?> insertClient(@RequestBody Client client, @PathVariable Long idRol){
         return clientService.insertClient(client, idRol);
     }
+
     @DeleteMapping("{id_client}")
     public ResponseEntity<?> deleteSeller(@PathVariable Long id_client){
         return clientService.delete(id_client);
@@ -32,6 +33,11 @@ public class ClientController {
     @GetMapping("{id_client}")
     public ResponseEntity<?> getSellerById(@PathVariable Long id_client){
         return clientService.getSellerById(id_client);
+    }
+
+    @GetMapping("name/{id_client}")
+    public ResponseEntity<?> getNameClient(@PathVariable Long id_client){
+        return clientService.getNameClient(id_client);
     }
 
     @PatchMapping

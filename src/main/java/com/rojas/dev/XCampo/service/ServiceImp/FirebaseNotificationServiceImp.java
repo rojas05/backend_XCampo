@@ -62,7 +62,7 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
             if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
                 System.err.println("❌ Token inválido: ");
             } else {
-                System.err.println("❌ Error al enviar notificación: " + e.getMessage());
+                System.err.println("[FireBaseService] ❌ Error al enviar las notificaciones: " + e.getMessage());
             }
         }
     }
@@ -70,8 +70,6 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
     @Override
     public void sendNotification(NotificationsDeliveryDto notifications) {
         try {
-            System.out.println("📨 Enviando notificación a Firebase para el token: " + notifications.getFirstToken());
-
             Message message = Message.builder()
                     .setToken(notifications.getFirstToken())
                     .setNotification(Notification.builder()
@@ -81,12 +79,12 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
                     .build();
 
             String response = firebaseMessaging.send(message);
-            System.out.println("-- Notificación enviada: " + response);
+            System.out.println("📨 Notificación enviada: " + response);
         } catch (FirebaseMessagingException e) {
             if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
                 System.err.println("❌ Token inválido: ");
             } else {
-                System.err.println("❌ Error al enviar notificación: " + e.getMessage());
+                System.err.println("[FireBaseService] ❌ Error al enviar notificación: " + e.getMessage() + " Error: " + e);
             }
         }
     }
