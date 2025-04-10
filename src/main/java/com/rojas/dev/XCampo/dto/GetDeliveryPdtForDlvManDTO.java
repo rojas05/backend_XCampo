@@ -13,6 +13,7 @@ import java.util.Set;
 public class GetDeliveryPdtForDlvManDTO {
     private Long idDelivery;
     private String userName;
+    private String storageName;
     private String startPointSeller;
     private String destinyClient;
     private Long idOrder;
@@ -23,6 +24,7 @@ public class GetDeliveryPdtForDlvManDTO {
     public GetDeliveryPdtForDlvManDTO(
             Long idDelivery,
             String userName,
+            String storageName,
             String startPointSeller,
             String destiny,
             Long idOrder,
@@ -30,6 +32,7 @@ public class GetDeliveryPdtForDlvManDTO {
     ) {
         this.idDelivery = idDelivery;
         this.userName = userName;
+        this.storageName = storageName;
         this.startPointSeller = startPointSeller;
         this.destinyClient = destiny;
         this.idOrder = idOrder;

@@ -33,8 +33,9 @@ public interface OrderService {
 
     List<String> getNfsSellersByOrderId(Long id);
 
-
     Long getIdClientByOrderId(Long idOrder);
+
+    Long getIdSellerByOrderId(Long idOrder);
 
     ResponseEntity<?> getSellersFavorite(Long id);
 

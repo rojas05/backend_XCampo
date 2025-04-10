@@ -21,7 +21,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -63,7 +65,7 @@ public class DeliveryServiceImp implements DeliveryService {
             var order = orderRepository.getOrderById(idOrder);
 
             var idShoppingCart = order.getShoppingCart().getId_cart();
-            delivery.setDestiny(orderRepository.getDestinyClient(idShoppingCart));
+            delivery.setDestiny(orderRepository.getDestinyClient(order.getId_order()));
 
            /*
             var deliveryMan = deliveryManRepository.findById(delivery.getDeliveryManId())
@@ -167,17 +169,17 @@ public class DeliveryServiceImp implements DeliveryService {
         }
     }
 
-    /**
-     * busca los envios por la orden
-     * @param id_order
-     * @return dto
-     */
     @Override
     public GetDeliveryPdtForDlvManDTO getDeliveryByIdForDlvMan(Long idDelivery) {
         GetDeliveryPdtForDlvManDTO getDelivery = deliveryRepository.getDeliveryByIdForDlvMan(idDelivery);
         return convertDeliveryPdtForDeliveryMan(getDelivery);
     }
 
+    /**
+     * busca los envios por la orden
+     * @param id_order
+     * @return dto
+     */
     @Override
     public GetDeliveryPdtForDlvManDTO getDeliveryByIdOrder(Long id_order) {
         GetDeliveryPdtForDlvManDTO getOrder = deliveryRepository.getDeliveryOrderIdDTO(id_order);
@@ -208,11 +210,13 @@ public class DeliveryServiceImp implements DeliveryService {
      * @return cantidad
      */
     @Override
-    public Long countDeliveryAvailable(String state) {
+    public Long countDeliveryAvailable(String state, String municipio) {
         DeliveryProductState deliveryState = DeliveryProductState.fromStringDeliveryState(state)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
 
-        return deliveryRepository.countDeliveryAvailable(deliveryState);
+        String cleanedMunicipio = municipio.toLowerCase().replace(" ", "");
+
+        return deliveryRepository.countDeliveryAvailable(deliveryState, cleanedMunicipio);
     }
 
     /**
@@ -236,11 +240,28 @@ public class DeliveryServiceImp implements DeliveryService {
      * @return lista dto
      */
     @Override
-    public List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMen(String state) {
+    public List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMen(String state, String municipio) {
         DeliveryProductState deliveryState = DeliveryProductState.fromStringDeliveryState(state)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
 
-        return deliveryRepository.getDeliveryStateDTO(deliveryState).stream()
+        String cleanedMunicipio = municipio.toLowerCase().replace(" ", "");
+
+        return deliveryRepository.getDeliveryStateDTO(deliveryState, cleanedMunicipio).stream()
+                .map(this::convertDeliveryPdtForDeliveryMan)
+                .collect(Collectors.toList());
+    }
+
+    public List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMenStateDepartmanet(String state, String departament, List<String> municipio) {
+        DeliveryProductState deliveryState = DeliveryProductState.fromStringDeliveryState(state)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
+
+        String cleanedDepartament = departament.toLowerCase().replace(" ", "");
+
+        List<String> cleanedMunicipios = municipio.stream()
+                .map(m -> m.toLowerCase().replace(" ", ""))
+                .toList();
+
+        return deliveryRepository.getDeliveryStateDepartamentDTO(deliveryState, cleanedDepartament, cleanedMunicipios).stream()
                 .map(this::convertDeliveryPdtForDeliveryMan)
                 .collect(Collectors.toList());
     }
@@ -251,9 +272,16 @@ public class DeliveryServiceImp implements DeliveryService {
      * @return lista dto
      */
     @Override
-    public List<DeliveryGroupedBySellerDTO> getGroupedDeliveries(String state) {
+    public List<DeliveryGroupedBySellerDTO> getGroupedDeliveries(String state, String departament, List<String> municipio) {
+        List<GetDeliveryPdtForDlvManDTO> deliveries = getDeliveryForDlvMenStateDepartmanet(state, departament, municipio);
 
-        List<GetDeliveryPdtForDlvManDTO> deliveries = getDeliveryForDlvMen(state);
+        // Agrupar las entregas por storageName (nombre del vendedor)
+        Map<String, List<GetDeliveryPdtForDlvManDTO>> deliveriesBySeller = deliveries.stream()
+                .collect(Collectors.groupingBy(dlv -> dlv.getStorageName().toLowerCase()));
+
+        if (deliveriesBySeller.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         return deliveryRepository.getGroupedDeliveries().stream()
                 .map(item -> new DeliveryGroupedBySellerDTO(
@@ -261,10 +289,11 @@ public class DeliveryServiceImp implements DeliveryService {
                         item.getSellerName(),
                         item.getStarPointSeller(),
                         item.getTotalOrders(),
-                        deliveries
+                        deliveriesBySeller.getOrDefault(item.getSellerName().toLowerCase(), Collections.emptyList())
                 ))
                 .collect(Collectors.toList());
     }
+
 
     /**
      * actualiza el esatdo para el servicio de match
@@ -294,6 +323,7 @@ public class DeliveryServiceImp implements DeliveryService {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             String deliveryJson = mapper.writeValueAsString(deliveryProduct);
+
             kafkaTemplate.send("deliveryUpdate-notification", deliveryJson);
             System.out.println("Event enviado a Kafka");
         } catch (JsonProcessingException e) {
@@ -339,6 +369,7 @@ public class DeliveryServiceImp implements DeliveryService {
         return new GetDeliveryPdtForDlvManDTO(
                 deliveryProduct.getIdDelivery(),
                 deliveryProduct.getUserName(),
+                deliveryProduct.getStorageName(),
                 deliveryProduct.getStartPointSeller(),
                 destination,
                 idOrder,

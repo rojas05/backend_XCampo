@@ -136,7 +136,6 @@ public class MatchmakingServiceImp implements MatchmakingService {
                     String normalizedDeliveryLocation = delivery.getLocation().replaceAll("\\s+", "").trim();
 
                     if (normalizedLocation.equalsIgnoreCase(normalizedDeliveryLocation)) {
-
                         System.out.println("✅ MATCH IN " + delivery.getLocation());
                         matchDeliveryList.add(delivery.getId());
                         matchedPairs.add(key); // Se guarda para evitar duplicados
@@ -146,11 +145,13 @@ public class MatchmakingServiceImp implements MatchmakingService {
             }
 
             // Si un repartidor coincidió con al menos 2 pedidos, lo agregamos a la cola
+            System.out.println("[List Delivery Man] ===> " + matchDeliveryList);
             if (matchDeliveryList.size() >= 2) {
                 tokensList.offer(new TokenNotificationID(matchDeliveryList, deliveryMan.getToken()));
             }
         }
 
+        System.out.println("[Token List] ==> " + tokensList);
         return tokensList;
     }
 

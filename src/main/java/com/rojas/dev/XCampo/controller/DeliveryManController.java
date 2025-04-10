@@ -45,6 +45,16 @@ public class DeliveryManController {
     }
 
     /**
+     * optiene el repartidor
+     * @param id_user
+     * @return id repartidor
+     */
+    @GetMapping("getDeliveryMan/{id_user}")
+    public ResponseEntity<?> getDeliveryByIdUser(@PathVariable Long id_user){
+        return deliveryManService.getDeliveryByIdUser(id_user);
+    }
+
+    /**
      * obtiene el repartidor
      * @param id_deliveryMan
      * @return repartidor

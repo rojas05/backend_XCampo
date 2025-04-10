@@ -78,6 +78,22 @@ public class DeliveryManServiceImp implements DeliveryManService {
     }
 
     /**
+     * Encontrar el repartidor
+     * @param user_id
+     * @return estado http
+     */
+    @Override
+    public ResponseEntity<?> getDeliveryByIdUser(Long user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+
+        Optional<DeliveryMan> result = deliveryManRepository.getDeliveryByIdUser(user.get());
+        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+
+        return ResponseEntity.ok().body(result.get());
+    }
+
+    /**
      * actualiza los datos de un repartidor
      * @param deliveryMan
      * @return estadi http
