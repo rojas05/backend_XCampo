@@ -39,9 +39,6 @@ jwt:
     expiration : 900000 # 15 minutos en milisegundos para el Access Token
     refreshExpiration : 1296000000 # 7 días en milisegundos para el Refresh Token
 
-maps:
-  api_key: AIzaSyBuD_DnWXVpkA3hGXTlij5yiGGsAAqK4zA
-  url: https://maps.googleapis.com/maps/api/directions/json
 
 logging:
   level:
