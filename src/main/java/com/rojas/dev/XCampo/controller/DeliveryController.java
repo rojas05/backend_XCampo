@@ -130,9 +130,9 @@ public class DeliveryController {
      * @param state
      * @return cantidad de envios con el estado
      */
-    @GetMapping("/getTotalAvailable/{state}")
-    ResponseEntity<?> countDeliveryAvalible(@PathVariable String state){
-        Long allDelivery = deliveryService.countDeliveryAvailable(state);
+    @GetMapping("/getTotalAvailable/{state}/{municipio}")
+    ResponseEntity<?> countDeliveryAvalible(@PathVariable String state, @PathVariable String municipio){
+        Long allDelivery = deliveryService.countDeliveryAvailable(state, municipio);
         return ResponseEntity.status(HttpStatus.OK).body(allDelivery);
     }
 
@@ -141,9 +141,9 @@ public class DeliveryController {
      * @param state
      * @return lista de envios
      */
-    @GetMapping("/getAll/{state}")
-    ResponseEntity<?> getAllDeliverDTOState(@PathVariable String state){
-        List<GetDeliveryPdtForDlvManDTO> allDelivery = deliveryService.getDeliveryForDlvMen(state);
+    @GetMapping("/getAll/{state}/{municipio}")
+    ResponseEntity<?> getAllDeliverDTOState(@PathVariable String state, @PathVariable String municipio){
+        List<GetDeliveryPdtForDlvManDTO> allDelivery = deliveryService.getDeliveryForDlvMen(state, municipio);
         return ResponseEntity.status(HttpStatus.FOUND).body(allDelivery);
     }
 
@@ -152,10 +152,18 @@ public class DeliveryController {
      * @param state
      * @return lista de envios
      */
-    @GetMapping("/getListGroup/{state}")
-    ResponseEntity<?> getGroupedDeliveries(@PathVariable String state){
-        var allDelivery = deliveryService.getGroupedDeliveries(state);
-        return ResponseEntity.status(HttpStatus.FOUND).body(allDelivery);
+    @GetMapping("/getListGroup/{state}/{departament}")
+    public ResponseEntity<?> getGroupedDeliveries(
+            @PathVariable String state,
+            @PathVariable String departament,
+            @RequestParam List<String> municipio
+    ) {
+        if (municipio.size() > 3) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solo se permiten máximo 3 municipios");
+        }
+
+        var allDelivery = deliveryService.getGroupedDeliveries(state, departament, municipio);
+        return ResponseEntity.status(HttpStatus.OK).body(allDelivery);
     }
 
 }

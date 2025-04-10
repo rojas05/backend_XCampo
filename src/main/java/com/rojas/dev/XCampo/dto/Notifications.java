@@ -1,6 +1,7 @@
 package com.rojas.dev.XCampo.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rojas.dev.XCampo.enumClass.UserRole;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Notifications {
     private UserRole role;
     private String title;

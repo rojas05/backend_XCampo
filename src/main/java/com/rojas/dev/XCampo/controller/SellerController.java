@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -61,6 +62,17 @@ public class SellerController {
     }
 
     /**
+     * Actualizar las ganancias de un vendedor
+     * @param earnings ganancias a ingresar
+     * @param idSeller
+     * @return
+     */
+    @PatchMapping("addEarnings/{idSeller}")
+    public ResponseEntity<?> updateEarnings(@PathVariable Long idSeller, @RequestParam("addTotal") BigDecimal earnings ){
+        return sellerService.updateTotalEarnings(idSeller, earnings);
+    }
+
+    /**
      * obtiene el vendedor por el id de usuario
      * @param id_user
      * @return
@@ -78,6 +90,11 @@ public class SellerController {
     @GetMapping("{id_seller}")
     public ResponseEntity<?> getSellerById(@PathVariable Long id_seller){
         return sellerService.getSellerById(id_seller);
+    }
+
+    @GetMapping("sellerName/{id_seller}")
+    public ResponseEntity<?> getSellerNameById(@PathVariable Long id_seller){
+        return sellerService.getSellerNameById(id_seller);
     }
 
     /**

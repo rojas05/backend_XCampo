@@ -25,6 +25,10 @@ public interface DeliveryManRepository extends JpaRepository<DeliveryMan,Long> {
     @Query("SELECT d.id_deliveryMan FROM DeliveryMan d INNER JOIN d.rol r WHERE r.user = :user")
     Optional<Long> getIdClientByIdUser(@Param("user") User user);
 
+    @Transactional
+    @Query("SELECT d FROM DeliveryMan d INNER JOIN d.rol r WHERE r.user = :user")
+    Optional<DeliveryMan> getDeliveryByIdUser(@Param("user") User user);
+
     /**
      * actualiza la ruta del repartidor
      * @param idClient

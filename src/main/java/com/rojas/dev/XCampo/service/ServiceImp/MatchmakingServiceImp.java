@@ -144,14 +144,14 @@ public class MatchmakingServiceImp implements MatchmakingService {
             }
 
             // Si un repartidor coincidió con al menos 2 pedidos, lo agregamos a la cola
+            System.out.println("[List Delivery Man] ===> " + matchDeliveryList);
             if (matchDeliveryList.size() >= 2) {
                 tokensList.offer(new TokenNotificationID(matchDeliveryList, deliveryMan.getToken()));
             }
         }
 
+        System.out.println("[Token List] ==> " + tokensList);
         return tokensList;
     }
-
-
 
 }

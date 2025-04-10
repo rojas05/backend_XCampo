@@ -39,7 +39,6 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body("Delete category with ID: " + idCategory);
     }
 
-
     @PatchMapping("/update")
     public ResponseEntity<?> updateNameCategory(@RequestBody Category category) {
         var findCategory = categoryService.updateCategoryId(category);

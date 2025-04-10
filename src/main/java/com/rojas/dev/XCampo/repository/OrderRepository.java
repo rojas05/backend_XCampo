@@ -133,6 +133,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE o.id_order = :orderId")
     Long getIdClientByIdOrder(@Param("orderId") Long orderId);
 
+    @Transactional
+    @Query("SELECT s.id_seller FROM Order o " +
+            "JOIN o.shoppingCart sc " +
+            "JOIN sc.items ci " +
+            "JOIN ci.product p " +
+            "JOIN p.seller s " +
+            "WHERE o.id_order = :orderId")
+    Long getIdSellerByIdOrder(@Param("orderId") Long orderId);
+
     /**
      * consulta para buscar las tiendas de las ordenes
      * @param id
