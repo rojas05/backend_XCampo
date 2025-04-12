@@ -78,13 +78,14 @@ public class ClientServiceImp implements ClientService {
     }
 
     @Override
-    public ResponseEntity<?> getSellerById(Long id) {
-        Optional<Client> client = clientRepository.findById(id);
-        if(client.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("client with id " + id + " not found.");
-        }
+    public ResponseEntity<?> getSellerById(Long user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
 
-        return ResponseEntity.ok().body(client.get());
+        Optional<Client> result = clientRepository.findByIdUser(user.get());
+        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client with id " + user_id + " not found.");
+
+        return ResponseEntity.ok().body(result.get());
     }
 
     @Override

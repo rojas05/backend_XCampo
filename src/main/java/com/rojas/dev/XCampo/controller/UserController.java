@@ -58,19 +58,12 @@ public class UserController {
 
     /**
      * actualiza un suario
-     * @param userId
      * @param updatedUser
      * @return estado http
      */
-    @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
-        User user = userService.updateUser(userId, updatedUser);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "CartItem updated successfully");
-        response.put("cartItem", user);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    @PutMapping()
+    public ResponseEntity<?> updateUser(@RequestBody User updatedUser) {
+        return userService.updateUser(updatedUser);
     }
 
     /**
