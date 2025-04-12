@@ -62,7 +62,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
      */
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
-            "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
+            "d.id, cl.name, s.name_store, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
             "FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
             "INNER JOIN o.shoppingCart c " +
@@ -70,8 +70,30 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "INNER JOIN c.items i " +
             "INNER JOIN i.product p " +
             "INNER JOIN p.seller s " +
-            "WHERE d.state = :state ")
-    List<GetDeliveryPdtForDlvManDTO> getDeliveryStateDTO(@Param("state") DeliveryProductState state);
+            "WHERE d.state = :state " +
+            "AND REPLACE(LOWER(s.location), ' ', '') LIKE CONCAT('%', :municipio, '%') ")
+    List<GetDeliveryPdtForDlvManDTO> getDeliveryStateDTO(@Param("state") DeliveryProductState state, @Param("municipio") String municipio);
+
+    @Transactional(readOnly = true)
+    @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
+            "d.id, cl.name, s.name_store, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
+            "FROM DeliveryProduct d " +
+            "INNER JOIN d.order o " +
+            "INNER JOIN o.shoppingCart c " +
+            "INNER JOIN c.client cl " +
+            "INNER JOIN c.items i " +
+            "INNER JOIN i.product p " +
+            "INNER JOIN p.seller s " +
+            "INNER JOIN s.rol rl " +
+            "INNER JOIN rl.user us " +
+            "WHERE d.state = :state " +
+            "AND REPLACE(LOWER(us.department), ' ', '') LIKE CONCAT('%', :departament, '%') " +
+            "AND REPLACE(LOWER(s.location), ' ', '') IN :municipios" )
+    List<GetDeliveryPdtForDlvManDTO> getDeliveryStateDepartamentDTO(
+            @Param("state") DeliveryProductState state,
+            @Param("departament") String departament,
+            @Param("municipios") List<String> municipios
+    );
 
     /**
      * consulta de delivery y orden
@@ -80,7 +102,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
      */
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
-            "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
+            "d.id, cl.name, s.name_store, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
             "FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
             "INNER JOIN o.shoppingCart c " +
@@ -97,7 +119,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
      */
     @Transactional(readOnly = true)
     @Query("SELECT DISTINCT new com.rojas.dev.XCampo.dto.GetDeliveryPdtForDlvManDTO(" +
-            "d.id, cl.name, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
+            "d.id, cl.name, s.name_store, s.coordinates, cl.locationDestiny, o.id_order, c.id_cart) " +
             "FROM DeliveryProduct d " +
             "INNER JOIN d.order o " +
             "INNER JOIN o.shoppingCart c " +
@@ -162,8 +184,15 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
      */
     @Transactional
     @Query("SELECT COUNT(DISTINCT d.id) FROM DeliveryProduct d " +
-            "WHERE d.state = :state ")
-    Long countDeliveryAvailable(@Param("state") DeliveryProductState state);
+            "INNER JOIN d.order o " +
+            "INNER JOIN o.shoppingCart c " +
+            "INNER JOIN c.client cl " +
+            "INNER JOIN c.items i " +
+            "INNER JOIN i.product p " +
+            "INNER JOIN p.seller s " +
+            "WHERE d.state = :state " +
+            "AND REPLACE(LOWER(s.location), ' ', '') LIKE CONCAT('%', :municipio, '%') ")
+    Long countDeliveryAvailable(@Param("state") DeliveryProductState state, @Param("municipio") String municipio);
 
     /**
      * Actualiza estado de envio

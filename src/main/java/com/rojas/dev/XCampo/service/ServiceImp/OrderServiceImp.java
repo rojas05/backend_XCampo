@@ -128,19 +128,22 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public OrderDTO updateOrderState(Long idOrder, String state) {
-        OrderState.fromString(state).orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
+        OrderState orderState = OrderState.fromString(state)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid order state: " + state));
 
         var order = getOrderById(idOrder);
-        order.setState(OrderState.valueOf(state.toUpperCase()));
-        orderRepository.save(order);
+        order.setState(orderState);
 
-        return convertToOrder(order);
+        if (orderState == OrderState.LISTA_ENVIAR) order.setDelivery(true);
+
+        return convertToOrder(orderRepository.save(order));
     }
 
     @Override
     public Double calculateEarningsOrder(Long sellerId) {
         if (!sellerRepository.existsById(sellerId))
             throw new EntityNotFoundException("Seller not exist whit ID: " + sellerId);
+
         var order = orderRepository.findOrdersBySellerId(OrderState.ACEPTADA, sellerId);
 
         return order != null ? calculateTotalEarnings(order) : 0.0;
@@ -182,6 +185,12 @@ public class OrderServiceImp implements OrderService {
         return orderRepository.getIdClientByIdOrder(idOrder);
     }
 
+    @Override
+    public Long getIdSellerByOrderId(Long idOrder) {
+        existsOrderId(idOrder);
+        return orderRepository.getIdSellerByIdOrder(idOrder);
+    }
+
     /**
      * funcion para exponer las tiendas en las que un cliente a comprado
      * @param id
@@ -191,8 +200,10 @@ public class OrderServiceImp implements OrderService {
     public ResponseEntity<?> getSellersFavorite(Long id) {
         try {
             List<Seller> result = orderRepository.getSellerByOrder(id);
+
             if(!result.isEmpty())
                 return ResponseEntity.ok(result);
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No seller"+result);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);

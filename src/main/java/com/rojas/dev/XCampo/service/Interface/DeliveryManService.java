@@ -13,5 +13,7 @@ public interface DeliveryManService {
 
     ResponseEntity<?> getDeliveryManById(Long deliveryMan_id);
 
+    ResponseEntity<?> getDeliveryByIdUser(Long user_id);
+
     ResponseEntity<?> delete(Long deliveryMan_id);
 }

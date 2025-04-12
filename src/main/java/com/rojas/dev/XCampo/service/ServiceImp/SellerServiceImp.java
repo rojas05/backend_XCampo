@@ -3,6 +3,7 @@ package com.rojas.dev.XCampo.service.ServiceImp;
 import com.rojas.dev.XCampo.entity.Roles;
 import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.entity.User;
+import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.RolesRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.repository.UserRepository;
@@ -93,6 +94,14 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
+    public ResponseEntity<?> getSellerNameById(Long seller_id) {
+        Optional<Seller> seller = sellerRepository.findById(seller_id);
+        if(seller.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller with id " + seller_id + " not found.");
+
+        return ResponseEntity.ok().body(seller.get().getName_store());
+    }
+
+    @Override
     public ResponseEntity<?> getIdSellerByUser(Long user_id) {
         Optional<Long> result = sellerRepository.getIdSellerByIdUser(user_id);
         if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found. -");
@@ -120,8 +129,18 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
-    public BigDecimal getTotalEarnings(Long idSeller) {
-        return null;
+    public ResponseEntity<?> updateTotalEarnings(Long idSeller, BigDecimal earnings) {
+        Seller sellerVerify = sellerRepository.findById(idSeller)
+                .orElseThrow(() -> new EntityNotFoundException("Seller not found with ID: " + idSeller));
+
+        if (sellerVerify.getTotalEarnings() == null) sellerVerify.setTotalEarnings(BigDecimal.valueOf(0));
+
+        BigDecimal total = sellerVerify.getTotalEarnings().add(earnings);
+        sellerVerify.setTotalEarnings(total);
+
+        sellerRepository.save(sellerVerify);
+
+        return ResponseEntity.ok("Total earnings updated successfully.");
     }
 
     @Override

@@ -54,7 +54,7 @@ public class NotificationServiceImp implements NotificationService {
             LocalDateTime now = LocalDateTime.now();
 
             if (fcmTokens == null || fcmTokens.isEmpty()) {
-                System.out.println("⚠ No hay usuarios para match con el rol: " + notifications.getRole());
+                System.out.println("⚠ No hay usuarios para match con el rol por estar vació: " + notifications.getRole());
                 taskService.scheduleTask(now, () -> deliveryService.updateStateDeliverYMatch(notifications.getId()));
                 return;
             }

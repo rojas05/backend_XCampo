@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FirebaseNotificationServiceImp implements FirebaseNotificationService {
@@ -70,16 +71,25 @@ public class FirebaseNotificationServiceImp implements FirebaseNotificationServi
     @Override
     public void sendNotification(NotificationsDeliveryDto notifications) {
         try {
+            Map<String, String> data = new HashMap<>();
+            data.put("role", notifications.getRole().toString());
+            data.put("message", notifications.getMessage());
+            data.put("id", notifications.getId().stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(",")));
+            data.put("screen", notifications.getScreen());
+
             Message message = Message.builder()
                     .setToken(notifications.getFirstToken())
                     .setNotification(Notification.builder()
                             .setTitle(notifications.getTitle())
                             .setBody(notifications.getMessage())
                             .build())
+                    .putAllData(data)
                     .build();
 
-            String response = firebaseMessaging.send(message);
-            System.out.println("📨 Notificación enviada: " + response);
+            firebaseMessaging.send(message);
+            System.out.println("📨 Notificación enviada: " + notifications);
         } catch (FirebaseMessagingException e) {
             if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
                 System.err.println("❌ Token inválido: ");

@@ -109,12 +109,11 @@ public class OrderController {
 
 
     /**
-     * listar las ganancias
+     * listar las ganancias de un carrito
      * @param idSeller
      * @return ganancias
      */
-    @GetMapping("/getGanacias/{idSeller}")
-
+    @GetMapping("/getGanancias/{idSeller}")
     public ResponseEntity<?> getGanacias(@PathVariable Long idSeller){
         var order = orderService.calculateEarningsOrder(idSeller);
         return ResponseEntity.status(HttpStatus.OK).body(order);
@@ -123,6 +122,12 @@ public class OrderController {
     @GetMapping("/getClient/{idOrder}")
     public ResponseEntity<?> getIdClientByOrderId(@PathVariable Long idOrder){
         var order = orderService.getIdClientByOrderId(idOrder);
+        return ResponseEntity.status(HttpStatus.FOUND).body(order);
+    }
+
+    @GetMapping("/getSeller/{idOrder}")
+    public ResponseEntity<?> getIdSellertByOrderId(@PathVariable Long idOrder){
+        var order = orderService.getIdSellerByOrderId(idOrder);
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
 

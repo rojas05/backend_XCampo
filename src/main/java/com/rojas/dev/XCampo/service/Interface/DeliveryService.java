@@ -28,13 +28,13 @@ public interface DeliveryService {
 
     ResponseEntity<?> getDeliveryByRuteAndState(DeliveryRuteDTO request);
 
-    Long countDeliveryAvailable(String state);
+    Long countDeliveryAvailable(String state, String municipio);
 
     List<GetDeliveryProductDTO> getAllDeliveryAvailable(String state);
 
-    List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMen(String state);
+    List<GetDeliveryPdtForDlvManDTO> getDeliveryForDlvMen(String state, String municipio);
 
-    List<DeliveryGroupedBySellerDTO> getGroupedDeliveries(String state);
+    List<DeliveryGroupedBySellerDTO> getGroupedDeliveries(String state, String departament, List<String> municipio);
 
     void updateStateDeliverYMatch(Long id);
 }

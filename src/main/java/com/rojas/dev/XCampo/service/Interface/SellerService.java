@@ -14,12 +14,13 @@ public interface SellerService {
 
     ResponseEntity<?> getSellerById(Long seller);
 
+    ResponseEntity<?> getSellerNameById(Long seller);
+
     ResponseEntity<?> getIdSellerByUser(Long user_id);
 
     ResponseEntity<?> updateSellerImg(String img, Long idSeller);
 
-    // Obtener ganacias
-    BigDecimal getTotalEarnings(Long idSeller);
+    ResponseEntity<?> updateTotalEarnings(Long idSeller, BigDecimal earnings);
 
     ResponseEntity<?> getSellerByCity(String city);
 
