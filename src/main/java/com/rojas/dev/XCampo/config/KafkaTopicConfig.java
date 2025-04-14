@@ -12,4 +12,19 @@ public class KafkaTopicConfig {
         return new NewTopic("chat-messages", 3, (short)1);
     }
 
+    @Bean
+    public NewTopic chatTopicD() {
+        return new NewTopic("delivery-notifications", 3, (short)1);
+    }
+
+    @Bean
+    public NewTopic chatTopicS() {
+        return new NewTopic("seller-notifications", 3, (short)1);
+    }
+
+    @Bean
+    public NewTopic chatTopicP() {
+        return new NewTopic("product-notifications", 3, (short)1);
+    }
+
 }

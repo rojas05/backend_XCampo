@@ -13,7 +13,7 @@ public interface UserService {
 
     void deleteUserID(Long Id);
 
-    User updateUser(Long Id, User postUser);
+    ResponseEntity<?> updateUser(User postUser);
 
     Optional<User> findByIdUser(Long Id);
 

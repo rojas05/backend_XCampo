@@ -3,6 +3,8 @@ package com.rojas.dev.XCampo.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rojas.dev.XCampo.repository.UserRepository;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +17,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collections;
+
+
 @Configuration
 public class ApplicationConfig {
+
+
 
     @Autowired
     UserRepository userRepository;
@@ -67,4 +74,7 @@ public class ApplicationConfig {
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
     }
+
+
+
 }

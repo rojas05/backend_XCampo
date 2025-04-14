@@ -36,6 +36,7 @@ public class UserServiceImp implements UserService {
         userRepository.deleteById(Id);
     }
 
+    /*
     @Override
     public User updateUser(Long Id, User postUser) {
         existsUserId(Id);
@@ -48,6 +49,7 @@ public class UserServiceImp implements UserService {
 
         return userRepository.save(postUser);
     }
+     */
 
     @Override
     public Optional<User> findByIdUser(Long Id) {
@@ -122,5 +124,20 @@ public class UserServiceImp implements UserService {
         }
     }
 
-
+    @Override
+    public ResponseEntity<?> updateUser(User user) {
+        try {
+            int updated = userRepository.updateUser(
+                    user.getUser_id(),
+                    user.getName().trim(),
+                    user.getDepartment().trim(),
+                    user.getCity().trim(),
+                    user.getCell(),
+                    user.getEmail().trim()
+            );
+            return updated > 0 ? ResponseEntity.ok("listo"):ResponseEntity.notFound().build();
+        } catch (Exception e){
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        }
+    }
 }

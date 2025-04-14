@@ -61,5 +61,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE s.id_seller = :id")
     String findFcmTokensByIdSeller(Long id);
 
-
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.name = :name, u.department = :department, u.city = :city, u.cell = :cell, u.email = :email WHERE u.id = :userId")
+    int updateUser(
+            @Param("userId") Long userId,
+            @Param("name") String name,
+            @Param("department") String department,
+            @Param("city") String city,
+            @Param("cell") Long cell,
+            @Param("email") String email
+    );
 }
