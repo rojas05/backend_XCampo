@@ -110,9 +110,8 @@ public class MatchmakingServiceImp implements MatchmakingService {
      * @return Lista de tokens de repartidores adecuados.
      */
     private Queue<TokenNotificationID> matchDeliveryManAndDelivery(List<DeliveryManMatchDto> deliveryManList, List<DeliveryMatchDto> deliveryList) {
-        System.out.println("[repartidores] ===> " + deliveryManList );
-        System.out.println("[domicilios] ===> " + deliveryList );
-
+        System.out.println("Repartidores= " + deliveryManList);
+        System.out.println("Domicilios= " + deliveryList);
         Queue<TokenNotificationID> tokensList = new LinkedList<>();
         Set<String> matchedPairs = new HashSet<>();
 
