@@ -52,7 +52,8 @@ public class DistanceServiceImp implements DistanceService {
 
         double distanceKm = getDistanceKm(request, origen, waypoints);
         if (distanceKm == 0.0)
-            throw new IllegalStateException("Error en la API de mapas: distancia calculada es 0");
+            return 0;
+            //throw new IllegalStateException("Error en la API de mapas: distancia calculada es 0");
 
         double tarifa = (distanceKm <= 2.5) ? 1000 : distanceKm * 400;
         return redondear((int) tarifa);
@@ -68,7 +69,7 @@ public class DistanceServiceImp implements DistanceService {
     private Double getDistanceKm(RequestCoordinatesDTO destination, String origin, String waypoints) {
         try {
             String url;
-            var destiny = destination.getDestination().replace(" ", "").trim();
+            var destiny = destination.getDestination().replace("\"", "").replace(" ", "").trim();
             if (waypoints == null) {
                 url = UriComponentsBuilder.fromHttpUrl(GOOGLE_MAPS_API_URL)
                         .queryParam("origin", origin)
@@ -86,9 +87,9 @@ public class DistanceServiceImp implements DistanceService {
                         .toString();
             }
 
-            System.out.println(url);
+            System.out.println(url.replace(" ", ""));
 
-            String response = restTemplate.getForObject(url, String.class);
+            String response = restTemplate.getForObject(url.replace(" ", ""), String.class);
 
             JSONObject json = new JSONObject(response);
             if (!json.getJSONArray("routes").isEmpty()) {

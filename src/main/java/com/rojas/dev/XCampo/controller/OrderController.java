@@ -131,6 +131,11 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.FOUND).body(order);
     }
 
+    @GetMapping("/getSalesProducts/{idProduct}")
+    public ResponseEntity<?> countSalesByProductId(@PathVariable Long idProduct){
+        var order = orderService.countSalesByProductId(idProduct);
+        return ResponseEntity.status(HttpStatus.OK).body(order);
+    }
 
     @GetMapping("/favorite/{id}")
     public ResponseEntity<?> getSellersFavorite(@PathVariable Long id){

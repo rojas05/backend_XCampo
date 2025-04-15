@@ -155,4 +155,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN p.seller s " +
             "WHERE sc.client.id_client = :id")
     List<Seller> getSellerByOrder(@Param("id") Long id);
+
+    @Transactional
+    @Query("SELECT SUM(ci.quantity) FROM Order o " +
+            "JOIN o.shoppingCart sc " +
+            "JOIN sc.items ci " +
+            "JOIN ci.product p " +
+            "WHERE p.id_product = :productId " +
+            "AND o.state = 'FINALIZADA'")
+    Long countSalesByProductId(@Param("productId") Long productId);
+
 }

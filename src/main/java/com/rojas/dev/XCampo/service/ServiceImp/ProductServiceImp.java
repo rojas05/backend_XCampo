@@ -134,7 +134,7 @@ public class ProductServiceImp implements ProductService {
     @Override
     public ResponseEntity<?> search(String letter, String city) {
         try {
-            List<Product> result = productRepository.search(letter,city);
+            List<Product> result = productRepository.search(letter, city);
             return ResponseEntity.ok().body(result);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);

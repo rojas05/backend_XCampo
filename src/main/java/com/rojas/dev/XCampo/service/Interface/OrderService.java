@@ -37,6 +37,8 @@ public interface OrderService {
 
     Long getIdSellerByOrderId(Long idOrder);
 
+    Long countSalesByProductId(Long idProduct);
+
     ResponseEntity<?> getSellersFavorite(Long id);
 
 }

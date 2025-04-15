@@ -6,6 +6,7 @@ import com.rojas.dev.XCampo.entity.Seller;
 import com.rojas.dev.XCampo.enumClass.OrderState;
 import com.rojas.dev.XCampo.exception.EntityNotFoundException;
 import com.rojas.dev.XCampo.repository.OrderRepository;
+import com.rojas.dev.XCampo.repository.ProductRepository;
 import com.rojas.dev.XCampo.repository.SellerRepository;
 import com.rojas.dev.XCampo.service.Interface.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class OrderServiceImp implements OrderService {
 
     @Autowired
     private ShoppingCarServiceImp shoppingCarServiceImp;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public OrderDTO createNewOrder(OrderDTO orderDTO) {
@@ -189,6 +193,14 @@ public class OrderServiceImp implements OrderService {
     public Long getIdSellerByOrderId(Long idOrder) {
         existsOrderId(idOrder);
         return orderRepository.getIdSellerByIdOrder(idOrder);
+    }
+
+    @Override
+    public Long countSalesByProductId(Long idProduct) {
+        if (!productRepository.existsById(idProduct))
+            throw new EntityNotFoundException("Product not exist whit ID: " + idProduct);
+
+        return orderRepository.countSalesByProductId(idProduct);
     }
 
     /**
