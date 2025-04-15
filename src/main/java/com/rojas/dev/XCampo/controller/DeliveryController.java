@@ -158,7 +158,7 @@ public class DeliveryController {
             @PathVariable String departament,
             @RequestParam List<String> municipio
     ) {
-        if (municipio.size() > 3) {
+        if (municipio.size() > 10) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solo se permiten máximo 3 municipios");
         }
 

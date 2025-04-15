@@ -88,7 +88,7 @@ public class DeliveryManServiceImp implements DeliveryManService {
         if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
 
         Optional<DeliveryMan> result = deliveryManRepository.getDeliveryByIdUser(user.get());
-        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user_id + " not found.");
+        if (result.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Delivery Man with id " + user_id + " not found.");
 
         return ResponseEntity.ok().body(result.get());
     }
