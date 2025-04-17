@@ -52,7 +52,7 @@ public class DistanceServiceImp implements DistanceService {
 
         double distanceKm = getDistanceKm(request, origen, waypoints);
         if (distanceKm == 0.0)
-            return 0;
+            return 1000;
             //throw new IllegalStateException("Error en la API de mapas: distancia calculada es 0");
 
         double tarifa = (distanceKm <= 2.5) ? 1000 : distanceKm * 400;
