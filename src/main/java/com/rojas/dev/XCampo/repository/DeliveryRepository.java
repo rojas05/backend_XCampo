@@ -70,8 +70,10 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "INNER JOIN c.items i " +
             "INNER JOIN i.product p " +
             "INNER JOIN p.seller s " +
+            "INNER JOIN s.rol rl " +
+            "INNER JOIN rl.user usr " +
             "WHERE d.state = :state " +
-            "AND REPLACE(LOWER(s.location), ' ', '') LIKE CONCAT('%', :municipio, '%') ")
+            "AND REPLACE(LOWER(usr.city), ' ', '') LIKE CONCAT('%', :municipio, '%') ")
     List<GetDeliveryPdtForDlvManDTO> getDeliveryStateDTO(@Param("state") DeliveryProductState state, @Param("municipio") String municipio);
 
     @Transactional(readOnly = true)
@@ -190,8 +192,10 @@ public interface DeliveryRepository extends JpaRepository<DeliveryProduct,Long> 
             "INNER JOIN c.items i " +
             "INNER JOIN i.product p " +
             "INNER JOIN p.seller s " +
+            "INNER JOIN s.rol rl " +
+            "INNER JOIN rl.user us " +
             "WHERE d.state = :state " +
-            "AND REPLACE(LOWER(s.location), ' ', '') LIKE CONCAT('%', :municipio, '%') ")
+            "AND REPLACE(LOWER(us.city), ' ', '') LIKE CONCAT('%', :municipio, '%') ")
     Long countDeliveryAvailable(@Param("state") DeliveryProductState state, @Param("municipio") String municipio);
 
     /**

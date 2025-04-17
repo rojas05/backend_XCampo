@@ -75,14 +75,16 @@ public class DistanceServiceImp implements DistanceService {
                         .queryParam("origin", origin)
                         .queryParam("destination", destiny)
                         .queryParam("key", API_KEY)
+                        .queryParam("mode", "driving")
                         .build()
                         .toString();
             } else {
                 url = UriComponentsBuilder.fromHttpUrl(GOOGLE_MAPS_API_URL)
-                        .queryParam("origin", destiny)
+                        .queryParam("origin", origin) // se cambio, antes (destiny)
                         .queryParam("destination", destiny)
                         .queryParam("waypoints", waypoints)
                         .queryParam("key", API_KEY)
+                        .queryParam("mode", "driving")
                         .build()
                         .toString();
             }
@@ -90,8 +92,8 @@ public class DistanceServiceImp implements DistanceService {
             System.out.println(url.replace(" ", ""));
 
             String response = restTemplate.getForObject(url.replace(" ", ""), String.class);
-
             JSONObject json = new JSONObject(response);
+
             if (!json.getJSONArray("routes").isEmpty()) {
                 JSONObject route = json.getJSONArray("routes").getJSONObject(0);
                 JSONObject leg = route.getJSONArray("legs").getJSONObject(0);
